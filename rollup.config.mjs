@@ -10,6 +10,7 @@ import svgr from '@svgr/rollup';
 import { terser } from 'rollup-plugin-terser';
 import typescriptEngine from 'typescript';
 import pkg from './package.json' assert { type: 'json' };
+import json from '@rollup/plugin-json';
 
 const config = {
   input: './src/index.ts',
@@ -50,6 +51,7 @@ const config = {
     svgr(),
     resolve(),
     terser(),
+    json(),
   ],
   watch: {
     clearScreen: false,
