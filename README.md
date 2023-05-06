@@ -33,6 +33,7 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] open/close
 - [ ] undo/redo
 - [ ] filter?
+- [ ] search (that one jquery ui thing)
 - [ ] README
 - [ ] Storybook docs
 - [ ] Github pages
