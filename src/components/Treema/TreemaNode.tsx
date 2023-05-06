@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, ButtonHTMLAttributes } from 'react';
+import React, { FC, ReactNode } from 'react';
 import './styles.css';
 
 export interface TreemaNodeProps {
