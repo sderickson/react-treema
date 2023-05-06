@@ -39,15 +39,15 @@ const TreemaStringNode: FC<TreemaNodeProps> = ({ data, schema }) => {
 }
 
 const TreemaNumberNode: FC<TreemaNodeProps> = ({ data, schema }) => {
-  return <div>this is a number</div>
+  return TreemaNodeLayout({ display: <span>{data}</span> });
 }
 
 const TreemaBooleanNode: FC<TreemaNodeProps> = ({ data, schema }) => {
-  return <div>this is a boolean</div>;
+  return TreemaNodeLayout({ display: <span>{data}</span> });
 }
 
 const TreemaNullNode: FC<TreemaNodeProps> = ({ data, schema }) => {
-  return <div>this is a null node</div>
+  return TreemaNodeLayout({ display: <span>null</span> });
 }
 
 const typeMapping: {[key: string]: FC<TreemaNodeProps>} = {
