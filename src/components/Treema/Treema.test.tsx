@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { TreemaNode } from './TreemaNode';
 
 describe('basic types', () => {
@@ -41,6 +41,31 @@ describe('basic types', () => {
       />,
     );
     const treema = screen.getByText('234');
+    expect(treema).toBeInTheDocument();
+  });
+});
+
+describe('toggles', () => {
+  it('should hide data when clicked to close', () => {
+    render(
+      <TreemaNode
+        data={{ 'a': 1, 'b': 234 }}
+        schema={{ 'type': 'object', 'properties': { 'a': { 'type': 'number' }, 'b': { 'type': 'number' } } }}
+      />,
+    );
+    // check it exists
+    let treema: HTMLElement | null = screen.getByText('234');
+    expect(treema).toBeInTheDocument();
+
+    // toggle, check it's gone
+    const visibityToggle = screen.getByRole('button');
+    fireEvent.click(visibityToggle);
+    treema = screen.queryByText('234');
+    expect(treema).not.toBeInTheDocument();
+
+    // toggle again, check it's back
+    fireEvent.click(visibityToggle);
+    treema = screen.queryByText('234');
     expect(treema).toBeInTheDocument();
   });
 });

@@ -87,13 +87,19 @@ export interface TreemaNodeLayoutProps {
 }
 
 export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ open, display, children, key, name }) => {
-  // stateless, common way to layout treema nodes generally. Should not include any schema specific logic.
+  // Common way to layout treema nodes generally. Should not include any schema specific logic.
+  const [isOpen, setIsOpen] = React.useState(open);
+
   return (
     <div className="treema-node" key={key}>
-      {open !== undefined && open !== null && <span className="treema-toggle">{open ? 'O' : 'X'}</span>}
+      {open !== undefined && open !== null && (
+        <span className="treema-toggle" role="button" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? 'O' : 'X'}
+        </span>
+      )}
       {name && <span className="treema-name">{name}: </span>}
       {display}
-      {children ? <div className="treema-children">{children}</div> : null}
+      {children && isOpen ? <div className="treema-children">{children}</div> : null}
     </div>
   );
 };
