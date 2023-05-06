@@ -1,2 +1,2 @@
-export { Button } from './TreemaNode';
-export type { IButtonProps } from './TreemaNode';
+export { TreemaNode } from './TreemaNode';
+export type { TreemaNodeProps } from './TreemaNode';

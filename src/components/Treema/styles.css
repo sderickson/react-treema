@@ -1,3 +1,7 @@
-.treema-node {
-  color: red;
+.treema-children {
+  padding-left: 10px;
+}
+
+.treema-toggle {
+  padding-right: 5px;
 }
