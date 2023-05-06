@@ -18,9 +18,9 @@ const TreemaObjectNode: FC<TreemaNodeProps> = ({ data, schema }) => {
     const propSchema = propSchemas[key];
     const component = typeMapping[propSchema.type];
     return component({ data: data[key], schema: propSchema });
-  });
+  }).filter((e) => e);
   return <TreemaNodeLayout display={<span>this is an object</span>} open={true}>
-    {children}
+    <>{children}</>
   </TreemaNodeLayout>;
 };
 
