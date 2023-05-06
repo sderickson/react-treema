@@ -4,7 +4,7 @@
 - [X] Copilot
 - [X] Rollup
 - [X] TypeScript
-- [ ] Git/GitHub
+- [X] Git/GitHub
 - [ ] Demo page
 - [ ] React
 - [ ] CSS
