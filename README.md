@@ -12,7 +12,7 @@ And http://codecombat.github.io/treema/demo.html
 - [X] View toggle
 - [X] Walk
 - [X] Keyboard nav
-- [ ] General schema validation (ajv, tv4)
+- [-] General schema validation (ajv, tv4) // todo: add tests
 - [ ] oneOf/allOf/anyOf (working schemas)
 - [ ] additionalProperties
 - [ ] Advanced items, properties, patternProperties, etc
