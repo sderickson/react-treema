@@ -1,60 +1,14 @@
-import React, { FC, ReactNode, createContext, useContext, useReducer } from 'react';
+import React, { FC, ReactNode, useContext, useReducer } from 'react';
 import './styles.css';
-
-const noopValidator: SchemaValidator = () => {
-  return { valid: true, errors: [], missing: [] }
-};
-
-export interface ContextInterface {
-  state: TreemaState;
-  dispatch: React.Dispatch<any>;
-}
-
-const defaultContextData: ContextInterface = {
-  state: {
-    data: {},
-    validator: noopValidator,
-    rootSchema: {'type': 'null'},  
-  },
-  dispatch: () => {},
-}
-
-const TreemaContext = createContext(defaultContextData);
-
-export interface ValidatorResponse {
-  valid: boolean;
-  missing: string[];
-  errors: ValidatorErrors[];
-}
-
-export interface ValidatorErrors {
-  id: string | number;
-  message: string;
-  dataPath: string;
-  schemaPath: string;
-}
-
-type SchemaValidator = (data: any, schema: SupportedJsonSchema) => ValidatorResponse;
-
-export interface TreemaState {
-  data: any;
-  validator: SchemaValidator;
-  rootSchema: SupportedJsonSchema;
-}
+import { SchemaValidator, SupportedJsonSchema } from './types';
+import { noopValidator } from './utils';
+import { reducer, TreemaContext } from './state';
 
 export interface TreemaNodeProps {
   data: any;
   schema: SupportedJsonSchema;
   key?: string;
   validator?: SchemaValidator;
-}
-
-export interface SupportedJsonSchema {
-  type: 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string';
-  items?: SupportedJsonSchema;
-  properties?: { [key: string]: SupportedJsonSchema };
-  displayProperty?: string;
-  title?: string;
 }
 
 const TreemaObjectNode: FC<TreemaNodeProps> = ({ data, schema, key }) => {
@@ -134,7 +88,7 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ open, display, chi
   const { dispatch } = useContext(TreemaContext);
 
   return (
-    <div className="treema-node" key={key} onClick={() => dispatch({'type': 'click'})}>
+    <div className="treema-node" key={key} onClick={() => dispatch({ 'type': 'click' })}>
       {open !== undefined && open !== null && (
         <span className="treema-toggle" role="button" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? 'O' : 'X'}
@@ -147,32 +101,12 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ open, display, chi
   );
 };
 
-function reducer(state: TreemaState, action) {
-  switch (action.type) {
-    case 'click':
-      console.log('we done clicked');
-      return { ...state }
-    // case 'updateData':
-    //   return { ...state, data: action.data };
-    // case 'updateValidator':
-    //   return { ...state, validator: action.validator };
-    // case 'updateRootSchema':
-    //   return { ...state, rootSchema: action.rootSchema };
-    default:
-      throw new Error();
-  }
-  return state;
-}
-
 export const TreemaNode: FC<TreemaNodeProps> = ({ data, schema, validator }) => {
   const [state, dispatch] = useReducer(reducer, { data, validator: validator || noopValidator, rootSchema: schema });
 
   const type = schema.type;
 
   const component = typeMapping[type];
-  return (
-    <TreemaContext.Provider value={{state, dispatch}}>
-      {component({ data, schema })}
-    </TreemaContext.Provider>
-  );
+
+  return <TreemaContext.Provider value={{ state, dispatch }}>{component({ data, schema })}</TreemaContext.Provider>;
 };
