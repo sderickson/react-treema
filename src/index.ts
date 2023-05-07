@@ -1,2 +1,2 @@
 export { TreemaRoot } from './components/Treema';
-export type { TreemaNodeProps } from './components/Treema';
+export type { TreemaRootProps } from './components/Treema';
