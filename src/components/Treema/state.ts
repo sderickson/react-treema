@@ -2,10 +2,13 @@ import { createContext } from 'react';
 import { noopValidator } from './utils';
 import { SchemaValidator, SupportedJsonSchema } from './types';
 
+type JsonPointer = string;
+
 export interface TreemaState {
   data: any;
   validator: SchemaValidator;
   rootSchema: SupportedJsonSchema;
+  lastSelected?: JsonPointer;
 }
 
 export interface ContextInterface {
@@ -24,24 +27,24 @@ const defaultContextData: ContextInterface = {
 
 export const TreemaContext = createContext(defaultContextData);
 
-type ClickAction = {
-  type: 'click';
+type SelectPathAction = {
+  type: 'select_path_action';
+  path: JsonPointer;
 };
 
-type TreemaAction = ClickAction;
+export const selectPath = (path: JsonPointer): SelectPathAction => {
+  return {
+    type: 'select_path_action',
+    path,
+  }
+};
+
+type TreemaAction = SelectPathAction;
 
 export function reducer(state: TreemaState, action: TreemaAction) {
   switch (action.type) {
-    case 'click':
-      console.log('we done clicked');
-
-      return { ...state };
-    // case 'updateData':
-    //   return { ...state, data: action.data };
-    // case 'updateValidator':
-    //   return { ...state, validator: action.validator };
-    // case 'updateRootSchema':
-    //   return { ...state, rootSchema: action.rootSchema };
+    case 'select_path_action':
+      return { ...state, lastSelected: action.path }
     default:
       throw new Error();
   }

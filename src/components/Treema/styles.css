@@ -6,3 +6,12 @@
   padding-right: 5px;
   cursor: pointer;
 }
+
+.treema-node {
+  background-color: white;
+  cursor: pointer;
+}
+
+.treema-node-selected {
+  background-color: #e0e0e0;
+}
