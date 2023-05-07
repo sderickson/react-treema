@@ -24,6 +24,7 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
   return {
     validateMultiple: (data, schema) => {
       let tv4Result = tv4.validateMultiple(data, schema);
+
       return {
         valid: tv4Result.valid,
         missing: tv4Result.missing,
@@ -33,18 +34,18 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
             message: error.message,
             dataPath: error.dataPath,
             schemaPath: error.schemaPath,
-          }
+          };
         }),
-      }
+      };
     },
     getSchemaRef: (ref) => {
       return tv4.getSchema(ref);
     },
     addSchema: (schema) => {
       tv4.addSchema(schema);
-    }
-  }
-}
+    },
+  };
+};
 
 export const walk: (
   data: any,
@@ -212,5 +213,6 @@ const combineSchemas = (baseSchema: SupportedJsonSchema, schema: SupportedJsonSc
 export const getParentPath = (path: JsonPointer): JsonPointer => {
   const parts = path.split('/');
   parts.pop();
+
   return parts.join('/');
-}
+};

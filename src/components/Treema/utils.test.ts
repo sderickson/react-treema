@@ -1,12 +1,8 @@
-import { SchemaLib, SupportedJsonSchema } from './types';
-import { buildWorkingSchemas, noopValidator, getChildSchema, walk, getParentPath } from './utils';
+import { SupportedJsonSchema } from './types';
+import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath } from './utils';
+import tv4 from 'tv4';
 
-const dummyLib: SchemaLib = {
-  validateMultiple: noopValidator,
-  getSchemaRef: () => {
-    return {};
-  },
-};
+const schemaLib = wrapTv4(tv4);
 
 describe('walk', () => {
   it('calls a callback on every piece of data in a JSON object, providing path, data and working schema', () => {
@@ -22,7 +18,7 @@ describe('walk', () => {
     const paths: string[] = [];
     const values: any[] = [];
 
-    walk(data, schema, dummyLib, ({ path, data }) => {
+    walk(data, schema, schemaLib, ({ path, data }) => {
       paths.push(path);
       values.push(data);
     });
@@ -50,7 +46,7 @@ describe('walk', () => {
     const data = [{}];
     let foundIt = false;
 
-    walk(data, schema, dummyLib, ({ path, schema }) => {
+    walk(data, schema, schemaLib, ({ path, schema }) => {
       if (path === '/0' && schema.title === 'marker') {
         foundIt = true;
       }
@@ -106,13 +102,13 @@ describe('utils', () => {
   describe('buildWorkingSchemas', () => {
     it('returns the same single schema if there are no combinatorials or references', () => {
       const schema = {};
-      const workingSchemas = buildWorkingSchemas(schema, dummyLib);
+      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
       expect(workingSchemas[0] === schema).toBeTruthy();
     });
 
     it('combines allOf into a single schema', () => {
       const schema: SupportedJsonSchema = { title: 'title', allOf: [{ description: 'description' }, { type: 'number' }] };
-      const workingSchemas = buildWorkingSchemas(schema, dummyLib);
+      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
       expect(workingSchemas.length).toBe(1);
       const workingSchema = workingSchemas[0];
       expect(workingSchema.title).toBe('title');
@@ -122,7 +118,7 @@ describe('utils', () => {
 
     it('creates a separate working schema for each anyOf', () => {
       const schema: SupportedJsonSchema = { title: 'title', anyOf: [{ type: 'string' }, { type: 'number' }] };
-      const workingSchemas = buildWorkingSchemas(schema, dummyLib);
+      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
       expect(workingSchemas.length).toBe(2);
       const types = workingSchemas.map((schema) => schema.type);
       expect(types.includes('string')).toBeTruthy();
@@ -131,7 +127,7 @@ describe('utils', () => {
 
     it('creates a separate working schema for each oneOf', () => {
       const schema: SupportedJsonSchema = { title: 'title', oneOf: [{ type: 'string' }, { type: 'number' }] };
-      const workingSchemas = buildWorkingSchemas(schema, dummyLib);
+      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
       expect(workingSchemas.length).toBe(2);
       const types = workingSchemas.map((schema) => schema.type);
       expect(types.includes('string')).toBeTruthy();

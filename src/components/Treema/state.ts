@@ -10,7 +10,7 @@ export interface TreemaState {
   schemaLib: SchemaLib;
   rootSchema: SupportedJsonSchema;
   lastSelected?: JsonPointer;
-  closed: {[path: JsonPointer]: boolean};
+  closed: { [path: JsonPointer]: boolean };
 }
 
 export interface ContextInterface {
@@ -100,12 +100,14 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       if (action.path === undefined) {
         let newState = { ...state };
         delete newState.lastSelected;
+
         return newState;
       }
+
       return { ...state, lastSelected: action.path };
     case 'navigate_up_action':
       paths = getListOfPaths(state).slice(1);
-      paths.indexOf(state.lastSelected || '')
+      paths.indexOf(state.lastSelected || '');
       if (state.lastSelected === undefined || paths.indexOf(state.lastSelected) === 0) {
         index = paths.length - 1;
       } else {
@@ -116,19 +118,20 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       }
       nextPath = paths[index];
       nextPathParent = getParentPath(nextPath);
-      return { ...state, lastSelected: getClosed(state)[nextPathParent] ? nextPathParent : nextPath}
+
+      return { ...state, lastSelected: getClosed(state)[nextPathParent] ? nextPathParent : nextPath };
     case 'navigate_down_action':
       paths = getListOfPaths(state).slice(1);
       if (state.lastSelected === undefined) {
         index = 0;
-      }
-      else {
+      } else {
         index = Math.min(paths.indexOf(state.lastSelected || '') + 1, paths.length - 1);
         while (index < paths.length - 1 && getAnyAncestorsClosed(state, paths[index])) {
           index++;
         }
       }
-      return { ...state, lastSelected: paths[index] }      
+
+      return { ...state, lastSelected: paths[index] };
     case 'navigate_in_action':
       paths = getListOfPaths(state).slice(1);
       index = paths.indexOf(state.lastSelected || '');
@@ -137,12 +140,14 @@ export function reducer(state: TreemaState, action: TreemaAction) {
         // only navigate in if it's a child of the current path
         return { ...state, lastSelected: nextPath };
       }
+
       return state;
     case 'navigate_out_action':
       let parentPath = getParentPath(state.lastSelected || '');
       if (parentPath) {
         return { ...state, lastSelected: parentPath };
       }
+
       return state;
     case 'set_path_closed_action':
       return { ...state, closed: { ...state.closed, [action.path]: action.closed } };
@@ -159,27 +164,30 @@ const getData = (state: TreemaState) => state.data;
 const getRootSchema = (state: TreemaState) => state.rootSchema;
 const getSchemaLib = (state: TreemaState) => state.schemaLib;
 
-export const getAllTreemaNodeContexts = createSelector(getData, getRootSchema, getSchemaLib, (data, rootSchema, schemaLib): {[key: JsonPointer]: TreemaNodeContext} => {
-  const contexts: {[key: JsonPointer]: TreemaNodeContext} = {};
-  walk(data, rootSchema, schemaLib, ({ path, data, schema }) => {
-    contexts[path] = ({ path, data, schema });
-  });
-  return contexts;
-});
+export const getAllTreemaNodeContexts = createSelector(
+  getData,
+  getRootSchema,
+  getSchemaLib,
+  (data, rootSchema, schemaLib): { [key: JsonPointer]: TreemaNodeContext } => {
+    const contexts: { [key: JsonPointer]: TreemaNodeContext } = {};
+    walk(data, rootSchema, schemaLib, ({ path, data, schema }) => {
+      contexts[path] = { path, data, schema };
+    });
+
+    return contexts;
+  },
+);
 
 export const getListOfPaths = createSelector(getAllTreemaNodeContexts, (contexts): JsonPointer[] => {
   const paths: JsonPointer[] = Object.keys(contexts);
+
   return paths;
 });
 
 export const getClosed = (state: TreemaState) => state.closed;
 
 export const getCanClose = createSelector(
-  [
-    getClosed,
-    getAllTreemaNodeContexts,
-    (state, path: JsonPointer) => path,
-  ],
+  [getClosed, getAllTreemaNodeContexts, (state, path: JsonPointer) => path],
   (closed, contexts, path) => {
     if (closed[path]) {
       return false;
@@ -187,16 +195,13 @@ export const getCanClose = createSelector(
     if (['array', 'object'].includes(getType(contexts[path]?.data))) {
       return true;
     }
+
     return false;
-  }
-)
+  },
+);
 
 export const getCanOpen = createSelector(
-  [ 
-    getClosed,
-    getAllTreemaNodeContexts,
-    (state, path: JsonPointer) => path,
-  ],
+  [getClosed, getAllTreemaNodeContexts, (state, path: JsonPointer) => path],
   (closed, contexts, path) => {
     if (!closed[path]) {
       return false;
@@ -204,50 +209,41 @@ export const getCanOpen = createSelector(
     if (['array', 'object'].includes(getType(contexts[path]?.data))) {
       return true;
     }
-    return false;
-  }
-)
 
-export const getAnyAncestorsClosed = createSelector(
-  [
-    getClosed,
-    (state, path: JsonPointer) => path,
-  ],
-  (closed, path) => {
-    let currentPath = getParentPath(path);
-    while (currentPath !== '') {
-      if (closed[currentPath]) {
-        return true;
-      }
-      currentPath = getParentPath(currentPath);
-    }
     return false;
-  }
+  },
 );
+
+export const getAnyAncestorsClosed = createSelector([getClosed, (state, path: JsonPointer) => path], (closed, path) => {
+  let currentPath = getParentPath(path);
+  while (currentPath !== '') {
+    if (closed[currentPath]) {
+      return true;
+    }
+    currentPath = getParentPath(currentPath);
+  }
+
+  return false;
+});
 
 export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';
 
-export const getSchemaErrors = createSelector(
-  [getData, getRootSchema, getSchemaLib],
-  (data, rootSchema, schemaLib) => {
-    return schemaLib.validateMultiple(data, rootSchema).errors;
-  }
-);
+export const getSchemaErrors = createSelector([getData, getRootSchema, getSchemaLib], (data, rootSchema, schemaLib) => {
+  return schemaLib.validateMultiple(data, rootSchema).errors;
+});
 
 interface SchemaErrorsByPath {
   [key: JsonPointer]: ValidatorError[];
 }
 
-export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath = createSelector(
-  [getSchemaErrors],
-  (errors) => {
-    const errorsByPath: SchemaErrorsByPath = {};
-    errors.forEach((error) => {
-      if (!errorsByPath[error.dataPath]) {
-        errorsByPath[error.dataPath] = [];
-      }
-      errorsByPath[error.dataPath].push(error);
-    });
-    return errorsByPath;
-  }
-);
+export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath = createSelector([getSchemaErrors], (errors) => {
+  const errorsByPath: SchemaErrorsByPath = {};
+  errors.forEach((error) => {
+    if (!errorsByPath[error.dataPath]) {
+      errorsByPath[error.dataPath] = [];
+    }
+    errorsByPath[error.dataPath].push(error);
+  });
+
+  return errorsByPath;
+});

@@ -2,7 +2,21 @@ import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, u
 import './styles.css';
 import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler, ValidatorError } from './types';
 import { getChildSchema, noopLib, walk } from './utils';
-import { reducer, TreemaContext, selectPath, navigateUp, navigateDown, getCanClose, setPathClosed, getLastSelectedPath, getClosed, getCanOpen, navigateIn, navigateOut, getSchemaErrorsByPath } from './state';
+import {
+  reducer,
+  TreemaContext,
+  selectPath,
+  navigateUp,
+  navigateDown,
+  getCanClose,
+  setPathClosed,
+  getLastSelectedPath,
+  getClosed,
+  getCanOpen,
+  navigateIn,
+  navigateOut,
+  getSchemaErrorsByPath,
+} from './state';
 
 interface TreemaTypeDefinition {
   display: (props: TreemaNodeContext) => ReactNode;
@@ -124,7 +138,7 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
 
   return (
     <div className={classNames.join(' ')} onClick={onSelect}>
-      <div ref={ref} tabIndex={-1} className='treema-title'>
+      <div ref={ref} tabIndex={-1} className="treema-title">
         {canOpen && (
           <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}>
             {isOpen ? 'O' : 'X'}
@@ -132,9 +146,7 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
         )}
         {name && <span className="treema-name">{name}: </span>}
         {definition.display({ data, schema, path })}
-        {errors.length ? <span className="treema-error-message">
-          {errors[0].message}
-        </span> : null}
+        {errors.length ? <span className="treema-error-message">{errors[0].message}</span> : null}
       </div>
       {children && canOpen && isOpen ? <div className="treema-children">{children}</div> : null}
     </div>
@@ -156,12 +168,13 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       return {};
     }
     const closed: { [key: JsonPointer]: boolean } = {};
-    walk(data, schema, lib, ({path}) => {
+    walk(data, schema, lib, ({ path }) => {
       const depth = path.split('/').length;
       if (depth === initOpen + 1) {
         closed[path] = true;
       }
     });
+
     return closed;
   }, []);
 
@@ -195,7 +208,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       if (event.key === 'Escape') {
         dispatch(selectPath(undefined));
         rootRef.current?.focus();
-      };
+      }
     },
     [dispatch, state],
   );

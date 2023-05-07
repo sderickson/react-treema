@@ -1,6 +1,6 @@
 import React from 'react';
 import { TreemaRoot } from './TreemaRoot';
-import { render, screen, fireEvent, getByText } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { JsonPointer, SupportedJsonSchema, TreemaEvent } from './types';
 
 describe('arrow key navigation', () => {
@@ -20,10 +20,10 @@ describe('arrow key navigation', () => {
       lastPath = event.path;
     }
   };
-  const getTreemaRoot = () => screen.getByTestId('treema-root'); 
+  const getTreemaRoot = () => screen.getByTestId('treema-root');
   const fireFocusTreema = () => {
     fireEvent.focus(getTreemaRoot());
-  }
+  };
   const fireArrowDown = () => {
     fireEvent.keyDown(getTreemaRoot(), { key: 'ArrowDown', code: 'ArrowDown' });
   };
@@ -132,7 +132,7 @@ describe('arrow key navigation', () => {
   });
 
   describe('right arrow key press', () => {
-    it('does nothing if the selected row isn\'t a collection', () => {
+    it("does nothing if the selected row isn't a collection", () => {
       fireArrowDown();
       expect(lastPath).toEqual('/name');
       fireArrowRight();
