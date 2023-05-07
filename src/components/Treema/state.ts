@@ -187,7 +187,7 @@ export const getListOfPaths = createSelector(getAllTreemaNodeContexts, (contexts
 export const getClosed = (state: TreemaState) => state.closed;
 
 export const getCanClose = createSelector(
-  [getClosed, getAllTreemaNodeContexts, (state, path: JsonPointer) => path],
+  [getClosed, getAllTreemaNodeContexts, (_, path: JsonPointer) => path],
   (closed, contexts, path) => {
     if (closed[path]) {
       return false;
@@ -201,7 +201,7 @@ export const getCanClose = createSelector(
 );
 
 export const getCanOpen = createSelector(
-  [getClosed, getAllTreemaNodeContexts, (state, path: JsonPointer) => path],
+  [getClosed, getAllTreemaNodeContexts, (_, path: JsonPointer) => path],
   (closed, contexts, path) => {
     if (!closed[path]) {
       return false;
@@ -214,7 +214,7 @@ export const getCanOpen = createSelector(
   },
 );
 
-export const getAnyAncestorsClosed = createSelector([getClosed, (state, path: JsonPointer) => path], (closed, path) => {
+export const getAnyAncestorsClosed = createSelector([getClosed, (_, path: JsonPointer) => path], (closed, path) => {
   let currentPath = getParentPath(path);
   while (currentPath !== '') {
     if (closed[currentPath]) {
