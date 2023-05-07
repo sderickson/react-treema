@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { getType, noopValidator, walk } from './utils';
+import { getParentPath, getType, noopValidator, walk } from './utils';
 import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer } from './types';
 import { createSelector } from 'reselect';
 
@@ -39,10 +39,10 @@ export const TreemaContext = createContext(defaultContextData);
 
 type SelectPathAction = {
   type: 'select_path_action';
-  path: JsonPointer;
+  path: JsonPointer | undefined;
 };
 
-export const selectPath = (path: JsonPointer): SelectPathAction => {
+export const selectPath = (path: JsonPointer | undefined): SelectPathAction => {
   return {
     type: 'select_path_action',
     path,
@@ -94,17 +94,59 @@ type TreemaAction = SelectPathAction | NavigateUpAction | NavigateDownAction | N
 // Reducer
 
 export function reducer(state: TreemaState, action: TreemaAction) {
+  let paths: JsonPointer[];
+  let index: number;
+  let nextPath: JsonPointer;
+  let nextPathParent: JsonPointer;
   switch (action.type) {
     case 'select_path_action':
+      if (action.path === undefined) {
+        let newState = { ...state };
+        delete newState.lastSelected;
+        return newState;
+      }
       return { ...state, lastSelected: action.path };
     case 'navigate_up_action':
-      const paths = getListOfPaths(state);
-      const index = paths.indexOf(state.lastSelected || '');
-      return { ...state, lastSelected: paths[Math.max(index - 1, 0)]}
+      paths = getListOfPaths(state).slice(1);
+      paths.indexOf(state.lastSelected || '')
+      if (state.lastSelected === undefined || paths.indexOf(state.lastSelected) === 0) {
+        index = paths.length - 1;
+      } else {
+        index = paths.indexOf(state.lastSelected) - 1;
+      }
+      while (index > 0 && getAnyAncestorsClosed(state, paths[index])) {
+        index--;
+      }
+      nextPath = paths[index];
+      nextPathParent = getParentPath(nextPath);
+      return { ...state, lastSelected: getClosed(state)[nextPathParent] ? nextPathParent : nextPath}
     case 'navigate_down_action':
-      const paths2 = getListOfPaths(state);
-      const index2 = paths2.indexOf(state.lastSelected || '');
-      return { ...state, lastSelected: paths2[Math.min(index2 + 1, paths2.length - 1)]}
+      paths = getListOfPaths(state).slice(1);
+      if (state.lastSelected === undefined) {
+        index = 0;
+      }
+      else {
+        index = Math.min(paths.indexOf(state.lastSelected || '') + 1, paths.length - 1);
+        while (index < paths.length - 1 && getAnyAncestorsClosed(state, paths[index])) {
+          index++;
+        }
+      }
+      return { ...state, lastSelected: paths[index] }      
+    case 'navigate_in_action':
+      paths = getListOfPaths(state).slice(1);
+      index = paths.indexOf(state.lastSelected || '');
+      nextPath = paths[index + 1];
+      if (nextPath.indexOf(paths[index]) === 0) {
+        // only navigate in if it's a child of the current path
+        return { ...state, lastSelected: nextPath };
+      }
+      return state;
+    case 'navigate_out_action':
+      let parentPath = getParentPath(state.lastSelected || '');
+      if (parentPath) {
+        return { ...state, lastSelected: parentPath };
+      }
+      return state;
     case 'set_path_closed_action':
       return { ...state, closed: { ...state.closed, [action.path]: action.closed } };
     default:
@@ -145,16 +187,45 @@ export const getCanClose = createSelector(
     if (closed[path]) {
       return false;
     }
-    const context = contexts[path];
-    if (!context) {
-      return false;
-    }
-    const { data } = context;
-    if (['array', 'object'].includes(getType(data))) {
+    if (['array', 'object'].includes(getType(contexts[path]?.data))) {
       return true;
     }
     return false;
   }
 )
+
+export const getCanOpen = createSelector(
+  [ 
+    getClosed,
+    getAllTreemaNodeContexts,
+    (state, path: JsonPointer) => path,
+  ],
+  (closed, contexts, path) => {
+    if (!closed[path]) {
+      return false;
+    }
+    if (['array', 'object'].includes(getType(contexts[path]?.data))) {
+      return true;
+    }
+    return false;
+  }
+)
+
+export const getAnyAncestorsClosed = createSelector(
+  [
+    getClosed,
+    (state, path: JsonPointer) => path,
+  ],
+  (closed, path) => {
+    let currentPath = getParentPath(path);
+    while (currentPath !== '') {
+      if (closed[currentPath]) {
+        return true;
+      }
+      currentPath = getParentPath(currentPath);
+    }
+    return false;
+  }
+);
 
 export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';

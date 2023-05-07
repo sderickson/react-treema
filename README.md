@@ -10,25 +10,25 @@ And http://codecombat.github.io/treema/demo.html
 
 - [X] Basic types
 - [X] View toggle
-- [ ] Styling
+- [X] Walk
+- [X] Keyboard nav
+- [ ] General schema validation (ajv, tv4)
+- [ ] oneOf/allOf/anyOf (working schemas)
 - [ ] additionalProperties
+- [ ] Advanced items, properties, patternProperties, etc
 - [ ] Description prop
+- [ ] Styling
 - [ ] Default data
 - [ ] Required data
-- [ ] General schema validation (avj)
-- [ ] Advanced items, properties, patternProperties, etc
-- [-] Keyboard nav
 - [ ] Additional schemas
 - [ ] Shift/Meta click
 - [ ] Editing
 - [ ] readOnly
 - [ ] Copy/Paste
 - [ ] Prevent editing into bad schema states
-- [ ] oneOf/allOf/anyOf (working schemas)
 - [ ] Callbacks
 - [ ] Custom treema nodes
 - [ ] Extras (2d point, etc)
-- [ ] Walk
 - [ ] getChildSchema, canAddProperty
 - [ ] getters/setters
 - [ ] open/close

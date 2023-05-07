@@ -16,6 +16,6 @@
   border: 2px solid black;
 }
 
-.treema-node-selected {
+.treema-node-selected > .treema-title {
   background-color: #e0e0e0;
 }

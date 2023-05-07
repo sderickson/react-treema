@@ -1,5 +1,14 @@
 export type JsonPointer = string;
 
+export interface ChangeSelectEvent {
+  type: 'change_select_event';
+  path: JsonPointer | undefined;
+}
+
+export type TreemaEvent = ChangeSelectEvent;
+
+export type TreemaEventHandler = (event: TreemaEvent) => void;
+
 export interface ValidatorResponse {
   valid: boolean;
   missing: string[];
@@ -20,8 +29,10 @@ export interface SchemaLib {
   getSchemaRef: (ref: string) => SupportedJsonSchema;
 }
 
+export type BaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string';
+
 export interface SupportedJsonSchema {
-  type?: 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string';
+  type?: BaseType | BaseType[];
   items?: SupportedJsonSchema | SupportedJsonSchema[];
   properties?: { [key: string]: SupportedJsonSchema };
   displayProperty?: string;

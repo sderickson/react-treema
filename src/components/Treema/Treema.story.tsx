@@ -5,7 +5,7 @@ export default {
   component: TreemaRoot,
 };
 
-export const Default = {
+export const Addresses = {
   args: {
     data: [
       {
@@ -80,3 +80,18 @@ export const Default = {
     },
   },
 };
+
+export const WithNestedArrays = {
+  args: {
+    data: { name: 'Bob', numbers: ['401-401-1337', ['123-456-7890']], address: 'Mars' },
+    schema: {
+      type: 'object',
+      displayProperty: 'name',
+      properties: {
+        name: { type: 'string', title: 'NAME' },
+        numbers: { type: 'array', items: { 'type': ['string', 'array'] } },
+        address: { type: 'string' },
+      },
+    },
+  },
+}

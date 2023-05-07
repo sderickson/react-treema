@@ -1,8 +1,8 @@
-import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
+import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo } from 'react';
 import './styles.css';
-import { SchemaLib, SupportedJsonSchema, TreemaNodeContext } from './types';
-import { getChildSchema, noopLib, getParentPath } from './utils';
-import { reducer, TreemaContext, selectPath, navigateUp, navigateDown, getCanClose, setPathClosed, getLastSelectedPath, getClosed } from './state';
+import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler } from './types';
+import { getChildSchema, noopLib, getParentPath, walk } from './utils';
+import { reducer, TreemaContext, selectPath, navigateUp, navigateDown, getCanClose, setPathClosed, getLastSelectedPath, getClosed, getCanOpen, navigateIn, navigateOut } from './state';
 
 interface TreemaTypeDefinition {
   display: (props: TreemaNodeContext) => ReactNode;
@@ -86,12 +86,12 @@ const typeMapping: { [key: string]: TreemaTypeDefinition } = {
 
 export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) => {
   // Common way to layout treema nodes generally. Should not include any schema specific logic.
-  // const [isOpen, setIsOpen] = React.useState(true);
   const { dispatch, state } = useContext(TreemaContext);
   const isOpen = !getClosed(state)[path];
   const name = schema.title || path?.split('/').pop();
   const canOpen = schema.type === 'object' || schema.type === 'array';
-  const definition = typeMapping[schema.type || 'null'];
+  const schemaType: BaseType = Array.isArray(schema.type) ? schema.type[0] : schema.type || 'null';
+  const definition = typeMapping[schemaType];
   const children = definition.renderChildren ? definition.renderChildren({ data, schema, path }) : [];
   const onSelect = useCallback(
     (e: React.MouseEvent) => {
@@ -115,15 +115,19 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
     ref.current?.focus();
   }
 
+  const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
+
   return (
-    <div className={classNames.join(' ')} onClick={onSelect} ref={ref} tabIndex={-1}>
-      {canOpen && (
-        <span className="treema-toggle" role="button" onClick={onToggle}>
-          {isOpen ? 'O' : 'X'}
-        </span>
-      )}
-      {name && <span className="treema-name">{name}: </span>}
-      {definition.display({ data, schema, path })}
+    <div className={classNames.join(' ')} onClick={onSelect}>
+      <div ref={ref} tabIndex={-1} className='treema-title'>
+        {canOpen && (
+          <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}>
+            {isOpen ? 'O' : 'X'}
+          </span>
+        )}
+        {name && <span className="treema-name">{name}: </span>}
+        {definition.display({ data, schema, path })}
+      </div>
       {children && canOpen && isOpen ? <div className="treema-children">{children}</div> : null}
     </div>
   );
@@ -133,10 +137,27 @@ export interface TreemaRootProps {
   data: any;
   schema: SupportedJsonSchema;
   schemaLib?: SchemaLib;
+  initOpen?: number;
+  onEvent?: TreemaEventHandler;
 }
 
-export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib }) => {
-  const [state, dispatch] = useReducer(reducer, { data, schemaLib: schemaLib || noopLib, rootSchema: schema, closed: {} });
+export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent }) => {
+  const lib = schemaLib || noopLib;
+  const closed: { [key: JsonPointer]: boolean } = useMemo(() => {
+    if (initOpen === undefined) {
+      return {};
+    }
+    const closed: { [key: JsonPointer]: boolean } = {};
+    walk(data, schema, lib, ({path}) => {
+      const depth = path.split('/').length;
+      if (depth === initOpen + 1) {
+        closed[path] = true;
+      }
+    });
+    return closed;
+  }, []);
+
+  const [state, dispatch] = useReducer(reducer, { data, schemaLib: lib, rootSchema: schema, closed });
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -152,9 +173,21 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib }) => 
         if (getCanClose(state, selectedPath)) {
           dispatch(setPathClosed(selectedPath, true));
         } else {
-          dispatch(selectPath(getParentPath(selectedPath)));
+          dispatch(navigateOut());
         }
       }
+      if (event.key === 'ArrowRight') {
+        const selectedPath = getLastSelectedPath(state);
+        if (getCanOpen(state, selectedPath)) {
+          dispatch(setPathClosed(selectedPath, false));
+        } else {
+          dispatch(navigateIn());
+        }
+      }
+      if (event.key === 'Escape') {
+        dispatch(selectPath(undefined));
+        rootRef.current?.focus();
+      };
     },
     [dispatch, state],
   );
@@ -168,9 +201,17 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib }) => 
     };
   }, [onKeyDown]);
 
+  useEffect(() => {
+    if (!onEvent) return;
+    onEvent({
+      type: 'change_select_event',
+      path: state.lastSelected,
+    });
+  }, [state.lastSelected]);
+
   return (
     <TreemaContext.Provider value={{ state, dispatch }}>
-      <div ref={rootRef}>
+      <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>
         <TreemaNodeLayout data={data} schema={schema} path={''} />
       </div>
     </TreemaContext.Provider>
