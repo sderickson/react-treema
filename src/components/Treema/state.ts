@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import { noopValidator, walk } from './utils';
 import { SchemaLib, SupportedJsonSchema } from './types';
+import { createSelector } from 'reselect';
 
 // Types
 
@@ -90,11 +91,15 @@ export function reducer(state: TreemaState, action: TreemaAction) {
 
 // Selectors
 
-export function getListOfPaths(state: TreemaState): JsonPointer[] {
+const getData = (state: TreemaState) => state.data;
+const getRootSchema = (state: TreemaState) => state.rootSchema;
+const getSchemaLib = (state: TreemaState) => state.schemaLib;
+
+export const getListOfPaths = createSelector(getData, getRootSchema, getSchemaLib, (data, rootSchema, schemaLib): JsonPointer[] => {
   const paths: JsonPointer[] = [];
-  walk(state.data, state.rootSchema, state.schemaLib, ({ path }) => {
+  walk(data, rootSchema, schemaLib, ({ path }) => {
     paths.push(path);
   });
 
   return paths;
-}
+});

@@ -33,9 +33,7 @@ const config = {
       plugins: [],
       minimize: true,
     }),
-    external({
-      includeDependencies: true,
-    }),
+    external(),
     typescript({
       tsconfig: './tsconfig.json',
       typescript: typescriptEngine,

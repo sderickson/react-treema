@@ -3,7 +3,7 @@ import { buildWorkingSchemas, noopValidator, getChildSchema, walk } from './util
 
 const dummyLib: SchemaLib = {
   validateMultiple: noopValidator,
-  getSchemaRef: (ref: string) => {
+  getSchemaRef: () => {
     return {};
   },
 };
@@ -50,7 +50,7 @@ describe('walk', () => {
     const data = [{}];
     let foundIt = false;
 
-    walk(data, schema, dummyLib, ({ path, data, schema }) => {
+    walk(data, schema, dummyLib, ({ path, schema }) => {
       if (path === '/0' && schema.title === 'marker') {
         foundIt = true;
       }
