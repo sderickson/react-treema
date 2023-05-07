@@ -1,5 +1,5 @@
 import { SchemaLib, SupportedJsonSchema } from './types';
-import { buildWorkingSchemas, noopValidator, getChildSchema, walk } from './utils';
+import { buildWorkingSchemas, noopValidator, getChildSchema, walk, getParentPath } from './utils';
 
 const dummyLib: SchemaLib = {
   validateMultiple: noopValidator,
@@ -136,6 +136,14 @@ describe('utils', () => {
       const types = workingSchemas.map((schema) => schema.type);
       expect(types.includes('string')).toBeTruthy();
       expect(types.includes('number')).toBeTruthy();
+    });
+  });
+
+  describe('getParentPath', () => {
+    it('returns the parent path of a path', () => {
+      expect(getParentPath('/')).toBe('');
+      expect(getParentPath('/a')).toBe('');
+      expect(getParentPath('/a/b')).toBe('/a');
     });
   });
 });

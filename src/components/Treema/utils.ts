@@ -1,4 +1,5 @@
 import { SchemaValidator, SupportedJsonSchema, SchemaLib, TreemaNodeContext } from './types';
+import { JsonPointer } from './types';
 
 export const noopValidator: SchemaValidator = () => {
   return { valid: true, errors: [], missing: [] };
@@ -171,3 +172,9 @@ const cloneSchema = (schema: SupportedJsonSchema): SupportedJsonSchema => {
 const combineSchemas = (baseSchema: SupportedJsonSchema, schema: SupportedJsonSchema): SupportedJsonSchema => {
   return Object.assign(baseSchema, schema);
 };
+
+export const getParentPath = (path: JsonPointer): JsonPointer => {
+  const parts = path.split('/');
+  parts.pop();
+  return parts.join('/');
+}

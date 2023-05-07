@@ -1,3 +1,5 @@
+export type JsonPointer = string;
+
 export interface ValidatorResponse {
   valid: boolean;
   missing: string[];

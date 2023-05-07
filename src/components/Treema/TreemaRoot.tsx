@@ -1,8 +1,8 @@
 import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer } from 'react';
 import './styles.css';
 import { SchemaLib, SupportedJsonSchema, TreemaNodeContext } from './types';
-import { getChildSchema, noopLib } from './utils';
-import { reducer, TreemaContext, selectPath, navigateUp, navigateDown } from './state';
+import { getChildSchema, noopLib, getParentPath } from './utils';
+import { reducer, TreemaContext, selectPath, navigateUp, navigateDown, getCanClose, setPathClosed, getLastSelectedPath, getClosed } from './state';
 
 interface TreemaTypeDefinition {
   display: (props: TreemaNodeContext) => ReactNode;
@@ -86,8 +86,9 @@ const typeMapping: { [key: string]: TreemaTypeDefinition } = {
 
 export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) => {
   // Common way to layout treema nodes generally. Should not include any schema specific logic.
-  const [isOpen, setIsOpen] = React.useState(true);
+  // const [isOpen, setIsOpen] = React.useState(true);
   const { dispatch, state } = useContext(TreemaContext);
+  const isOpen = !getClosed(state)[path];
   const name = schema.title || path?.split('/').pop();
   const canOpen = schema.type === 'object' || schema.type === 'array';
   const definition = typeMapping[schema.type || 'null'];
@@ -102,7 +103,7 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
   const onToggle = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setIsOpen(!isOpen);
+      dispatch(setPathClosed(path, isOpen));
     },
     [isOpen],
   );
@@ -135,20 +136,27 @@ export interface TreemaRootProps {
 }
 
 export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib }) => {
-  const [state, dispatch] = useReducer(reducer, { data, schemaLib: schemaLib || noopLib, rootSchema: schema });
+  const [state, dispatch] = useReducer(reducer, { data, schemaLib: schemaLib || noopLib, rootSchema: schema, closed: {} });
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
+      event.preventDefault();
       if (event.key === 'ArrowUp') {
         dispatch(navigateUp());
-        event.preventDefault();
       }
       if (event.key === 'ArrowDown') {
         dispatch(navigateDown());
-        event.preventDefault();
+      }
+      if (event.key === 'ArrowLeft') {
+        const selectedPath = getLastSelectedPath(state);
+        if (getCanClose(state, selectedPath)) {
+          dispatch(setPathClosed(selectedPath, true));
+        } else {
+          dispatch(selectPath(getParentPath(selectedPath)));
+        }
       }
     },
-    [dispatch],
+    [dispatch, state],
   );
 
   useEffect(() => {

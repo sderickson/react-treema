@@ -1,17 +1,16 @@
 import { createContext } from 'react';
-import { noopValidator, walk } from './utils';
-import { SchemaLib, SupportedJsonSchema } from './types';
+import { getType, noopValidator, walk } from './utils';
+import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer } from './types';
 import { createSelector } from 'reselect';
 
 // Types
-
-type JsonPointer = string;
 
 export interface TreemaState {
   data: any;
   schemaLib: SchemaLib;
   rootSchema: SupportedJsonSchema;
   lastSelected?: JsonPointer;
+  closed: {[path: JsonPointer]: boolean};
 }
 
 export interface ContextInterface {
@@ -29,6 +28,7 @@ const defaultContextData: ContextInterface = {
       getSchemaRef: () => ({}),
     },
     rootSchema: { 'type': 'null' },
+    closed: {},
   },
   dispatch: () => {},
 };
@@ -75,7 +75,21 @@ export const navigateOut = (): NavigateOutAction => {
   return { type: 'navigate_out_action' };
 };
 
-type TreemaAction = SelectPathAction | NavigateUpAction | NavigateDownAction | NavigateInAction | NavigateOutAction;
+type SetPathClosedAction = {
+  type: 'set_path_closed_action';
+  path: JsonPointer;
+  closed: boolean;
+};
+
+export const setPathClosed = (path: JsonPointer, closed: boolean): SetPathClosedAction => {
+  return {
+    type: 'set_path_closed_action',
+    path,
+    closed,
+  };
+};
+
+type TreemaAction = SelectPathAction | NavigateUpAction | NavigateDownAction | NavigateInAction | NavigateOutAction | SetPathClosedAction;
 
 // Reducer
 
@@ -91,6 +105,8 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       const paths2 = getListOfPaths(state);
       const index2 = paths2.indexOf(state.lastSelected || '');
       return { ...state, lastSelected: paths2[Math.min(index2 + 1, paths2.length - 1)]}
+    case 'set_path_closed_action':
+      return { ...state, closed: { ...state.closed, [action.path]: action.closed } };
     default:
       console.error('Unknown action', action);
   }
@@ -104,11 +120,41 @@ const getData = (state: TreemaState) => state.data;
 const getRootSchema = (state: TreemaState) => state.rootSchema;
 const getSchemaLib = (state: TreemaState) => state.schemaLib;
 
-export const getListOfPaths = createSelector(getData, getRootSchema, getSchemaLib, (data, rootSchema, schemaLib): JsonPointer[] => {
-  const paths: JsonPointer[] = [];
-  walk(data, rootSchema, schemaLib, ({ path }) => {
-    paths.push(path);
+export const getAllTreemaNodeContexts = createSelector(getData, getRootSchema, getSchemaLib, (data, rootSchema, schemaLib): {[key: JsonPointer]: TreemaNodeContext} => {
+  const contexts: {[key: JsonPointer]: TreemaNodeContext} = {};
+  walk(data, rootSchema, schemaLib, ({ path, data, schema }) => {
+    contexts[path] = ({ path, data, schema });
   });
+  return contexts;
+});
 
+export const getListOfPaths = createSelector(getAllTreemaNodeContexts, (contexts): JsonPointer[] => {
+  const paths: JsonPointer[] = Object.keys(contexts);
   return paths;
 });
+
+export const getClosed = (state: TreemaState) => state.closed;
+
+export const getCanClose = createSelector(
+  [
+    getClosed,
+    getAllTreemaNodeContexts,
+    (state, path: JsonPointer) => path,
+  ],
+  (closed, contexts, path) => {
+    if (closed[path]) {
+      return false;
+    }
+    const context = contexts[path];
+    if (!context) {
+      return false;
+    }
+    const { data } = context;
+    if (['array', 'object'].includes(getType(data))) {
+      return true;
+    }
+    return false;
+  }
+)
+
+export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';
