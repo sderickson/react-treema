@@ -24,6 +24,10 @@
   background-color: #ffcccc;
 }
 
+.treema-node-error.treema-node-selected > .treema-title {
+  background-color: #ffaaaa;
+}
+
 .treema-node-error > .treema-title > .treema-error-message {
   float: right;
 }
