@@ -11,15 +11,9 @@ export const noopLib: SchemaLib = {
   addSchema: () => {},
 };
 
-interface Tv4Error {
-  code: number;
-  message: string;
-  dataPath: JsonPointer;
-  schemaPath: JsonPointer;
-}
-
 type Tv4 = any;
 
+// https://github.com/geraintluff/tv4
 export const wrapTv4 = (tv4: Tv4): SchemaLib => {
   return {
     validateMultiple: (data, schema) => {
@@ -28,7 +22,7 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
       return {
         valid: tv4Result.valid,
         missing: tv4Result.missing,
-        errors: tv4Result.errors.map((error: Tv4Error) => {
+        errors: tv4Result.errors.map((error: any) => {
           return {
             id: error.code,
             message: error.message,
@@ -43,6 +37,35 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
     },
     addSchema: (schema) => {
       tv4.addSchema(schema);
+    },
+  };
+};
+
+// https://ajv.js.org/api.html
+export const wrapAjv = (ajv: any): SchemaLib => {
+  return {
+    validateMultiple: (data, schema) => {
+      const valid = ajv.validate(schema, data);
+      const errors = ajv.errors || [];
+      console.log({valid, errors});
+      return {
+        valid,
+        missing: [],
+        errors: errors.map((error: any) => {
+          return {
+            id: error.keyword,
+            message: error.message,
+            dataPath: error.instancePath,
+            schemaPath: error.schemaPath,
+          };
+        })
+      }
+    },
+    getSchemaRef: (ref) => {
+      return ajv.getSchema(ref);
+    },
+    addSchema: (schema) => {
+      ajv.addSchema(schema);
     },
   };
 };

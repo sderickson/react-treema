@@ -129,7 +129,7 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
     ref.current?.focus();
   }
   const errorsByPath = getSchemaErrorsByPath(state);
-  const errors: ValidatorError[] = path ? errorsByPath[path] || [] : [];
+  const errors: ValidatorError[] = errorsByPath[path] || [];
   if (errors.length > 0) {
     classNames.push('treema-node-error');
   }
