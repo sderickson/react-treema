@@ -65,6 +65,15 @@ type NavigateOutAction = {
 export const navigateUp = (): NavigateUpAction => {
   return { type: 'navigate_up_action' };
 };
+export const navigateDown = (): NavigateDownAction => {
+  return { type: 'navigate_down_action' };
+};
+export const navigateIn = (): NavigateInAction => {
+  return { type: 'navigate_in_action' };
+};
+export const navigateOut = (): NavigateOutAction => {
+  return { type: 'navigate_out_action' };
+};
 
 type TreemaAction = SelectPathAction | NavigateUpAction | NavigateDownAction | NavigateInAction | NavigateOutAction;
 
@@ -77,11 +86,11 @@ export function reducer(state: TreemaState, action: TreemaAction) {
     case 'navigate_up_action':
       const paths = getListOfPaths(state);
       const index = paths.indexOf(state.lastSelected || '');
-      if (index <= 0) {
-        return { ...state, lastSelected: paths[0] };
-      }
-
-      return { ...state, lastSelected: paths[index - 1] };
+      return { ...state, lastSelected: paths[Math.max(index - 1, 0)]}
+    case 'navigate_down_action':
+      const paths2 = getListOfPaths(state);
+      const index2 = paths2.indexOf(state.lastSelected || '');
+      return { ...state, lastSelected: paths2[Math.min(index2 + 1, paths2.length - 1)]}
     default:
       console.error('Unknown action', action);
   }

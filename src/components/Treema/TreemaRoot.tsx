@@ -2,7 +2,7 @@ import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer } 
 import './styles.css';
 import { SchemaLib, SupportedJsonSchema, TreemaNodeContext } from './types';
 import { getChildSchema, noopLib } from './utils';
-import { reducer, TreemaContext, selectPath, navigateUp } from './state';
+import { reducer, TreemaContext, selectPath, navigateUp, navigateDown } from './state';
 
 interface TreemaTypeDefinition {
   display: (props: TreemaNodeContext) => ReactNode;
@@ -139,9 +139,13 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib }) => 
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      console.log(event);
       if (event.key === 'ArrowUp') {
         dispatch(navigateUp());
+        event.preventDefault();
+      }
+      if (event.key === 'ArrowDown') {
+        dispatch(navigateDown());
+        event.preventDefault();
       }
     },
     [dispatch],

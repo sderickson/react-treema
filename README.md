@@ -17,7 +17,8 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] Required data
 - [ ] General schema validation (avj)
 - [ ] Advanced items, properties, patternProperties, etc
-- [ ] Keyboard nav
+- [-] Keyboard nav
+- [ ] Additional schemas
 - [ ] Shift/Meta click
 - [ ] Editing
 - [ ] readOnly
