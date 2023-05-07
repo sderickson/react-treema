@@ -1,6 +1,6 @@
 import { createContext } from 'react';
-import { getParentPath, getType, noopValidator, walk } from './utils';
-import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer } from './types';
+import { getParentPath, getType, noopLib, walk } from './utils';
+import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer, ValidatorError } from './types';
 import { createSelector } from 'reselect';
 
 // Types
@@ -23,10 +23,7 @@ export interface ContextInterface {
 const defaultContextData: ContextInterface = {
   state: {
     data: {},
-    schemaLib: {
-      validateMultiple: noopValidator,
-      getSchemaRef: () => ({}),
-    },
+    schemaLib: noopLib,
     rootSchema: { 'type': 'null' },
     closed: {},
   },
@@ -229,3 +226,28 @@ export const getAnyAncestorsClosed = createSelector(
 );
 
 export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';
+
+export const getSchemaErrors = createSelector(
+  [getData, getRootSchema, getSchemaLib],
+  (data, rootSchema, schemaLib) => {
+    return schemaLib.validateMultiple(data, rootSchema).errors;
+  }
+);
+
+interface SchemaErrorsByPath {
+  [key: JsonPointer]: ValidatorError[];
+}
+
+export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath = createSelector(
+  [getSchemaErrors],
+  (errors) => {
+    const errorsByPath: SchemaErrorsByPath = {};
+    errors.forEach((error) => {
+      if (!errorsByPath[error.dataPath]) {
+        errorsByPath[error.dataPath] = [];
+      }
+      errorsByPath[error.dataPath].push(error);
+    });
+    return errorsByPath;
+  }
+);

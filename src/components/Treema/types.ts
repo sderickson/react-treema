@@ -12,10 +12,10 @@ export type TreemaEventHandler = (event: TreemaEvent) => void;
 export interface ValidatorResponse {
   valid: boolean;
   missing: string[];
-  errors: ValidatorErrors[];
+  errors: ValidatorError[];
 }
 
-export interface ValidatorErrors {
+export interface ValidatorError {
   id: string | number;
   message: string;
   dataPath: string;
@@ -27,6 +27,7 @@ export type SchemaValidator = (data: any, schema: SupportedJsonSchema) => Valida
 export interface SchemaLib {
   validateMultiple: SchemaValidator;
   getSchemaRef: (ref: string) => SupportedJsonSchema;
+  addSchema: (schema: SupportedJsonSchema) => void;
 }
 
 export type BaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string';

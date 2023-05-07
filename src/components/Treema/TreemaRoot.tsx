@@ -1,8 +1,8 @@
 import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo } from 'react';
 import './styles.css';
-import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler } from './types';
-import { getChildSchema, noopLib, getParentPath, walk } from './utils';
-import { reducer, TreemaContext, selectPath, navigateUp, navigateDown, getCanClose, setPathClosed, getLastSelectedPath, getClosed, getCanOpen, navigateIn, navigateOut } from './state';
+import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler, ValidatorError } from './types';
+import { getChildSchema, noopLib, walk } from './utils';
+import { reducer, TreemaContext, selectPath, navigateUp, navigateDown, getCanClose, setPathClosed, getLastSelectedPath, getClosed, getCanOpen, navigateIn, navigateOut, getSchemaErrorsByPath } from './state';
 
 interface TreemaTypeDefinition {
   display: (props: TreemaNodeContext) => ReactNode;
@@ -114,6 +114,11 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
     classNames.push('treema-node-selected');
     ref.current?.focus();
   }
+  const errorsByPath = getSchemaErrorsByPath(state);
+  const errors: ValidatorError[] = path ? errorsByPath[path] || [] : [];
+  if (errors.length > 0) {
+    classNames.push('treema-node-error');
+  }
 
   const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
 
@@ -127,6 +132,9 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
         )}
         {name && <span className="treema-name">{name}: </span>}
         {definition.display({ data, schema, path })}
+        {errors.length ? <span className="treema-error-message">
+          {errors[0].message}
+        </span> : null}
       </div>
       {children && canOpen && isOpen ? <div className="treema-children">{children}</div> : null}
     </div>

@@ -1,4 +1,6 @@
 import { TreemaRoot } from './TreemaRoot';
+import tv4 from 'tv4';
+import { wrapTv4 } from './utils';
 
 export default {
   title: 'TreemaRoot',
@@ -7,13 +9,14 @@ export default {
 
 export const Addresses = {
   args: {
+    schemaLib: wrapTv4(tv4),
     data: [
       {
         'street-address': '10 Downing Street',
         'country-name': 'UK',
         'locality': 'London',
         'name': 'Prime Minister',
-        'friend': true,
+        'friend': null,
       },
       {
         'street-address': '1600 Amphitheatre Pkwy',

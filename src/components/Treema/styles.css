@@ -19,3 +19,11 @@
 .treema-node-selected > .treema-title {
   background-color: #e0e0e0;
 }
+
+.treema-node-error > .treema-title {
+  background-color: #ffcccc;
+}
+
+.treema-node-error > .treema-title > .treema-error-message {
+  float: right;
+}

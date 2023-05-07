@@ -8,7 +8,43 @@ export const noopValidator: SchemaValidator = () => {
 export const noopLib: SchemaLib = {
   validateMultiple: noopValidator,
   getSchemaRef: () => ({}),
+  addSchema: () => {},
 };
+
+interface Tv4Error {
+  code: number;
+  message: string;
+  dataPath: JsonPointer;
+  schemaPath: JsonPointer;
+}
+
+type Tv4 = any;
+
+export const wrapTv4 = (tv4: Tv4): SchemaLib => {
+  return {
+    validateMultiple: (data, schema) => {
+      let tv4Result = tv4.validateMultiple(data, schema);
+      return {
+        valid: tv4Result.valid,
+        missing: tv4Result.missing,
+        errors: tv4Result.errors.map((error: Tv4Error) => {
+          return {
+            id: error.code,
+            message: error.message,
+            dataPath: error.dataPath,
+            schemaPath: error.schemaPath,
+          }
+        }),
+      }
+    },
+    getSchemaRef: (ref) => {
+      return tv4.getSchema(ref);
+    },
+    addSchema: (schema) => {
+      tv4.addSchema(schema);
+    }
+  }
+}
 
 export const walk: (
   data: any,
