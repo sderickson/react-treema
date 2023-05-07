@@ -101,7 +101,7 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ open, display, chi
   );
 };
 
-export const TreemaNode: FC<TreemaNodeProps> = ({ data, schema, validator }) => {
+export const TreemaRoot: FC<TreemaNodeProps> = ({ data, schema, validator }) => {
   const [state, dispatch] = useReducer(reducer, { data, validator: validator || noopValidator, rootSchema: schema });
 
   const type = schema.type;

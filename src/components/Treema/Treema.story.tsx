@@ -1,8 +1,8 @@
-import { TreemaNode } from './TreemaNode';
+import { TreemaRoot } from './TreemaRoot';
 
 export default {
-  title: 'TreemaNode',
-  component: TreemaNode,
+  title: 'TreemaRoot',
+  component: TreemaRoot,
 };
 
 export const Default = {
