@@ -12,6 +12,10 @@
   cursor: pointer;
 }
 
+.treema-node:focus {
+  border: 2px solid black;
+}
+
 .treema-node-selected {
   background-color: #e0e0e0;
 }

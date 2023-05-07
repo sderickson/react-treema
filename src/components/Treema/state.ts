@@ -1,12 +1,14 @@
 import { createContext } from 'react';
-import { noopValidator } from './utils';
-import { SchemaValidator, SupportedJsonSchema } from './types';
+import { noopValidator, walk } from './utils';
+import { SchemaLib, SupportedJsonSchema } from './types';
+
+// Types
 
 type JsonPointer = string;
 
 export interface TreemaState {
   data: any;
-  validator: SchemaValidator;
+  schemaLib: SchemaLib;
   rootSchema: SupportedJsonSchema;
   lastSelected?: JsonPointer;
 }
@@ -16,16 +18,23 @@ export interface ContextInterface {
   dispatch: React.Dispatch<any>;
 }
 
+// Default state
+
 const defaultContextData: ContextInterface = {
   state: {
     data: {},
-    validator: noopValidator,
+    schemaLib: {
+      validateMultiple: noopValidator,
+      getSchemaRef: () => ({}),
+    },
     rootSchema: { 'type': 'null' },
   },
   dispatch: () => {},
 };
 
 export const TreemaContext = createContext(defaultContextData);
+
+// Actions
 
 type SelectPathAction = {
   type: 'select_path_action';
@@ -36,18 +45,56 @@ export const selectPath = (path: JsonPointer): SelectPathAction => {
   return {
     type: 'select_path_action',
     path,
-  }
+  };
 };
 
-type TreemaAction = SelectPathAction;
+type NavigateUpAction = {
+  type: 'navigate_up_action';
+};
+type NavigateDownAction = {
+  type: 'navigate_down_action';
+};
+type NavigateInAction = {
+  type: 'navigate_in_action';
+};
+type NavigateOutAction = {
+  type: 'navigate_out_action';
+};
+
+export const navigateUp = (): NavigateUpAction => {
+  return { type: 'navigate_up_action' };
+};
+
+type TreemaAction = SelectPathAction | NavigateUpAction | NavigateDownAction | NavigateInAction | NavigateOutAction;
+
+// Reducer
 
 export function reducer(state: TreemaState, action: TreemaAction) {
   switch (action.type) {
     case 'select_path_action':
-      return { ...state, lastSelected: action.path }
+      return { ...state, lastSelected: action.path };
+    case 'navigate_up_action':
+      const paths = getListOfPaths(state);
+      const index = paths.indexOf(state.lastSelected || '');
+      if (index <= 0) {
+        return { ...state, lastSelected: paths[0] };
+      }
+
+      return { ...state, lastSelected: paths[index - 1] };
     default:
-      throw new Error();
+      console.error('Unknown action', action);
   }
 
   return state;
+}
+
+// Selectors
+
+export function getListOfPaths(state: TreemaState): JsonPointer[] {
+  const paths: JsonPointer[] = [];
+  walk(state.data, state.rootSchema, state.schemaLib, ({ path }) => {
+    paths.push(path);
+  });
+
+  return paths;
 }
