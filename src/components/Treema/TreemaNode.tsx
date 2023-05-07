@@ -1,10 +1,52 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, createContext, useContext, useReducer } from 'react';
 import './styles.css';
+
+const noopValidator: SchemaValidator = () => {
+  return { valid: true, errors: [], missing: [] }
+};
+
+export interface ContextInterface {
+  state: TreemaState;
+  dispatch: React.Dispatch<any>;
+}
+
+const defaultContextData: ContextInterface = {
+  state: {
+    data: {},
+    validator: noopValidator,
+    rootSchema: {'type': 'null'},  
+  },
+  dispatch: () => {},
+}
+
+const TreemaContext = createContext(defaultContextData);
+
+export interface ValidatorResponse {
+  valid: boolean;
+  missing: string[];
+  errors: ValidatorErrors[];
+}
+
+export interface ValidatorErrors {
+  id: string | number;
+  message: string;
+  dataPath: string;
+  schemaPath: string;
+}
+
+type SchemaValidator = (data: any, schema: SupportedJsonSchema) => ValidatorResponse;
+
+export interface TreemaState {
+  data: any;
+  validator: SchemaValidator;
+  rootSchema: SupportedJsonSchema;
+}
 
 export interface TreemaNodeProps {
   data: any;
   schema: SupportedJsonSchema;
   key?: string;
+  validator?: SchemaValidator;
 }
 
 export interface SupportedJsonSchema {
@@ -89,9 +131,10 @@ export interface TreemaNodeLayoutProps {
 export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ open, display, children, key, name }) => {
   // Common way to layout treema nodes generally. Should not include any schema specific logic.
   const [isOpen, setIsOpen] = React.useState(open);
+  const { dispatch } = useContext(TreemaContext);
 
   return (
-    <div className="treema-node" key={key}>
+    <div className="treema-node" key={key} onClick={() => dispatch({'type': 'click'})}>
       {open !== undefined && open !== null && (
         <span className="treema-toggle" role="button" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? 'O' : 'X'}
@@ -104,10 +147,32 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ open, display, chi
   );
 };
 
-export const TreemaNode: FC<TreemaNodeProps> = ({ data, schema }) => {
+function reducer(state: TreemaState, action) {
+  switch (action.type) {
+    case 'click':
+      console.log('we done clicked');
+      return { ...state }
+    // case 'updateData':
+    //   return { ...state, data: action.data };
+    // case 'updateValidator':
+    //   return { ...state, validator: action.validator };
+    // case 'updateRootSchema':
+    //   return { ...state, rootSchema: action.rootSchema };
+    default:
+      throw new Error();
+  }
+  return state;
+}
+
+export const TreemaNode: FC<TreemaNodeProps> = ({ data, schema, validator }) => {
+  const [state, dispatch] = useReducer(reducer, { data, validator: validator || noopValidator, rootSchema: schema });
+
   const type = schema.type;
 
   const component = typeMapping[type];
-
-  return component({ data, schema });
+  return (
+    <TreemaContext.Provider value={{state, dispatch}}>
+      {component({ data, schema })}
+    </TreemaContext.Provider>
+  );
 };
