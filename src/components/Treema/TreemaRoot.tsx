@@ -119,7 +119,7 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
       e.stopPropagation();
       dispatch(setPathClosed(path, isOpen));
     },
-    [isOpen],
+    [isOpen, path, dispatch],
   );
   const isSelected = state.lastSelected === path;
   const classNames = ['treema-node'];
@@ -176,6 +176,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     });
 
     return closed;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [state, dispatch] = useReducer(reducer, { data, schemaLib: lib, rootSchema: schema, closed });
@@ -228,7 +229,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       type: 'change_select_event',
       path: state.lastSelected,
     });
-  }, [state.lastSelected]);
+  }, [state.lastSelected, onEvent]);
 
   return (
     <TreemaContext.Provider value={{ state, dispatch }}>

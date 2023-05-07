@@ -43,11 +43,10 @@ describe('arrow key navigation', () => {
     fireEvent.click(screen.getByText('Mars'));
   };
 
-  beforeEach(() => {
-    render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
-  });
+  beforeEach(() => {});
   describe('down arrow key press', () => {
     it('selects the top row if nothing is selected', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireFocusTreema();
       expect(lastPath).toBeUndefined();
       fireArrowDown();
@@ -55,6 +54,7 @@ describe('arrow key navigation', () => {
     });
 
     it('skips past closed collections', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireFocusTreema();
       expect(lastPath).toBeUndefined();
       fireArrowDown();
@@ -66,6 +66,7 @@ describe('arrow key navigation', () => {
     });
 
     it('traverses open collections', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireOpenPhoneNumbers();
       expect(lastPath).toBeUndefined();
       fireArrowDown();
@@ -83,6 +84,7 @@ describe('arrow key navigation', () => {
     });
 
     it('does nothing if the last treema is selected', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireClickAddress();
       expect(lastPath).toEqual('/address');
       fireArrowDown();
@@ -92,6 +94,7 @@ describe('arrow key navigation', () => {
 
   describe('up arrow key press', () => {
     it('selects the bottom row if nothing is selected', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireFocusTreema();
       expect(lastPath).toBeUndefined();
       fireArrowUp();
@@ -99,6 +102,7 @@ describe('arrow key navigation', () => {
     });
 
     it('skips past closed collections', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireClickAddress();
       expect(lastPath).toEqual('/address');
       fireArrowUp();
@@ -106,6 +110,7 @@ describe('arrow key navigation', () => {
     });
 
     it('traverses open collections', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireClickAddress();
       fireOpenPhoneNumbers();
       expect(lastPath).toEqual('/address');
@@ -122,6 +127,7 @@ describe('arrow key navigation', () => {
     });
 
     it('wraps around if the first treema is selected', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireFocusTreema();
       expect(lastPath).toBeUndefined();
       fireArrowDown();
@@ -133,6 +139,7 @@ describe('arrow key navigation', () => {
 
   describe('right arrow key press', () => {
     it("does nothing if the selected row isn't a collection", () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireArrowDown();
       expect(lastPath).toEqual('/name');
       fireArrowRight();
@@ -140,6 +147,7 @@ describe('arrow key navigation', () => {
     });
 
     it('opens a collection if a collection is selected', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireArrowDown();
       expect(lastPath).toEqual('/name');
       fireArrowDown();
@@ -153,17 +161,19 @@ describe('arrow key navigation', () => {
 
   describe('left arrow key press', () => {
     it('closes an open, selected collection', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireClickAddress();
       fireArrowUp();
       expect(lastPath).toEqual('/numbers');
       expect(screen.queryByText('401-401-1337')).toBeNull();
       fireOpenPhoneNumbers();
-      expect(screen.queryByText('401-401-1337')).not.toBeNull();
+      expect(screen.getByText('401-401-1337')).not.toBeNull();
       fireArrowLeft();
       expect(screen.queryByText('401-401-1337')).toBeNull();
     });
 
     it('closes the selection if it can be closed, otherwise moves the selection up a level', () => {
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireArrowDown();
       fireArrowDown();
       expect(lastPath).toEqual('/numbers');
@@ -176,6 +186,7 @@ describe('arrow key navigation', () => {
 
     xit('affects one collection at a time, deepest first', () => {
       // TODO: need to support working schemas before this test will work
+      render(<TreemaRoot data={data} schema={schema} initOpen={1} onEvent={onEvent} />);
       fireClickAddress();
       fireOpenPhoneNumbers();
       expect(lastPath).toEqual('/address');
