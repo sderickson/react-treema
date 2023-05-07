@@ -43,6 +43,7 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
 
 // https://ajv.js.org/api.html
 export const wrapAjv = (ajv: any): SchemaLib => {
+  ajv.addKeyword('displayProperty');
   return {
     validateMultiple: (data, schema) => {
       const valid = ajv.validate(schema, data);

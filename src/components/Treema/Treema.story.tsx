@@ -11,6 +11,7 @@ export default {
 
 export const Addresses = {
   args: {
+    schemaLib: wrapAjv(new Ajv({allErrors: true})),
     data: [
       {
         'street-address': '10 Downing Street',
