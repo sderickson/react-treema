@@ -12,6 +12,7 @@ And http://codecombat.github.io/treema/demo.html
 - [X] View toggle
 - [X] Walk
 - [X] Keyboard nav
+- [X] open/close
 - [-] General schema validation (ajv, tv4) // todo: add tests
 - [ ] oneOf/allOf/anyOf (working schemas)
 - [ ] additionalProperties
@@ -20,7 +21,7 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] Styling
 - [ ] Default data
 - [ ] Required data
-- [ ] Additional schemas
+- [ ] Additional schemas ($ref)
 - [ ] Shift/Meta click
 - [ ] Editing
 - [ ] readOnly
@@ -31,7 +32,6 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] Extras (2d point, etc)
 - [ ] getChildSchema, canAddProperty
 - [ ] getters/setters
-- [ ] open/close
 - [ ] undo/redo
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
