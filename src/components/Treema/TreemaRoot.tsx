@@ -151,7 +151,7 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
       {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
       <div ref={ref} tabIndex={-1} className="treema-row">
         {name && <span className="treema-key">{name}: </span>}
-        <div className="treema-display">
+        <div className={"treema-value treema-"+schemaType}>
           {definition.display({ data, schema, path })}
         </div>
       </div>
