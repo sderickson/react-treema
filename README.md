@@ -20,12 +20,11 @@ And http://codecombat.github.io/treema/demo.html
 - [X] oneOf/allOf/anyOf (working schemas)
 - [X] Additional schemas ($ref)
 - [X] items, properties, patternProperties, additionalProperties, additionalItems
+- [X] Description prop
 
 #### In Progress
-...
 
 #### TODO
-- [ ] Description prop
 - [ ] Default data
 - [ ] Required data
 - [ ] Shift/Meta click

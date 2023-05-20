@@ -106,6 +106,7 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
   const canOpen = workingSchema.type === 'object' || workingSchema.type === 'array';
   const schemaType: BaseType = workingSchema.type;
   const definition = typeMapping[schemaType];
+  const description = workingSchema.description;
   const children = definition.renderChildren ? definition.renderChildren({ data, schema: workingSchema, path }) : [];
   const onSelect = useCallback(
     (e: React.MouseEvent) => {
@@ -147,7 +148,7 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
       )}
       {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
       <div ref={ref} tabIndex={-1} className="treema-row">
-        {name && <span className="treema-key">{name}: </span>}
+        {name && <span className="treema-key" title={description}>{name}: </span>}
         <div className={"treema-value treema-"+schemaType}>
           {definition.display({ data, schema: workingSchema, path })}
         </div>

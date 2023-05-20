@@ -96,3 +96,15 @@ describe('validation', () => {
     screen.getByText('must be boolean');  // ajv error message
   });
 });
+
+describe('description', () => {
+  it('puts the description from the schema in the title of the key', () => {
+    render(
+      <TreemaRoot
+        data={{ 'a': 1 }}
+        schema={{ 'type': 'object', 'properties': {'a': { 'type': 'boolean', description: 'the a key'}} }}
+      />,
+    );
+    screen.getByTitle('the a key');
+  });
+})
