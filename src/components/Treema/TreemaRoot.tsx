@@ -154,13 +154,54 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
 };
 
 export interface TreemaRootProps {
+  /**
+   * The data to display in the treema. Should conform to the schema given.
+   * 
+   * @default An "empty" or "falsy" value of whatever type is given in the schema.
+   */
   data: any;
+  /**
+   * The schema to use to validate the data. Treema will use this to determine
+   * how to construct the UI, and how the data may be edited
+   * 
+   * @see https://json-schema.org/understanding-json-schema/
+   * @default {} (any JSON object allowed)
+   */
   schema: SupportedJsonSchema;
+  /**
+   * A schema library instance to use to validate the data.
+   * There are [many JavaScript libraries](https://json-schema.org/implementations.html#validators)
+   * that support various drafts of the JSON Schema spec.
+   * Wrap your chosen library to match the TypeScript interface "SchemaLib".
+   * Generally you should initialize the library, which may provide options
+   * which will affect the behavior of Treema. Treema also depends on this library
+   * to provide error messages.
+   * 
+   * See wrapTv4 and wrapAjv for examples.
+   * 
+   * @default A noop version - no validation, no error messages
+   */
   schemaLib?: SchemaLib;
+  /**
+   * The number of levels deep to open the tree by default.
+   * 
+   * @default All levels are open by default
+   */
   initOpen?: number;
+  /**
+   * A callback for when the user interacts with the treema.
+   * 
+   * Supported events:
+   * - `change_select_event`: when the user selects a node. Includes `path` in the event.
+   */
   onEvent?: TreemaEventHandler;
 }
 
+/**
+ * The main entrypoint for any Treema rendered on your site. Provide data and a schema and this component
+ * will render that data, and enable edits, according to that schema. You can and probably should also
+ * provide a JSON Schema validator library which will thoroughly enforce the schema and provide error messages.
+ */
 export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent }) => {
   const lib = schemaLib || noopLib;
   const closed: { [key: JsonPointer]: boolean } = useMemo(() => {

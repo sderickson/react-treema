@@ -7,11 +7,18 @@ import { wrapAjv } from './utils';
 export default {
   title: 'TreemaRoot',
   component: TreemaRoot,
+  tags: ['autodocs'],
 };
 
+/**
+ * This Treema shows a relatively simple data structure: an array of objects with values that are
+ * all primitive data types. You can try creating a new object, editing the values, and deleting
+ * entries or values.
+ */
 export const Addresses = {
   args: {
-    schemaLib: wrapAjv(new Ajv({allErrors: true})),
+    schemaLib: { validateMultiple: () => ({ valid: true, errors: [] }), getSchema: () => ({}) },
+    onEvent: (e: any) => console.log(e),
     data: [
       {
         'street-address': '10 Downing Street',
@@ -86,6 +93,9 @@ export const Addresses = {
   },
 };
 
+/**
+ * In this example, values in the "numbers" array can either be strings or arrays of strings.
+ */
 export const WithNestedArrays = {
   args: {
     data: { name: 'Bob', numbers: ['401-401-1337', ['123-456-7890']], address: 'Mars' },
@@ -127,6 +137,10 @@ const badSchema = {
   additionalProperties: false,
 };
 
+/**
+ * Tv4 is a JSON Schema validator that supports draft-4 of the spec. It is fairly old and no longer
+ * maintained, but it is an example of how Treema can support a wide variety of validators.
+ */
 export const ValidateWithTv4 = {
   args: {
     data: badData,
@@ -135,6 +149,13 @@ export const ValidateWithTv4 = {
   }
 }
 
+/**
+ * Ajv is a JSON Schema validator that supports draft-7 of the spec. It is a popular validator,
+ * and shows how different validators might cause Treema to act differently. For example, Ajv
+ * when reporting an "additionalProperties" error, will target the object with the offending
+ * property, while Tv4 will target the property itself. They also clearly have different error
+ * messages.
+ */
 export const ValidateWithAjv = {
   args: {
     data: badData,
