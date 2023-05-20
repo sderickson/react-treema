@@ -13,12 +13,13 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Walk
 - [X] Keyboard nav
 - [X] open/close
-- [-] General schema validation (ajv, tv4) // todo: add tests
+- [X] Styling
+- [X] Storybook docs
+- [ ] General schema validation (ajv, tv4) // todo: add tests
 - [ ] oneOf/allOf/anyOf (working schemas)
 - [ ] additionalProperties
 - [ ] Advanced items, properties, patternProperties, etc
 - [ ] Description prop
-- [ ] Styling
 - [ ] Default data
 - [ ] Required data
 - [ ] Additional schemas ($ref)
@@ -36,7 +37,6 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
 - [ ] README
-- [ ] Storybook docs
 - [ ] Github pages
 
 
