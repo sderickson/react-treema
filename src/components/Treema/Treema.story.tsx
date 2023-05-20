@@ -166,10 +166,10 @@ export const ValidateWithAjv = {
 
 
 /**
- * JSON Schema supports the "oneOf" keyword, which allows you to specify that a value can be
+ * JSON Schema supports the `oneOf` keyword, which allows you to specify that a value can be
  * one of several different types. Treema will check which of these schemas the data matches,
- * and uses that schema as a "working schema". For example, in this array each item is "oneOf"
- * either an array or an object, and Treema will use the appropriate "title" depending on which
+ * and uses that schema as a "working schema". For example, in this array each item is "one of"
+ * either an array or an object, and Treema will use the appropriate `title` depending on which
  * of the schemas the value matches.
  */
 export const ExampleOneOfUseCase = {
@@ -200,7 +200,7 @@ export const ExampleOneOfUseCase = {
 }
 
 /**
- * JSON Schema also supports the "anyOf" keyword. Although it behaves differently than "oneOf" as part
+ * JSON Schema also supports the `anyOf` keyword. Although it behaves differently than `oneOf` as part
  * of the spec, it is treated equivalently by Treema, since how it should handle permutations is
  * unclear.
  */
@@ -232,7 +232,7 @@ export const ExampleAnyOfUseCase = {
 }
 
 /**
- * JSON Schema supports the "allOf" keyword, but fairly simply. It just combines the schemas
+ * JSON Schema supports the `allOf` keyword, but fairly simply. It just combines the schemas
  * into one, not attempting to do anything fancy to really make sure they become a single
  * schema that truly combines them all. This behavior may change if there is a valid use case.
  */
@@ -250,5 +250,109 @@ export const ExampleAllOfUseCase = {
         },
       },
     }
+  }
+}
+
+const geoSchema = {
+  "$id": "https://example.com/geographical-location.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Longitude and Latitude Values",
+  "description": "A geographical coordinate.",
+  "required": [ "latitude", "longitude" ],
+  "type": "object",
+  "properties": {
+    "latitude": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+    }
+  }
+};
+
+const calendarSchema = {
+  "$id": "https://example.com/calendar.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A representation of an event",
+  "type": "object",
+  "required": [ "dtstart", "summary" ],
+  "properties": {
+    "dtstart": {
+      "type": "string",
+      "description": "Event starting time"
+    },
+    "dtend": {
+      "type": "string",
+      "description": "Event ending time"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "string",
+      "description": "Event duration"
+    },
+    "rdate": {
+      "type": "string",
+      "description": "Recurrence date"
+    },
+    "rrule": {
+      "type": "string",
+      "description": "Recurrence rule"
+    },
+    "category": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "geo": {
+      "$ref": "https://example.com/geographical-location.schema.json"
+    }
+  }
+};
+
+tv4.addSchema(geoSchema.$id, geoSchema);
+tv4.addSchema(calendarSchema.$id, calendarSchema);
+
+/**
+ * Treema relies on validators to resolve `$ref` references as well as validate data. In this example,
+ * the schema given to Treema is an array of calendar events, which are defined by another schema
+ *  (specifically the one [here](https://json-schema.org/learn/examples/calendar.schema.json)). 
+ * This schema references 
+ * [yet another schema](https://json-schema.org/learn/examples/geographical-location.schema.json)
+ * for a geographic location. Both of these schemas are added to the validator (in this case tv4)
+ * before it is given to the Treema React component. Then Treema is able to validate the data,
+ * in this case the invalid latitude data, even through two references.
+ */
+export const ReferencesToOtherSchemas = {
+  args: {
+    data: [
+      {
+        "dtstart": "2021-01-01T00:00:00Z",
+        "summary": "New Year's Day",
+        "geo": {
+          "latitude": 9000,
+          "longitude": 74.0060
+        },
+      }
+    ],
+    schema: {
+      "type": "array",
+      "items": {
+        "$ref": "https://example.com/calendar.schema.json"
+      }
+    },
+    schemaLib: wrapTv4(tv4),
   }
 }
