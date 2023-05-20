@@ -8,6 +8,7 @@ Cloned from https://github.com/KaiHotz/react-rollup-boilerplate
 Drawing from https://www.learnjsonschema.com/
 And http://codecombat.github.io/treema/demo.html
 
+#### Done
 - [X] Basic types
 - [X] View toggle
 - [X] Walk
@@ -15,14 +16,18 @@ And http://codecombat.github.io/treema/demo.html
 - [X] open/close
 - [X] Styling
 - [X] Storybook docs
-- [ ] General schema validation (ajv, tv4) // todo: add tests
+- [X] General schema validation (ajv, tv4)
+
+#### In Progress
 - [ ] oneOf/allOf/anyOf (working schemas)
+- [ ] Additional schemas ($ref)
+
+#### TODO
 - [ ] additionalProperties
 - [ ] Advanced items, properties, patternProperties, etc
 - [ ] Description prop
 - [ ] Default data
 - [ ] Required data
-- [ ] Additional schemas ($ref)
 - [ ] Shift/Meta click
 - [ ] Editing
 - [ ] readOnly
@@ -36,6 +41,7 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] undo/redo
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
+- [ ] drag and drop (that other jquery ui thing)
 - [ ] README
 - [ ] Github pages
 

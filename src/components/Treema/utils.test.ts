@@ -101,7 +101,7 @@ describe('utils', () => {
 
   describe('buildWorkingSchemas', () => {
     it('returns the same single schema if there are no combinatorials or references', () => {
-      const schema = {};
+      const schema: SupportedJsonSchema = {type:'string'};
       const workingSchemas = buildWorkingSchemas(schema, schemaLib);
       expect(workingSchemas[0] === schema).toBeTruthy();
     });
@@ -132,6 +132,24 @@ describe('utils', () => {
       const types = workingSchemas.map((schema) => schema.type);
       expect(types.includes('string')).toBeTruthy();
       expect(types.includes('number')).toBeTruthy();
+    });
+
+    it('creates one working schema for every type if no type is specified', () => {
+      const schema: SupportedJsonSchema = {};
+      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+      expect(workingSchemas.length).toBe(6);
+      const types = workingSchemas.map((schema) => schema.type);
+      types.sort();
+      expect(types).toEqual(['array', 'boolean', 'null', 'number', 'object', 'string']);
+    });
+
+    it('creates one working schema for every type if type is an array', () => {
+      const schema: SupportedJsonSchema = {type:['boolean', 'number']};
+      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+      expect(workingSchemas.length).toBe(2);
+      const types = workingSchemas.map((schema) => schema.type);
+      types.sort();
+      expect(types).toEqual(['boolean', 'number']);
     });
   });
 

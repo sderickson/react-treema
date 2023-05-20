@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import { getParentPath, getType, noopLib, walk } from './utils';
-import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer, ValidatorError } from './types';
+import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer, ValidatorError, WorkingSchema } from './types';
 import { createSelector } from 'reselect';
 
 // Types
@@ -246,4 +246,38 @@ export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath =
   });
 
   return errorsByPath;
+});
+
+type DataSchemaMap = {[key: JsonPointer]: { data: any, schema: WorkingSchema, possibleSchemas: WorkingSchema[] }};
+
+export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = createSelector(
+  [getData, getRootSchema, getSchemaLib],
+  (data, rootSchema, schemaLib) => {
+    const datasAndSchemas: DataSchemaMap = {};
+    walk(data, rootSchema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
+      datasAndSchemas[path] = { data, schema, possibleSchemas: possibleSchemas || [] };
+    });
+    return datasAndSchemas;
+  }
+);
+
+export const getWorkingSchema: (state: TreemaState, path: JsonPointer) => WorkingSchema = createSelector([
+  (_, path: JsonPointer) => path,
+  getAllDatasAndSchemas,
+], (path, datasAndSchemas) => {
+  return datasAndSchemas[path].schema;
+});
+
+export const getWorkingSchemas: (state: TreemaState, path: JsonPointer) => WorkingSchema[] = createSelector([
+  (_, path: JsonPointer) => path,
+  getAllDatasAndSchemas,
+], (path, datasAndSchemas) => {
+  return datasAndSchemas[path].possibleSchemas;
+});
+
+export const getDataAtPath: (state: TreemaState, path: JsonPointer) => any = createSelector([
+  (_, path: JsonPointer) => path,
+  getAllDatasAndSchemas,
+], (path, datasAndSchemas) => {
+  return datasAndSchemas[path].data;
 });

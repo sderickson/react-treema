@@ -1,4 +1,4 @@
-import { SchemaValidator, SupportedJsonSchema, SchemaLib, TreemaNodeContext } from './types';
+import { SchemaValidator, SupportedJsonSchema, SchemaLib, TreemaNodeContext, WorkingSchema, BaseType } from './types';
 import { JsonPointer } from './types';
 
 export const noopValidator: SchemaValidator = () => {
@@ -48,7 +48,6 @@ export const wrapAjv = (ajv: any): SchemaLib => {
     validateMultiple: (data, schema) => {
       const valid = ajv.validate(schema, data);
       const errors = ajv.errors || [];
-      console.log({valid, errors});
       return {
         valid,
         missing: [],
@@ -81,7 +80,7 @@ export const walk: (
   const workingSchemas = buildWorkingSchemas(schema, lib);
   const workingSchema = chooseWorkingSchema(data, workingSchemas, lib);
 
-  callback({ path: path || '', data, schema: workingSchema });
+  callback({ path: path || '', data, schema: workingSchema, possibleSchemas: workingSchemas });
 
   // this actually works for both arrays and objects...
   const dataType = getType(data);
@@ -122,10 +121,23 @@ export const getType = (function () {
   };
 })();
 
-export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib): SupportedJsonSchema[] => {
+export const getJsonType = (data: any): BaseType | undefined => {
+  const type = getType(data);
+  switch (type) {
+    case 'boolean': return 'boolean';
+    case 'number': return 'number';
+    case 'string': return 'string'; 
+    case 'array': return 'array';
+    case 'object': return 'object';
+    case 'null': return 'null';
+  }
+  return undefined;
+};
+
+export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib): WorkingSchema[] => {
   const givenSchema = resolveReference(schema, lib);
   if (!givenSchema.allOf && !givenSchema.anyOf && !givenSchema.oneOf) {
-    return [givenSchema];
+    return spreadTypes(givenSchema);
   }
   const baseSchema = cloneSchema(givenSchema);
   const allOf = baseSchema.allOf;
@@ -141,7 +153,6 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
     }
   }
 
-  let workingSchemas: SupportedJsonSchema[] = [];
   let singularSchemas: SupportedJsonSchema[] = [];
   if (anyOf) {
     singularSchemas = singularSchemas.concat(anyOf);
@@ -149,27 +160,53 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
   if (oneOf) {
     singularSchemas = singularSchemas.concat(oneOf);
   }
+
+  let workingSchemas: WorkingSchema[] = [];
   for (let singularSchema of singularSchemas) {
     singularSchema = resolveReference(singularSchema, lib);
     const newBase = cloneSchema(baseSchema);
     combineSchemas(newBase, singularSchema);
-    workingSchemas.push(newBase);
+    workingSchemas = workingSchemas.concat(spreadTypes(newBase));
   }
 
   if (workingSchemas.length === 0) {
-    workingSchemas = [baseSchema];
+    workingSchemas = spreadTypes(baseSchema);
   }
 
   return workingSchemas;
 };
 
-const chooseWorkingSchema = (data: any, workingSchemas: SupportedJsonSchema[], lib: SchemaLib) => {
+const baseTypes: BaseType[] = ['boolean', 'number', 'string', 'array', 'object', 'null'];
+
+const spreadTypes = (schema: SupportedJsonSchema): WorkingSchema[] => {
+  const workingSchemas: WorkingSchema[] = [];
+  if (schema.type === undefined) {
+    baseTypes.forEach((type: BaseType) => {
+      workingSchemas.push({
+        ...schema,
+        type
+      });
+    });
+  } else if (getType(schema.type) === 'string') {
+    return [schema as WorkingSchema];
+  } else {
+    (schema.type as BaseType[]).forEach((type: BaseType) => {
+      workingSchemas.push({
+        ...schema,
+        type
+      });
+    });
+  }
+  return workingSchemas;
+};
+
+export const chooseWorkingSchema = (data: any, workingSchemas: WorkingSchema[], lib: SchemaLib): WorkingSchema => {
   if (workingSchemas.length === 1) {
     return workingSchemas[0];
   }
   for (const schema of workingSchemas) {
     const result = lib.validateMultiple(data, schema);
-    if (result.valid) {
+    if (result.valid && getJsonType(data) === schema.type) {
       return schema;
     }
   }
@@ -240,3 +277,18 @@ export const getParentPath = (path: JsonPointer): JsonPointer => {
 
   return parts.join('/');
 };
+
+export const getDataByPath = (data: any, path: JsonPointer): any => {
+  if (path === '') {
+    return data;
+  }
+  let returnData = data;
+  path.slice(1).split('/').forEach((key) => {
+    if (getType(returnData) === 'array') {
+      returnData = returnData[parseInt(key)];
+    } else {
+      returnData = returnData[key];
+    }
+  });
+  return returnData;
+}

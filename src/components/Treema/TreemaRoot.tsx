@@ -1,10 +1,9 @@
 import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo } from 'react';
-// import './styles.css';
 import './base.scss';
 import './core.scss';
 import './extra.scss';
 import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler, ValidatorError } from './types';
-import { getChildSchema, noopLib, walk } from './utils';
+import { noopLib, walk } from './utils';
 import {
   reducer,
   TreemaContext,
@@ -19,6 +18,8 @@ import {
   navigateIn,
   navigateOut,
   getSchemaErrorsByPath,
+  getWorkingSchema,
+  getDataAtPath,
 } from './state';
 
 interface TreemaTypeDefinition {
@@ -42,9 +43,7 @@ const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
     return Object.keys(data)
       .map((key: string) => {
         const childPath = path + '/' + key;
-        const childSchema = getChildSchema(key, schema);
-
-        return <TreemaNodeLayout key={childPath} data={data[key]} schema={childSchema} path={childPath} />;
+        return <TreemaNodeLayout key={childPath} path={childPath} />;
       })
       .filter((e) => e);
   },
@@ -56,14 +55,10 @@ const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
   },
 
   renderChildren: ({ data, schema, path }) => {
-    const itemSchema = schema.items;
-    if (!itemSchema) return null;
-
+    if (!Array.isArray(data)) return [];
     return data.map((item: any, index: number) => {
       const childPath = path + '/' + index;
-      const childSchema = getChildSchema(index, schema);
-
-      return <TreemaNodeLayout key={childPath} data={item} schema={childSchema} path={childPath} />;
+      return <TreemaNodeLayout key={childPath} path={childPath} />;
     });
   },
 };
@@ -101,15 +96,21 @@ const typeMapping: { [key: string]: TreemaTypeDefinition } = {
   'null': TreemaNullNodeDefinition,
 };
 
-export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) => {
+interface TreemaNodeLayoutProps {
+  path: JsonPointer;
+}
+
+export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
   // Common way to layout treema nodes generally. Should not include any schema specific logic.
   const { dispatch, state } = useContext(TreemaContext);
+  const data = getDataAtPath(state, path);
   const isOpen = !getClosed(state)[path];
-  const name = schema.title || path?.split('/').pop();
-  const canOpen = schema.type === 'object' || schema.type === 'array';
-  const schemaType: BaseType = Array.isArray(schema.type) ? schema.type[0] : schema.type || 'null';
+  const workingSchema = getWorkingSchema(state, path);
+  const name = workingSchema.title || path?.split('/').pop();
+  const canOpen = workingSchema.type === 'object' || workingSchema.type === 'array';
+  const schemaType: BaseType = workingSchema.type;
   const definition = typeMapping[schemaType];
-  const children = definition.renderChildren ? definition.renderChildren({ data, schema, path }) : [];
+  const children = definition.renderChildren ? definition.renderChildren({ data, schema: workingSchema, path }) : [];
   const onSelect = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -152,7 +153,7 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
       <div ref={ref} tabIndex={-1} className="treema-row">
         {name && <span className="treema-key">{name}: </span>}
         <div className={"treema-value treema-"+schemaType}>
-          {definition.display({ data, schema, path })}
+          {definition.display({ data, schema: workingSchema, path })}
         </div>
       </div>
       {children && canOpen && isOpen ? <div className="treema-children">{children}</div> : null}
@@ -282,7 +283,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   return (
     <TreemaContext.Provider value={{ state, dispatch }}>
       <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>
-        <TreemaNodeLayout data={data} schema={schema} path={''} />
+        <TreemaNodeLayout path={''} />
       </div>
     </TreemaContext.Provider>
   );
