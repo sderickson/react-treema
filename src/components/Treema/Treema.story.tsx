@@ -96,7 +96,7 @@ export const Addresses = {
 /**
  * In this example, values in the "numbers" array can either be strings or arrays of strings.
  */
-export const WithNestedArrays = {
+export const NestedArrays = {
   args: {
     data: { name: 'Bob', numbers: ['401-401-1337', ['123-456-7890']], address: 'Mars' },
     schema: {
@@ -141,7 +141,7 @@ const badSchema = {
  * Tv4 is a JSON Schema validator that supports draft-4 of the spec. It is fairly old and no longer
  * maintained, but it is an example of how Treema can support a wide variety of validators.
  */
-export const ValidateWithTv4 = {
+export const Tv4Validator = {
   args: {
     data: badData,
     schema: badSchema,
@@ -156,7 +156,7 @@ export const ValidateWithTv4 = {
  * property, while Tv4 will target the property itself. They also clearly have different error
  * messages.
  */
-export const ValidateWithAjv = {
+export const AjvValidator = {
   args: {
     data: badData,
     schema: badSchema,
@@ -172,7 +172,7 @@ export const ValidateWithAjv = {
  * either an array or an object, and Treema will use the appropriate `title` depending on which
  * of the schemas the value matches.
  */
-export const ExampleOneOfUseCase = {
+export const OneOf = {
   args: {
     data: [
       { string: 'string' },
@@ -204,7 +204,7 @@ export const ExampleOneOfUseCase = {
  * of the spec, it is treated equivalently by Treema, since how it should handle permutations is
  * unclear.
  */
-export const ExampleAnyOfUseCase = {
+export const AnyOf = {
   args: {
     data: [
       { string: 'string' },
@@ -236,7 +236,7 @@ export const ExampleAnyOfUseCase = {
  * into one, not attempting to do anything fancy to really make sure they become a single
  * schema that truly combines them all. This behavior may change if there is a valid use case.
  */
-export const ExampleAllOfUseCase = {
+export const AllOf = {
   args: {
     data: {'foo': 'bar'},
     schema: {
@@ -335,7 +335,7 @@ tv4.addSchema(calendarSchema.$id, calendarSchema);
  * before it is given to the Treema React component. Then Treema is able to validate the data,
  * in this case the invalid latitude data, even through two references.
  */
-export const ReferencesToOtherSchemas = {
+export const Refs = {
   args: {
     data: [
       {
