@@ -18,9 +18,10 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Storybook docs
 - [X] General schema validation (ajv, tv4)
 - [X] oneOf/allOf/anyOf (working schemas)
+- [X] Additional schemas ($ref)
 
 #### In Progress
-- [ ] Additional schemas ($ref)
+...
 
 #### TODO
 - [ ] additionalProperties
