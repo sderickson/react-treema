@@ -164,3 +164,91 @@ export const ValidateWithAjv = {
   }
 }
 
+
+/**
+ * JSON Schema supports the "oneOf" keyword, which allows you to specify that a value can be
+ * one of several different types. Treema will check which of these schemas the data matches,
+ * and uses that schema as a "working schema". For example, in this array each item is "oneOf"
+ * either an array or an object, and Treema will use the appropriate "title" depending on which
+ * of the schemas the value matches.
+ */
+export const ExampleOneOfUseCase = {
+  args: {
+    data: [
+      { string: 'string' },
+      [ 1, 2, 3 ],
+      { string: 'another' },
+    ],
+    schema: {
+      type: 'array',
+      items: {
+        oneOf: [
+          {
+            type: 'object',
+            title: 'Object Type',
+            properties: 'string',
+          },
+          {
+            type: 'array',
+            title: 'Array Type',
+            items: 'number'
+          }
+        ]    
+      }
+    },
+  }
+}
+
+/**
+ * JSON Schema also supports the "anyOf" keyword. Although it behaves differently than "oneOf" as part
+ * of the spec, it is treated equivalently by Treema, since how it should handle permutations is
+ * unclear.
+ */
+export const ExampleAnyOfUseCase = {
+  args: {
+    data: [
+      { string: 'string' },
+      [ 1, 2, 3 ],
+      { string: 'another' },
+    ],
+    schema: {
+      type: 'array',
+      items: {
+        anyOf: [
+          {
+            type: 'object',
+            title: 'Object Type',
+            properties: 'string',
+          },
+          {
+            type: 'array',
+            title: 'Array Type',
+            items: 'number'
+          }
+        ]
+      }
+    },
+  }
+}
+
+/**
+ * JSON Schema supports the "allOf" keyword, but fairly simply. It just combines the schemas
+ * into one, not attempting to do anything fancy to really make sure they become a single
+ * schema that truly combines them all. This behavior may change if there is a valid use case.
+ */
+export const ExampleAllOfUseCase = {
+  args: {
+    data: {'foo': 'bar'},
+    schema: {
+      type: 'object',
+      properties: {
+        foo: {
+          type: 'string',
+          allOf: [{
+            title: 'Combined Title',
+          }]
+        },
+      },
+    }
+  }
+}
