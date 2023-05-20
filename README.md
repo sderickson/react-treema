@@ -19,13 +19,12 @@ And http://codecombat.github.io/treema/demo.html
 - [X] General schema validation (ajv, tv4)
 - [X] oneOf/allOf/anyOf (working schemas)
 - [X] Additional schemas ($ref)
+- [X] items, properties, patternProperties, additionalProperties, additionalItems
 
 #### In Progress
 ...
 
 #### TODO
-- [ ] additionalProperties
-- [ ] Advanced items, properties, patternProperties, etc
 - [ ] Description prop
 - [ ] Default data
 - [ ] Required data

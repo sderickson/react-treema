@@ -356,3 +356,46 @@ export const ReferencesToOtherSchemas = {
     schemaLib: wrapTv4(tv4),
   }
 }
+
+/**
+ * Treema supports `properties`, `patternProperties`, and `additionalProperties`, taking into
+ * account precedence.
+ */
+export const Properties = {
+  args: {
+    data: {
+      "asdf": "explicitly defined value",
+      "abc": "lower case value",
+      "ABC": "upper case value",
+      "foo1": "additional value",
+    },
+    schema: {
+      "type": "object",
+      "properties": {
+        "asdf": { "type": "string", "title": "Explicitly Defined Property" },
+      },
+      "patternProperties": {
+        "^[a-z]+$": { "type": "string", "title": "Lower Case Regex" },
+        "^[A-Z]+$": { "type": "string", "title": "Upper Case Regex" },
+      },
+      "additionalProperties": { "type": "string", title: "Additional Property" },
+    },
+  }
+}
+
+/**
+ * Treema supports `items` and `additionalItems`.
+ */
+export const ItemsAndAdditionalItems = {
+  args: {
+    data: [1, 2, 3, 4, 5],
+    schema: {
+      "type": "array",
+      "items": [
+        { "type": "number", "title": "First Item" },
+        { "type": "number", "title": "Second Item" },
+      ],
+      "additionalItems": { "type": "number", "title": "Additional Item" },
+    },
+  }
+}

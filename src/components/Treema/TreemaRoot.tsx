@@ -3,7 +3,7 @@ import './base.scss';
 import './core.scss';
 import './extra.scss';
 import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler, ValidatorError } from './types';
-import { noopLib, walk } from './utils';
+import { getType, noopLib, walk } from './utils';
 import {
   reducer,
   TreemaContext,
@@ -29,17 +29,13 @@ interface TreemaTypeDefinition {
 
 const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
   display: ({ data, schema }) => {
-    const propSchemas = schema.properties;
-    if (!propSchemas) return null;
     const display = schema.displayProperty ? `{${JSON.stringify(data[schema.displayProperty])}}` : JSON.stringify(data);
 
     return <span>{display}</span>;
   },
 
-  renderChildren: ({ data, schema, path }) => {
-    const propSchemas = schema.properties;
-    if (!propSchemas) return [];
-
+  renderChildren: ({ data, path }) => {
+    if (getType(data) !== 'object') return [];
     return Object.keys(data)
       .map((key: string) => {
         const childPath = path + '/' + key;
@@ -54,9 +50,9 @@ const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
     return <span></span>;
   },
 
-  renderChildren: ({ data, schema, path }) => {
+  renderChildren: ({ data, path }) => {
     if (!Array.isArray(data)) return [];
-    return data.map((item: any, index: number) => {
+    return data.map((_: any, index: number) => {
       const childPath = path + '/' + index;
       return <TreemaNodeLayout key={childPath} path={childPath} />;
     });
