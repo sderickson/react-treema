@@ -1,5 +1,8 @@
 import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo } from 'react';
-import './styles.css';
+// import './styles.css';
+import './base.scss';
+import './core.scss';
+import './extra.scss';
 import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler, ValidatorError } from './types';
 import { getChildSchema, noopLib, walk } from './utils';
 import {
@@ -122,31 +125,35 @@ export const TreemaNodeLayout: FC<TreemaNodeContext> = ({ data, schema, path }) 
     [isOpen, path, dispatch],
   );
   const isSelected = state.lastSelected === path;
-  const classNames = ['treema-node'];
+  const classNames = ['treema-node', 'treema-clearfix', isOpen ? 'treema-open' : 'treema-closed'];
+  if (path === '') {
+    classNames.push('treema-root');
+  }
   const ref = React.useRef<HTMLDivElement>(null);
   if (isSelected) {
-    classNames.push('treema-node-selected');
+    classNames.push('treema-selected');
     ref.current?.focus();
   }
   const errorsByPath = getSchemaErrorsByPath(state);
   const errors: ValidatorError[] = errorsByPath[path] || [];
   if (errors.length > 0) {
-    classNames.push('treema-node-error');
+    classNames.push('treema-has-error');
   }
 
   const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
 
   return (
     <div className={classNames.join(' ')} onClick={onSelect}>
-      <div ref={ref} tabIndex={-1} className="treema-title">
-        {canOpen && (
-          <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}>
-            {isOpen ? 'O' : 'X'}
-          </span>
-        )}
-        {name && <span className="treema-name">{name}: </span>}
-        {definition.display({ data, schema, path })}
-        {errors.length ? <span className="treema-error-message">{errors[0].message}</span> : null}
+      {canOpen && path !== '' && (
+        <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}>
+        </span>
+      )}
+      {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
+      <div ref={ref} tabIndex={-1} className="treema-row">
+        {name && <span className="treema-key">{name}: </span>}
+        <div className="treema-display">
+          {definition.display({ data, schema, path })}
+        </div>
       </div>
       {children && canOpen && isOpen ? <div className="treema-children">{children}</div> : null}
     </div>
