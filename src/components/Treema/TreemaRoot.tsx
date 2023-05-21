@@ -21,62 +21,23 @@ import {
   getWorkingSchema,
   getDataAtPath,
   getIsDefaultRoot,
+  getChildOrderForPath,
 } from './state';
 
 interface TreemaTypeDefinition {
   display: (props: TreemaNodeContext) => ReactNode;
-  getChildrenKeys?: (props: TreemaNodeContext) => JsonPointer[];
 }
 
 const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
   display: ({ data, schema }) => {
     const display = schema.displayProperty ? `{${JSON.stringify(data[schema.displayProperty])}}` : JSON.stringify(data);
-
     return <span>{display}</span>;
-  },
-
-  getChildrenKeys: ({ data, schema, path }): JsonPointer[] => {
-    const keys: JsonPointer[] = [];
-    const keysListed: Set<JsonPointer> = new Set();
-    if (schema.properties) {
-      // first list known properties, for which we have data to show
-      Object.keys(schema.properties).forEach((key: string) => {
-        if (data[key] !== undefined || (schema.default || {})[key] !== undefined) {
-          keys.push(`${path}/${key}`);
-          keysListed.add(key);
-        }
-      });
-    }
-    // then list any other properties (not listed in properties), for which we have data
-    Object.keys(data).forEach((key: string) => {
-      if (!keysListed.has(key)) {
-        keys.push(`${path}/${key}`);
-        keysListed.add(key);
-      }
-    });
-    // then list any default properties (not listed in properties)
-    if (schema.default) {
-      Object.keys(schema.default).forEach((key: string) => {
-        if (!keysListed.has(key)) {
-          keys.push(`${path}/${key}`);
-          keysListed.add(key);
-        }
-      });
-    };
-    return keys;
   },
 };
 
 const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
   display: () => {
     return <span></span>;
-  },
-
-  getChildrenKeys: ({ data, path }) => {
-    if (!Array.isArray(data)) return [];
-    return data.map((_: any, index: number) => {
-      return `${path}/${index.toString()}`;
-    });
   },
 };
 
@@ -128,7 +89,7 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
   const schemaType: BaseType = workingSchema.type;
   const definition = typeMapping[schemaType];
   const description = workingSchema.description;
-  const childrenKeys = definition.getChildrenKeys ? definition.getChildrenKeys({ data, schema: workingSchema, path }) : [];
+  const childrenKeys = getChildOrderForPath(state, path) || [];
   const isSelected = state.lastSelected === path;
   const errors = getSchemaErrorsByPath(state)[path] || [];
   const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;

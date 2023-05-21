@@ -179,12 +179,6 @@ export const getAllTreemaNodeContexts = createSelector(
   },
 );
 
-export const getListOfPaths = createSelector(getAllTreemaNodeContexts, (contexts): JsonPointer[] => {
-  const paths: JsonPointer[] = Object.keys(contexts);
-
-  return paths;
-});
-
 export const getClosed = (state: TreemaState) => state.closed;
 
 export const getCanClose = createSelector(
@@ -311,7 +305,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
 
         // This is where there exists real data in the map, but there may be some default data which can
         // be filled in. In this case update the schema.default object there with the data from the default
-        // object that we're walking, so the node uses it.
+        // object that we're walking, so the node can use it.
         if (datasAndSchemas[fullPath] !== undefined) {
           datasAndSchemas[fullPath].schema.default ??= {};
           // Parent default data takes precedence. Not sure if that's best but that's what this does.
@@ -319,7 +313,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
           return;
         }
 
-        // This is where there is no data in the map, so we need to create a new entry for it just for the
+        // This is where there is no data in the map, so create a new entry for it just for the
         // default data.
         const defaultRoot = extantKeys.has(getParentPath(fullPath));
         datasAndSchemas[fullPath] = {
@@ -332,6 +326,88 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
     });
     return datasAndSchemas;
   }
+);
+
+
+type OrderInfo = {
+  pathOrder: JsonPointer[],
+  pathToChildren: { [key: JsonPointer]: JsonPointer[] },
+}
+
+/**
+ * Create the source of truth for what order to display nodes, for navigation and rendering.
+ * This method walks the data with a DFS, and uses getAllDatasAndSchemas, which has generated complete
+ * real and default data information. This way we can create a full list of all paths to display,
+ * default or not, as well as what each object and array's children should be.
+ */
+export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSchemas): OrderInfo => {
+  const pathList: JsonPointer[] = [];
+  let stack: JsonPointer[] = [''];
+  const pathToChildren: { [key: JsonPointer]: JsonPointer[] } = {};
+  while (stack.length) {
+    const path = stack.shift() as JsonPointer;
+    const { data, schema } = datasAndSchemas[path];
+    const dataType = getType(data);
+
+    if (dataType === 'array') {
+      const childPaths = data.map((_: any, index: number) => {
+        return path + '/' + index;
+      });
+      stack = childPaths.concat(stack);
+      pathToChildren[path] = childPaths;
+    }
+
+    if (dataType === 'object') {
+      const keys: JsonPointer[] = [];
+      const keysListed: Set<JsonPointer> = new Set();
+      if (schema.properties) {
+        // first list known properties, for which we have data to show
+        Object.keys(schema.properties).forEach((key: string) => {
+          if (data[key] !== undefined || (schema.default || {})[key] !== undefined) {
+            keys.push(`${path}/${key}`);
+            keysListed.add(key);
+          }
+        });
+      }
+      // then list any other properties (not listed in properties), for which we have data
+      if (typeof data === 'object') {
+        Object.keys(data).forEach((key: string) => {
+          if (!keysListed.has(key)) {
+            keys.push(`${path}/${key}`);
+            keysListed.add(key);
+          }
+        });  
+      }
+      // then list any default properties (not listed in properties)
+      if (schema.default) {
+        Object.keys(schema.default).forEach((key: string) => {
+          if (!keysListed.has(key)) {
+            keys.push(`${path}/${key}`);
+            keysListed.add(key);
+          }
+        });
+      };
+      stack = keys.concat(stack);
+      pathToChildren[path] = keys;
+    }
+    pathList.push(path);
+  }
+
+  return {
+    pathOrder: pathList,
+    pathToChildren,
+  };
+});
+
+export const getListOfPaths = createSelector([getOrderInfo], (orderInfo): JsonPointer[] => {
+  return orderInfo.pathOrder;
+});
+
+export const getChildOrderForPath = createSelector(
+  [getOrderInfo, (_, path: JsonPointer) => path],
+  (orderInfo, path) => {
+    return orderInfo.pathToChildren[path] || [];
+  },
 );
 
 export const getWorkingSchema: (state: TreemaState, path: JsonPointer) => WorkingSchema = createSelector([

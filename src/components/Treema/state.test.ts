@@ -1,5 +1,5 @@
 import { TreemaState } from "./state";
-import { getAllDatasAndSchemas } from "./state";
+import { getAllDatasAndSchemas, getListOfPaths } from "./state";
 import { noopLib } from "./utils";
 
 describe('getAllDatasAndSchemas', () => {
@@ -41,5 +41,44 @@ describe('getAllDatasAndSchemas', () => {
     expect(result['/deepDefaultValue/setArray/0']).toBeTruthy();
     expect(result['/deepDefaultValue/setArray/0'].data).toEqual(1);
     expect(result['/deepDefaultValue/setArray/0'].defaultRoot).toEqual(false);
+  });
+});
+
+describe('getListOfPaths', () => {
+  it('properly orders', () => {
+    const state: TreemaState = {
+      data: {
+        explicitlySetValue: "explicitly set value",
+        deepDefaultValue: {
+          setString: 'string',
+        }
+      },
+      rootSchema: {
+        "type": "object",
+        default: {
+          "default": "default value",
+          "deepDefaultValue": {
+            "setString": "default string",
+            "setNumber": 123,
+            "setArray": [1, 2, 3],
+          }
+        }
+      },
+      schemaLib: noopLib,
+      closed: {},
+    };
+    const result = getListOfPaths(state);
+    expect(result).toEqual([
+      '',
+      '/explicitlySetValue',
+      '/deepDefaultValue',
+      '/deepDefaultValue/setString',
+      '/deepDefaultValue/setNumber',
+      '/deepDefaultValue/setArray',
+      '/deepDefaultValue/setArray/0',
+      '/deepDefaultValue/setArray/1',
+      '/deepDefaultValue/setArray/2',
+      '/default'
+    ]);
   });
 });
