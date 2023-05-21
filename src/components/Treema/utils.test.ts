@@ -101,7 +101,7 @@ describe('utils', () => {
 
   describe('buildWorkingSchemas', () => {
     it('returns the same single schema if there are no combinatorials or references', () => {
-      const schema: SupportedJsonSchema = {type:'string'};
+      const schema: SupportedJsonSchema = { type: 'string' };
       const workingSchemas = buildWorkingSchemas(schema, schemaLib);
       expect(workingSchemas[0] === schema).toBeTruthy();
     });
@@ -144,7 +144,7 @@ describe('utils', () => {
     });
 
     it('creates one working schema for every type if type is an array', () => {
-      const schema: SupportedJsonSchema = {type:['boolean', 'number']};
+      const schema: SupportedJsonSchema = { type: ['boolean', 'number'] };
       const workingSchemas = buildWorkingSchemas(schema, schemaLib);
       expect(workingSchemas.length).toBe(2);
       const types = workingSchemas.map((schema) => schema.type);
@@ -169,10 +169,10 @@ describe('cloneDeep', () => {
     expect(cloneDeep('string')).toBe('string');
     expect(cloneDeep(true)).toBe(true);
     expect(cloneDeep([1])).toEqual([1]);
-    expect(cloneDeep({foo:'bar'})).toEqual({foo:'bar'});
-    const originalObject = {foo:'bar'};
+    expect(cloneDeep({ foo: 'bar' })).toEqual({ foo: 'bar' });
+    const originalObject = { foo: 'bar' };
     expect(cloneDeep(originalObject)).not.toBe(originalObject);
     const originalArray = [1];
     expect(cloneDeep(originalArray)).not.toBe(originalArray);
   });
-})
+});

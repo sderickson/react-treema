@@ -146,8 +146,8 @@ export const Tv4Validator = {
     data: badData,
     schema: badSchema,
     schemaLib: wrapTv4(tv4),
-  }
-}
+  },
+};
 
 /**
  * Ajv is a JSON Schema validator that supports draft-7 of the spec. It is a popular validator,
@@ -160,10 +160,9 @@ export const AjvValidator = {
   args: {
     data: badData,
     schema: badSchema,
-    schemaLib: wrapAjv(new Ajv({allErrors: true})),
-  }
-}
-
+    schemaLib: wrapAjv(new Ajv({ allErrors: true })),
+  },
+};
 
 /**
  * JSON Schema supports the `oneOf` keyword, which allows you to specify that a value can be
@@ -174,11 +173,7 @@ export const AjvValidator = {
  */
 export const OneOf = {
   args: {
-    data: [
-      { string: 'string' },
-      [ 1, 2, 3 ],
-      { string: 'another' },
-    ],
+    data: [{ string: 'string' }, [1, 2, 3], { string: 'another' }],
     schema: {
       type: 'array',
       items: {
@@ -191,13 +186,13 @@ export const OneOf = {
           {
             type: 'array',
             title: 'Array Type',
-            items: 'number'
-          }
-        ]    
-      }
+            items: 'number',
+          },
+        ],
+      },
     },
-  }
-}
+  },
+};
 
 /**
  * JSON Schema also supports the `anyOf` keyword. Although it behaves differently than `oneOf` as part
@@ -206,11 +201,7 @@ export const OneOf = {
  */
 export const AnyOf = {
   args: {
-    data: [
-      { string: 'string' },
-      [ 1, 2, 3 ],
-      { string: 'another' },
-    ],
+    data: [{ string: 'string' }, [1, 2, 3], { string: 'another' }],
     schema: {
       type: 'array',
       items: {
@@ -223,13 +214,13 @@ export const AnyOf = {
           {
             type: 'array',
             title: 'Array Type',
-            items: 'number'
-          }
-        ]
-      }
+            items: 'number',
+          },
+        ],
+      },
     },
-  }
-}
+  },
+};
 
 /**
  * JSON Schema supports the `allOf` keyword, but fairly simply. It just combines the schemas
@@ -238,88 +229,90 @@ export const AnyOf = {
  */
 export const AllOf = {
   args: {
-    data: {'foo': 'bar'},
+    data: { 'foo': 'bar' },
     schema: {
       type: 'object',
       properties: {
         foo: {
           type: 'string',
-          allOf: [{
-            title: 'Combined Title',
-          }]
+          allOf: [
+            {
+              title: 'Combined Title',
+            },
+          ],
         },
       },
-    }
-  }
-}
+    },
+  },
+};
 
 const geoSchema = {
-  "$id": "https://example.com/geographical-location.schema.json",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Longitude and Latitude Values",
-  "description": "A geographical coordinate.",
-  "required": [ "latitude", "longitude" ],
-  "type": "object",
-  "properties": {
-    "latitude": {
-      "type": "number",
-      "minimum": -90,
-      "maximum": 90
+  '$id': 'https://example.com/geographical-location.schema.json',
+  '$schema': 'https://json-schema.org/draft/2020-12/schema',
+  'title': 'Longitude and Latitude Values',
+  'description': 'A geographical coordinate.',
+  'required': ['latitude', 'longitude'],
+  'type': 'object',
+  'properties': {
+    'latitude': {
+      'type': 'number',
+      'minimum': -90,
+      'maximum': 90,
     },
-    "longitude": {
-      "type": "number",
-      "minimum": -180,
-      "maximum": 180
-    }
-  }
+    'longitude': {
+      'type': 'number',
+      'minimum': -180,
+      'maximum': 180,
+    },
+  },
 };
 
 const calendarSchema = {
-  "$id": "https://example.com/calendar.schema.json",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "A representation of an event",
-  "type": "object",
-  "required": [ "dtstart", "summary" ],
-  "properties": {
-    "dtstart": {
-      "type": "string",
-      "description": "Event starting time"
+  '$id': 'https://example.com/calendar.schema.json',
+  '$schema': 'https://json-schema.org/draft/2020-12/schema',
+  'description': 'A representation of an event',
+  'type': 'object',
+  'required': ['dtstart', 'summary'],
+  'properties': {
+    'dtstart': {
+      'type': 'string',
+      'description': 'Event starting time',
     },
-    "dtend": {
-      "type": "string",
-      "description": "Event ending time"
+    'dtend': {
+      'type': 'string',
+      'description': 'Event ending time',
     },
-    "summary": {
-      "type": "string"
+    'summary': {
+      'type': 'string',
     },
-    "location": {
-      "type": "string"
+    'location': {
+      'type': 'string',
     },
-    "url": {
-      "type": "string"
+    'url': {
+      'type': 'string',
     },
-    "duration": {
-      "type": "string",
-      "description": "Event duration"
+    'duration': {
+      'type': 'string',
+      'description': 'Event duration',
     },
-    "rdate": {
-      "type": "string",
-      "description": "Recurrence date"
+    'rdate': {
+      'type': 'string',
+      'description': 'Recurrence date',
     },
-    "rrule": {
-      "type": "string",
-      "description": "Recurrence rule"
+    'rrule': {
+      'type': 'string',
+      'description': 'Recurrence rule',
     },
-    "category": {
-      "type": "string"
+    'category': {
+      'type': 'string',
     },
-    "description": {
-      "type": "string"
+    'description': {
+      'type': 'string',
     },
-    "geo": {
-      "$ref": "https://example.com/geographical-location.schema.json"
-    }
-  }
+    'geo': {
+      '$ref': 'https://example.com/geographical-location.schema.json',
+    },
+  },
 };
 
 tv4.addSchema(geoSchema.$id, geoSchema);
@@ -328,8 +321,8 @@ tv4.addSchema(calendarSchema.$id, calendarSchema);
 /**
  * Treema relies on validators to resolve `$ref` references as well as validate data. In this example,
  * the schema given to Treema is an array of calendar events, which are defined by another schema
- *  (specifically the one [here](https://json-schema.org/learn/examples/calendar.schema.json)). 
- * This schema references 
+ *  (specifically the one [here](https://json-schema.org/learn/examples/calendar.schema.json)).
+ * This schema references
  * [yet another schema](https://json-schema.org/learn/examples/geographical-location.schema.json)
  * for a geographic location. Both of these schemas are added to the validator (in this case tv4)
  * before it is given to the Treema React component. Then Treema is able to validate the data,
@@ -339,23 +332,23 @@ export const Refs = {
   args: {
     data: [
       {
-        "dtstart": "2021-01-01T00:00:00Z",
-        "summary": "New Year's Day",
-        "geo": {
-          "latitude": 9000,
-          "longitude": 74.0060
+        'dtstart': '2021-01-01T00:00:00Z',
+        'summary': "New Year's Day",
+        'geo': {
+          'latitude': 9000,
+          'longitude': 74.006,
         },
-      }
+      },
     ],
     schema: {
-      "type": "array",
-      "items": {
-        "$ref": "https://example.com/calendar.schema.json"
-      }
+      'type': 'array',
+      'items': {
+        '$ref': 'https://example.com/calendar.schema.json',
+      },
     },
     schemaLib: wrapTv4(tv4),
-  }
-}
+  },
+};
 
 /**
  * Treema supports `properties`, `patternProperties`, and `additionalProperties`, taking into
@@ -364,24 +357,24 @@ export const Refs = {
 export const Properties = {
   args: {
     data: {
-      "asdf": "explicitly defined value",
-      "abc": "lower case value",
-      "ABC": "upper case value",
-      "foo1": "additional value",
+      'asdf': 'explicitly defined value',
+      'abc': 'lower case value',
+      'ABC': 'upper case value',
+      'foo1': 'additional value',
     },
     schema: {
-      "type": "object",
-      "properties": {
-        "asdf": { "type": "string", "title": "Explicitly Defined Property" },
+      'type': 'object',
+      'properties': {
+        'asdf': { 'type': 'string', 'title': 'Explicitly Defined Property' },
       },
-      "patternProperties": {
-        "^[a-z]+$": { "type": "string", "title": "Lower Case Regex" },
-        "^[A-Z]+$": { "type": "string", "title": "Upper Case Regex" },
+      'patternProperties': {
+        '^[a-z]+$': { 'type': 'string', 'title': 'Lower Case Regex' },
+        '^[A-Z]+$': { 'type': 'string', 'title': 'Upper Case Regex' },
       },
-      "additionalProperties": { "type": "string", title: "Additional Property" },
+      'additionalProperties': { 'type': 'string', title: 'Additional Property' },
     },
-  }
-}
+  },
+};
 
 /**
  * Treema supports `items` and `additionalItems`.
@@ -390,15 +383,15 @@ export const ItemsAndAdditionalItems = {
   args: {
     data: [1, 2, 3, 4, 5],
     schema: {
-      "type": "array",
-      "items": [
-        { "type": "number", "title": "First Item" },
-        { "type": "number", "title": "Second Item" },
+      'type': 'array',
+      'items': [
+        { 'type': 'number', 'title': 'First Item' },
+        { 'type': 'number', 'title': 'Second Item' },
       ],
-      "additionalItems": { "type": "number", "title": "Additional Item" },
+      'additionalItems': { 'type': 'number', 'title': 'Additional Item' },
     },
-  }
-}
+  },
+};
 
 /**
  * Treema fills in default values, but leaves them unset in data unless explicitly set.
@@ -406,21 +399,21 @@ export const ItemsAndAdditionalItems = {
 export const DefaultValues = {
   args: {
     data: {
-      explicitlySetValue: "explicitly set value",
+      explicitlySetValue: 'explicitly set value',
       deepDefaultValue: {
         setString: 'string',
-      }
+      },
     },
     schema: {
-      "type": "object",
+      'type': 'object',
       default: {
-        "default": "default value",
-        "deepDefaultValue": {
-          "setString": "default string",
-          "setNumber": 123,
-          "setArray": [1, 2, 3],
-        }
-      }
+        'default': 'default value',
+        'deepDefaultValue': {
+          'setString': 'default string',
+          'setNumber': 123,
+          'setArray': [1, 2, 3],
+        },
+      },
     },
   },
-}
+};

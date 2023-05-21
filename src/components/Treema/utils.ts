@@ -44,10 +44,12 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
 // https://ajv.js.org/api.html
 export const wrapAjv = (ajv: any): SchemaLib => {
   ajv.addKeyword('displayProperty');
+
   return {
     validateMultiple: (data, schema) => {
       const valid = ajv.validate(schema, data);
       const errors = ajv.errors || [];
+
       return {
         valid,
         missing: [],
@@ -58,8 +60,8 @@ export const wrapAjv = (ajv: any): SchemaLib => {
             dataPath: error.instancePath,
             schemaPath: error.schemaPath,
           };
-        })
-      }
+        }),
+      };
     },
     getSchemaRef: (ref) => {
       return ajv.getSchema(ref);
@@ -124,13 +126,20 @@ export const getType = (function () {
 export const getJsonType = (data: any): BaseType | undefined => {
   const type = getType(data);
   switch (type) {
-    case 'boolean': return 'boolean';
-    case 'number': return 'number';
-    case 'string': return 'string'; 
-    case 'array': return 'array';
-    case 'object': return 'object';
-    case 'null': return 'null';
+    case 'boolean':
+      return 'boolean';
+    case 'number':
+      return 'number';
+    case 'string':
+      return 'string';
+    case 'array':
+      return 'array';
+    case 'object':
+      return 'object';
+    case 'null':
+      return 'null';
   }
+
   return undefined;
 };
 
@@ -184,7 +193,7 @@ const spreadTypes = (schema: SupportedJsonSchema): WorkingSchema[] => {
     baseTypes.forEach((type: BaseType) => {
       workingSchemas.push({
         ...schema,
-        type
+        type,
       });
     });
   } else if (getType(schema.type) === 'string') {
@@ -193,10 +202,11 @@ const spreadTypes = (schema: SupportedJsonSchema): WorkingSchema[] => {
     (schema.type as BaseType[]).forEach((type: BaseType) => {
       workingSchemas.push({
         ...schema,
-        type
+        type,
       });
     });
   }
+
   return workingSchemas;
 };
 
@@ -283,15 +293,19 @@ export const getDataByPath = (data: any, path: JsonPointer): any => {
     return data;
   }
   let returnData = data;
-  path.slice(1).split('/').forEach((key) => {
-    if (getType(returnData) === 'array') {
-      returnData = returnData[parseInt(key)];
-    } else {
-      returnData = returnData[key];
-    }
-  });
+  path
+    .slice(1)
+    .split('/')
+    .forEach((key) => {
+      if (getType(returnData) === 'array') {
+        returnData = returnData[parseInt(key)];
+      } else {
+        returnData = returnData[key];
+      }
+    });
+
   return returnData;
-}
+};
 
 export const cloneDeep = (data: any): any => {
   let clone = data;
@@ -307,5 +321,6 @@ export const cloneDeep = (data: any): any => {
       clone[key] = cloneDeep(value);
     }
   }
+
   return clone;
-}
+};

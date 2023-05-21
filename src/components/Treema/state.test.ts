@@ -1,26 +1,26 @@
-import { TreemaState } from "./state";
-import { getAllDatasAndSchemas, getListOfPaths } from "./state";
-import { noopLib } from "./utils";
+import { TreemaState } from './state';
+import { getAllDatasAndSchemas, getListOfPaths } from './state';
+import { noopLib } from './utils';
 
 describe('getAllDatasAndSchemas', () => {
   it('includes default data information', () => {
     const state: TreemaState = {
       data: {
-        explicitlySetValue: "explicitly set value",
+        explicitlySetValue: 'explicitly set value',
         deepDefaultValue: {
           setString: 'string',
-        }
+        },
       },
       rootSchema: {
-        "type": "object",
+        'type': 'object',
         default: {
-          "default": "default value",
-          "deepDefaultValue": {
-            "setString": "default string",
-            "setNumber": 123,
-            "setArray": [1, 2, 3],
-          }
-        }
+          'default': 'default value',
+          'deepDefaultValue': {
+            'setString': 'default string',
+            'setNumber': 123,
+            'setArray': [1, 2, 3],
+          },
+        },
       },
       schemaLib: noopLib,
       closed: {},
@@ -29,7 +29,7 @@ describe('getAllDatasAndSchemas', () => {
 
     // "default" should be included, and is the root of a set of default data
     expect(result['/default']).toBeTruthy();
-    expect(result['/default'].data).toEqual("default value");
+    expect(result['/default'].data).toEqual('default value');
     expect(result['/default'].defaultRoot).toEqual(true);
 
     // Even though "deepDafaultValue" is set one level up, it should be included
@@ -48,21 +48,21 @@ describe('getListOfPaths', () => {
   it('properly orders', () => {
     const state: TreemaState = {
       data: {
-        explicitlySetValue: "explicitly set value",
+        explicitlySetValue: 'explicitly set value',
         deepDefaultValue: {
           setString: 'string',
-        }
+        },
       },
       rootSchema: {
-        "type": "object",
+        'type': 'object',
         default: {
-          "default": "default value",
-          "deepDefaultValue": {
-            "setString": "default string",
-            "setNumber": 123,
-            "setArray": [1, 2, 3],
-          }
-        }
+          'default': 'default value',
+          'deepDefaultValue': {
+            'setString': 'default string',
+            'setNumber': 123,
+            'setArray': [1, 2, 3],
+          },
+        },
       },
       schemaLib: noopLib,
       closed: {},
@@ -78,7 +78,7 @@ describe('getListOfPaths', () => {
       '/deepDefaultValue/setArray/0',
       '/deepDefaultValue/setArray/1',
       '/deepDefaultValue/setArray/2',
-      '/default'
+      '/default',
     ]);
   });
 });

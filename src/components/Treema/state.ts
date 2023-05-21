@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { getParentPath, getType, noopLib, walk, getChildSchema } from './utils';
+import { getParentPath, getType, noopLib, walk } from './utils';
 import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer, ValidatorError, WorkingSchema } from './types';
 import { createSelector } from 'reselect';
 
@@ -245,11 +245,11 @@ export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath =
 
 type DataSchemaMap = {
   [key: JsonPointer]: {
-    data: any,
-    schema: WorkingSchema,
-    possibleSchemas: WorkingSchema[],
-    defaultRoot: boolean,
-  } 
+    data: any;
+    schema: WorkingSchema;
+    possibleSchemas: WorkingSchema[];
+    defaultRoot: boolean;
+  };
 };
 
 /**
@@ -282,10 +282,10 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
      * Now for each default object, "populate" the map with data from them, either by creating new
      * entries explicitly, or by adding to schema.default objects. At the end we want nodes to be
      * able to look up their paths and know:
-     * 
+     *
      * - whether they are a default "root" and so should have a lower opacity
      * - a default object in their schema if somewhere up the tree a default object would apply to them
-     * 
+     *
      * We walk the default objects so that even deeply complex default objects get neatly applied
      * to the full map of data to provide a full picture of what the user should see, defaults and all.
      */
@@ -293,13 +293,12 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
       const pathInfos = datasAndSchemas[defaultRootPath];
 
       walk(pathInfos.schema.default, pathInfos.schema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
-
         // we're walking relative to the where the default object is, so we need to prepend the default's location
         const fullPath = defaultRootPath ? defaultRootPath + '/' + path : path;
 
         // Where the default object is situated already has itself in its schema.default, so nothing to do.
         // Also since a default object would only ever be used where some object exists, no need to set data.
-        if(path === '') {
+        if (path === '') {
           return;
         }
 
@@ -310,6 +309,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
           datasAndSchemas[fullPath].schema.default ??= {};
           // Parent default data takes precedence. Not sure if that's best but that's what this does.
           Object.assign(datasAndSchemas[fullPath].schema.default, data);
+
           return;
         }
 
@@ -324,15 +324,15 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
         };
       });
     });
+
     return datasAndSchemas;
-  }
+  },
 );
 
-
 type OrderInfo = {
-  pathOrder: JsonPointer[],
-  pathToChildren: { [key: JsonPointer]: JsonPointer[] },
-}
+  pathOrder: JsonPointer[];
+  pathToChildren: { [key: JsonPointer]: JsonPointer[] };
+};
 
 /**
  * Create the source of truth for what order to display nodes, for navigation and rendering.
@@ -376,7 +376,7 @@ export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSch
             keys.push(`${path}/${key}`);
             keysListed.add(key);
           }
-        });  
+        });
       }
       // then list any default properties (not listed in properties)
       if (schema.default) {
@@ -386,7 +386,7 @@ export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSch
             keysListed.add(key);
           }
         });
-      };
+      }
       stack = keys.concat(stack);
       pathToChildren[path] = keys;
     }
@@ -403,37 +403,34 @@ export const getListOfPaths = createSelector([getOrderInfo], (orderInfo): JsonPo
   return orderInfo.pathOrder;
 });
 
-export const getChildOrderForPath = createSelector(
-  [getOrderInfo, (_, path: JsonPointer) => path],
-  (orderInfo, path) => {
-    return orderInfo.pathToChildren[path] || [];
+export const getChildOrderForPath = createSelector([getOrderInfo, (_, path: JsonPointer) => path], (orderInfo, path) => {
+  return orderInfo.pathToChildren[path] || [];
+});
+
+export const getWorkingSchema: (state: TreemaState, path: JsonPointer) => WorkingSchema = createSelector(
+  [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
+  (path, datasAndSchemas) => {
+    return datasAndSchemas[path].schema;
   },
 );
 
-export const getWorkingSchema: (state: TreemaState, path: JsonPointer) => WorkingSchema = createSelector([
-  (_, path: JsonPointer) => path,
-  getAllDatasAndSchemas,
-], (path, datasAndSchemas) => {
-  return datasAndSchemas[path].schema;
-});
+export const getWorkingSchemas: (state: TreemaState, path: JsonPointer) => WorkingSchema[] = createSelector(
+  [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
+  (path, datasAndSchemas) => {
+    return datasAndSchemas[path].possibleSchemas;
+  },
+);
 
-export const getWorkingSchemas: (state: TreemaState, path: JsonPointer) => WorkingSchema[] = createSelector([
-  (_, path: JsonPointer) => path,
-  getAllDatasAndSchemas,
-], (path, datasAndSchemas) => {
-  return datasAndSchemas[path].possibleSchemas;
-});
+export const getDataAtPath: (state: TreemaState, path: JsonPointer) => any = createSelector(
+  [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
+  (path, datasAndSchemas) => {
+    return datasAndSchemas[path].data;
+  },
+);
 
-export const getDataAtPath: (state: TreemaState, path: JsonPointer) => any = createSelector([
-  (_, path: JsonPointer) => path,
-  getAllDatasAndSchemas,
-], (path, datasAndSchemas) => {
-  return datasAndSchemas[path].data;
-});
-
-export const getIsDefaultRoot: (state: TreemaState, path: JsonPointer) => boolean = createSelector([
-  (_, path: JsonPointer) => path,
-  getAllDatasAndSchemas,
-], (path, datasAndSchemas) => {
-  return datasAndSchemas[path].defaultRoot;
-});
+export const getIsDefaultRoot: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
+  [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
+  (path, datasAndSchemas) => {
+    return datasAndSchemas[path].defaultRoot;
+  },
+);

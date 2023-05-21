@@ -52,8 +52,11 @@ describe('toggles', () => {
   it('should hide data when clicked to close', () => {
     render(
       <TreemaRoot
-        data={{ 'nested': {'a': 1, 'b': 234 }}}
-        schema={{ 'type': 'object', 'properties': { 'nested': { 'type': 'object', 'properties': { 'a': { 'type': 'number' }, 'b': { 'type': 'number' } } }}}}
+        data={{ 'nested': { 'a': 1, 'b': 234 } }}
+        schema={{
+          'type': 'object',
+          'properties': { 'nested': { 'type': 'object', 'properties': { 'a': { 'type': 'number' }, 'b': { 'type': 'number' } } } },
+        }}
       />,
     );
     // check it exists
@@ -76,24 +79,20 @@ describe('toggles', () => {
 describe('validation', () => {
   it('validates with tv4', () => {
     render(
-      <TreemaRoot
-        data={{ 'a': 1 }}
-        schema={{ 'type': 'object', 'properties': {'a': { 'type': 'boolean'}} }}
-        schemaLib={wrapTv4(tv4)}
-      />,
+      <TreemaRoot data={{ 'a': 1 }} schema={{ 'type': 'object', 'properties': { 'a': { 'type': 'boolean' } } }} schemaLib={wrapTv4(tv4)} />,
     );
-    screen.getByText('Invalid type: number (expected boolean)');  // tv4 error message
+    screen.getByText('Invalid type: number (expected boolean)'); // tv4 error message
   });
 
   it('validates with ajv', () => {
     render(
       <TreemaRoot
         data={{ 'a': 1 }}
-        schema={{ 'type': 'object', 'properties': {'a': { 'type': 'boolean'}} }}
-        schemaLib={wrapAjv(new Ajv({allErrors: true}))}
+        schema={{ 'type': 'object', 'properties': { 'a': { 'type': 'boolean' } } }}
+        schemaLib={wrapAjv(new Ajv({ allErrors: true }))}
       />,
     );
-    screen.getByText('must be boolean');  // ajv error message
+    screen.getByText('must be boolean'); // ajv error message
   });
 });
 
@@ -102,9 +101,9 @@ describe('description', () => {
     render(
       <TreemaRoot
         data={{ 'a': 1 }}
-        schema={{ 'type': 'object', 'properties': {'a': { 'type': 'boolean', description: 'the a key'}} }}
+        schema={{ 'type': 'object', 'properties': { 'a': { 'type': 'boolean', description: 'the a key' } } }}
       />,
     );
     screen.getByTitle('the a key');
   });
-})
+});

@@ -31,6 +31,7 @@ interface TreemaTypeDefinition {
 const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
   display: ({ data, schema }) => {
     const display = schema.displayProperty ? `{${JSON.stringify(data[schema.displayProperty])}}` : JSON.stringify(data);
+
     return <span>{display}</span>;
   },
 };
@@ -130,37 +131,27 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
   // Render
   return (
     <div className={classNames.join(' ')} onClick={onSelect}>
-      
-      { canOpen && path !== '' && (
-        <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}>
-        </span>
-      )}
-      
-      { errors.length ? 
-        <span className="treema-error">{errors[0].message}</span>
-        : null
-      }
-      
-      <div ref={ref} tabIndex={-1} className="treema-row">
-        { name &&
-          <span className="treema-key" title={description}>{name}: </span>
-        }
-        
-        <div className={"treema-value treema-"+schemaType}>
-          { definition.display({ data, schema: workingSchema, path }) }
-        </div>
+      {canOpen && path !== '' && <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}></span>}
 
+      {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
+
+      <div ref={ref} tabIndex={-1} className="treema-row">
+        {name && (
+          <span className="treema-key" title={description}>
+            {name}:{' '}
+          </span>
+        )}
+
+        <div className={'treema-value treema-' + schemaType}>{definition.display({ data, schema: workingSchema, path })}</div>
       </div>
-      
-      { childrenKeys.length && canOpen && isOpen ? 
+
+      {childrenKeys.length && canOpen && isOpen ? (
         <div className="treema-children">
-          {
-            childrenKeys.map((childPath: JsonPointer) => {
-              return <TreemaNodeLayout key={childPath} path={childPath} />;
-            })
-          }
-        </div> : null
-      }
+          {childrenKeys.map((childPath: JsonPointer) => {
+            return <TreemaNodeLayout key={childPath} path={childPath} />;
+          })}
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -168,14 +159,14 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
 export interface TreemaRootProps {
   /**
    * The data to display in the treema. Should conform to the schema given.
-   * 
+   *
    * @default An "empty" or "falsy" value of whatever type is given in the schema.
    */
   data: any;
   /**
    * The schema to use to validate the data. Treema will use this to determine
    * how to construct the UI, and how the data may be edited
-   * 
+   *
    * @see https://json-schema.org/understanding-json-schema/
    * @default {} (any JSON object allowed)
    */
@@ -188,21 +179,21 @@ export interface TreemaRootProps {
    * Generally you should initialize the library, which may provide options
    * which will affect the behavior of Treema. Treema also depends on this library
    * to provide error messages.
-   * 
+   *
    * See wrapTv4 and wrapAjv for examples.
-   * 
+   *
    * @default A noop version - no validation, no error messages
    */
   schemaLib?: SchemaLib;
   /**
    * The number of levels deep to open the tree by default.
-   * 
+   *
    * @default All levels are open by default
    */
   initOpen?: number;
   /**
    * A callback for when the user interacts with the treema.
-   * 
+   *
    * Supported events:
    * - `change_select_event`: when the user selects a node. Includes `path` in the event.
    */
