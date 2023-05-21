@@ -46,6 +46,7 @@ export interface SupportedJsonSchema {
   oneOf?: SupportedJsonSchema[];
   anyOf?: SupportedJsonSchema[];
   description?: string;
+  default?: any;
 }
 
 /**
@@ -78,6 +79,7 @@ export interface WorkingSchema {
   additionalProperties?: SupportedJsonSchema;
   additionalItems?: SupportedJsonSchema;
   description?: string;
+  default?: any;
 }
 
 export interface TreemaNodeContext {

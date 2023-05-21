@@ -2,8 +2,8 @@ import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, u
 import './base.scss';
 import './core.scss';
 import './extra.scss';
-import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler, ValidatorError } from './types';
-import { getType, noopLib, walk } from './utils';
+import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler } from './types';
+import { noopLib, walk } from './utils';
 import {
   reducer,
   TreemaContext,
@@ -20,11 +20,12 @@ import {
   getSchemaErrorsByPath,
   getWorkingSchema,
   getDataAtPath,
+  getIsDefaultRoot,
 } from './state';
 
 interface TreemaTypeDefinition {
   display: (props: TreemaNodeContext) => ReactNode;
-  renderChildren?: (props: TreemaNodeContext) => ReactNode[];
+  getChildrenKeys?: (props: TreemaNodeContext) => JsonPointer[];
 }
 
 const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
@@ -34,14 +35,35 @@ const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
     return <span>{display}</span>;
   },
 
-  renderChildren: ({ data, path }) => {
-    if (getType(data) !== 'object') return [];
-    return Object.keys(data)
-      .map((key: string) => {
-        const childPath = path + '/' + key;
-        return <TreemaNodeLayout key={childPath} path={childPath} />;
-      })
-      .filter((e) => e);
+  getChildrenKeys: ({ data, schema, path }): JsonPointer[] => {
+    const keys: JsonPointer[] = [];
+    const keysListed: Set<JsonPointer> = new Set();
+    if (schema.properties) {
+      // first list known properties, for which we have data to show
+      Object.keys(schema.properties).forEach((key: string) => {
+        if (data[key] !== undefined || (schema.default || {})[key] !== undefined) {
+          keys.push(`${path}/${key}`);
+          keysListed.add(key);
+        }
+      });
+    }
+    // then list any other properties (not listed in properties), for which we have data
+    Object.keys(data).forEach((key: string) => {
+      if (!keysListed.has(key)) {
+        keys.push(`${path}/${key}`);
+        keysListed.add(key);
+      }
+    });
+    // then list any default properties (not listed in properties)
+    if (schema.default) {
+      Object.keys(schema.default).forEach((key: string) => {
+        if (!keysListed.has(key)) {
+          keys.push(`${path}/${key}`);
+          keysListed.add(key);
+        }
+      });
+    };
+    return keys;
   },
 };
 
@@ -50,11 +72,10 @@ const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
     return <span></span>;
   },
 
-  renderChildren: ({ data, path }) => {
+  getChildrenKeys: ({ data, path }) => {
     if (!Array.isArray(data)) return [];
     return data.map((_: any, index: number) => {
-      const childPath = path + '/' + index;
-      return <TreemaNodeLayout key={childPath} path={childPath} />;
+      return `${path}/${index.toString()}`;
     });
   },
 };
@@ -107,7 +128,13 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
   const schemaType: BaseType = workingSchema.type;
   const definition = typeMapping[schemaType];
   const description = workingSchema.description;
-  const children = definition.renderChildren ? definition.renderChildren({ data, schema: workingSchema, path }) : [];
+  const childrenKeys = definition.getChildrenKeys ? definition.getChildrenKeys({ data, schema: workingSchema, path }) : [];
+  const isSelected = state.lastSelected === path;
+  const errors = getSchemaErrorsByPath(state)[path] || [];
+  const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
+  const isDefaultRoot = getIsDefaultRoot(state, path);
+
+  // Event handlers
   const onSelect = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -122,38 +149,57 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
     },
     [isOpen, path, dispatch],
   );
-  const isSelected = state.lastSelected === path;
-  const classNames = ['treema-node', 'treema-clearfix', isOpen ? 'treema-open' : 'treema-closed'];
-  if (path === '') {
-    classNames.push('treema-root');
-  }
+
+  // Handle focus
   const ref = React.useRef<HTMLDivElement>(null);
   if (isSelected) {
-    classNames.push('treema-selected');
     ref.current?.focus();
   }
-  const errorsByPath = getSchemaErrorsByPath(state);
-  const errors: ValidatorError[] = errorsByPath[path] || [];
-  if (errors.length > 0) {
-    classNames.push('treema-has-error');
-  }
 
-  const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
+  // CSS classes
+  const classNames = [
+    'treema-node',
+    isOpen ? 'treema-open' : 'treema-closed',
+    path === '' ? 'treema-root' : '',
+    isSelected ? 'treema-selected' : '',
+    errors.length ? 'treema-has-error' : '',
+    isDefaultRoot ? 'treema-default-stub' : '',
+  ];
 
+  // Render
   return (
     <div className={classNames.join(' ')} onClick={onSelect}>
-      {canOpen && path !== '' && (
+      
+      { canOpen && path !== '' && (
         <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}>
         </span>
       )}
-      {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
+      
+      { errors.length ? 
+        <span className="treema-error">{errors[0].message}</span>
+        : null
+      }
+      
       <div ref={ref} tabIndex={-1} className="treema-row">
-        {name && <span className="treema-key" title={description}>{name}: </span>}
+        { name &&
+          <span className="treema-key" title={description}>{name}: </span>
+        }
+        
         <div className={"treema-value treema-"+schemaType}>
-          {definition.display({ data, schema: workingSchema, path })}
+          { definition.display({ data, schema: workingSchema, path }) }
         </div>
+
       </div>
-      {children && canOpen && isOpen ? <div className="treema-children">{children}</div> : null}
+      
+      { childrenKeys.length && canOpen && isOpen ? 
+        <div className="treema-children">
+          {
+            childrenKeys.map((childPath: JsonPointer) => {
+              return <TreemaNodeLayout key={childPath} path={childPath} />;
+            })
+          }
+        </div> : null
+      }
     </div>
   );
 };

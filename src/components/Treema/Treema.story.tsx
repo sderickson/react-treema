@@ -15,7 +15,7 @@ export default {
  * all primitive data types. You can try creating a new object, editing the values, and deleting
  * entries or values.
  */
-export const Addresses = {
+export const BasicExample = {
   args: {
     schemaLib: { validateMultiple: () => ({ valid: true, errors: [] }), getSchema: () => ({}) },
     onEvent: (e: any) => console.log(e),
@@ -398,4 +398,29 @@ export const ItemsAndAdditionalItems = {
       "additionalItems": { "type": "number", "title": "Additional Item" },
     },
   }
+}
+
+/**
+ * Treema fills in default values, but leaves them unset in data unless explicitly set.
+ */
+export const DefaultValues = {
+  args: {
+    data: {
+      explicitlySetValue: "explicitly set value",
+      deepDefaultValue: {
+        setString: 'string',
+      }
+    },
+    schema: {
+      "type": "object",
+      default: {
+        "default": "default value",
+        "deepDefaultValue": {
+          "setString": "default string",
+          "setNumber": 123,
+          "setArray": [1, 2, 3],
+        }
+      }
+    },
+  },
 }

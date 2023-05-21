@@ -292,3 +292,20 @@ export const getDataByPath = (data: any, path: JsonPointer): any => {
   });
   return returnData;
 }
+
+export const cloneDeep = (data: any): any => {
+  let clone = data;
+  const type = getType(data);
+  if (type === 'object') {
+    clone = {};
+  }
+  if (type === 'array') {
+    clone = [];
+  }
+  if (['object', 'array'].includes(type)) {
+    for (const [key, value] of Object.entries(data)) {
+      clone[key] = cloneDeep(value);
+    }
+  }
+  return clone;
+}

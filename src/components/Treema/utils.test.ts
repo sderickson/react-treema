@@ -1,5 +1,5 @@
 import { SupportedJsonSchema } from './types';
-import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath } from './utils';
+import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath, cloneDeep } from './utils';
 import tv4 from 'tv4';
 
 const schemaLib = wrapTv4(tv4);
@@ -161,3 +161,18 @@ describe('utils', () => {
     });
   });
 });
+
+describe('cloneDeep', () => {
+  it('clones all JSON types', () => {
+    expect(cloneDeep(null)).toBe(null);
+    expect(cloneDeep(1)).toBe(1);
+    expect(cloneDeep('string')).toBe('string');
+    expect(cloneDeep(true)).toBe(true);
+    expect(cloneDeep([1])).toEqual([1]);
+    expect(cloneDeep({foo:'bar'})).toEqual({foo:'bar'});
+    const originalObject = {foo:'bar'};
+    expect(cloneDeep(originalObject)).not.toBe(originalObject);
+    const originalArray = [1];
+    expect(cloneDeep(originalArray)).not.toBe(originalArray);
+  });
+})

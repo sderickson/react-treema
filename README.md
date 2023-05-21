@@ -23,9 +23,9 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Description prop
 
 #### In Progress
+- [ ] Default data
 
 #### TODO
-- [ ] Default data
 - [ ] Required data
 - [ ] Shift/Meta click
 - [ ] Editing

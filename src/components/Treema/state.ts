@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { getParentPath, getType, noopLib, walk } from './utils';
+import { getParentPath, getType, noopLib, walk, getChildSchema } from './utils';
 import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer, ValidatorError, WorkingSchema } from './types';
 import { createSelector } from 'reselect';
 
@@ -164,6 +164,7 @@ const getData = (state: TreemaState) => state.data;
 const getRootSchema = (state: TreemaState) => state.rootSchema;
 const getSchemaLib = (state: TreemaState) => state.schemaLib;
 
+// TODO: Use getAllDatasAndSchemas instead.
 export const getAllTreemaNodeContexts = createSelector(
   getData,
   getRootSchema,
@@ -248,14 +249,86 @@ export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath =
   return errorsByPath;
 });
 
-type DataSchemaMap = {[key: JsonPointer]: { data: any, schema: WorkingSchema, possibleSchemas: WorkingSchema[] }};
+type DataSchemaMap = {
+  [key: JsonPointer]: {
+    data: any,
+    schema: WorkingSchema,
+    possibleSchemas: WorkingSchema[],
+    defaultRoot: boolean,
+  } 
+};
 
+/**
+ * Walk the data and schema, generating information about each node, as defined in DataSchemaMap.
+ * Other selectors can pull specific data out of this and this way we only have to walk the data
+ * once until the data or the schema changes.
+ */
 export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = createSelector(
   [getData, getRootSchema, getSchemaLib],
   (data, rootSchema, schemaLib) => {
     const datasAndSchemas: DataSchemaMap = {};
+    const defaultsToWalk: JsonPointer[] = [];
+
+    // First walk the data and schema normally, populating the map and gathering defaults to do next
     walk(data, rootSchema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
-      datasAndSchemas[path] = { data, schema, possibleSchemas: possibleSchemas || [] };
+      datasAndSchemas[path] = {
+        data,
+        schema,
+        possibleSchemas: possibleSchemas || [],
+        defaultRoot: false,
+      };
+
+      if (schema.type === 'object' && getType(schema.default) === 'object') {
+        defaultsToWalk.push(path);
+      }
+    });
+    const extantKeys = new Set(Object.keys(datasAndSchemas));
+
+    /**
+     * Now for each default object, "populate" the map with data from them, either by creating new
+     * entries explicitly, or by adding to schema.default objects. At the end we want nodes to be
+     * able to look up their paths and know:
+     * 
+     * - whether they are a default "root" and so should have a lower opacity
+     * - a default object in their schema if somewhere up the tree a default object would apply to them
+     * 
+     * We walk the default objects so that even deeply complex default objects get neatly applied
+     * to the full map of data to provide a full picture of what the user should see, defaults and all.
+     */
+    defaultsToWalk.forEach((defaultRootPath) => {
+      const pathInfos = datasAndSchemas[defaultRootPath];
+
+      walk(pathInfos.schema.default, pathInfos.schema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
+
+        // we're walking relative to the where the default object is, so we need to prepend the default's location
+        const fullPath = defaultRootPath ? defaultRootPath + '/' + path : path;
+
+        // Where the default object is situated already has itself in its schema.default, so nothing to do.
+        // Also since a default object would only ever be used where some object exists, no need to set data.
+        if(path === '') {
+          return;
+        }
+
+        // This is where there exists real data in the map, but there may be some default data which can
+        // be filled in. In this case update the schema.default object there with the data from the default
+        // object that we're walking, so the node uses it.
+        if (datasAndSchemas[fullPath] !== undefined) {
+          datasAndSchemas[fullPath].schema.default ??= {};
+          // Parent default data takes precedence. Not sure if that's best but that's what this does.
+          Object.assign(datasAndSchemas[fullPath].schema.default, data);
+          return;
+        }
+
+        // This is where there is no data in the map, so we need to create a new entry for it just for the
+        // default data.
+        const defaultRoot = extantKeys.has(getParentPath(fullPath));
+        datasAndSchemas[fullPath] = {
+          data,
+          schema,
+          possibleSchemas: possibleSchemas || [],
+          defaultRoot,
+        };
+      });
     });
     return datasAndSchemas;
   }
@@ -280,4 +353,11 @@ export const getDataAtPath: (state: TreemaState, path: JsonPointer) => any = cre
   getAllDatasAndSchemas,
 ], (path, datasAndSchemas) => {
   return datasAndSchemas[path].data;
+});
+
+export const getIsDefaultRoot: (state: TreemaState, path: JsonPointer) => boolean = createSelector([
+  (_, path: JsonPointer) => path,
+  getAllDatasAndSchemas,
+], (path, datasAndSchemas) => {
+  return datasAndSchemas[path].defaultRoot;
 });
