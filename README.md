@@ -21,12 +21,12 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Additional schemas ($ref)
 - [X] items, properties, patternProperties, additionalProperties, additionalItems
 - [X] Description prop
+- [X] Default data
 
 #### In Progress
-- [ ] Default data
+- [ ] Required data
 
 #### TODO
-- [ ] Required data
 - [ ] Shift/Meta click
 - [ ] Editing
 - [ ] readOnly
