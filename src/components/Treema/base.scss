@@ -9,7 +9,7 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   position: relative;
-  font-family: "Helvetica";
+  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
   clear: both;
   border-bottom: 1px solid #ccc;
   font-size: $fontSize;
@@ -30,7 +30,7 @@
   input,
   select {
     font-size: $fontSize;
-    font-family: "Helvetica";
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
   }
   input {
     margin: -3px 0;

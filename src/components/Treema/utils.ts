@@ -342,14 +342,14 @@ export const getValueForRequiredType: (type: BaseType) => any = (type: BaseType)
     case 'null':
       return null;
   }
-}
+};
 
 export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, lib: SchemaLib): any => {
   const returnData = cloneDeep(givenData) || {};
-  walk(returnData, schema, lib, ({data, schema}) => {
+  walk(returnData, schema, lib, ({ data, schema }) => {
     if (schema.required && getType(data) === 'object') {
       for (const key of schema.required) {
-        if (data[key] !== undefined) { 
+        if (data[key] !== undefined) {
           continue;
         }
         if (schema.default && schema.default[key]) {
@@ -368,5 +368,6 @@ export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, l
       }
     }
   });
+
   return returnData;
-}
+};

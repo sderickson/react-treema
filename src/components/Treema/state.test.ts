@@ -74,7 +74,7 @@ describe('getAllDatasAndSchemas', () => {
   //   expect(treema.data.key).toBe('testValue')
   //   expect(treema.childrenTreemas.key.integrated).toBe(true)
   //   expect(treema.$el.find('.treema-node').length).toBe(1)
-  
+
   // it 'keeps a default node around when you delete one with backup default data', ->
   //   data = { key: 'setValue' }
   //   schema = { default: { key: 'value' } }
@@ -86,9 +86,6 @@ describe('getAllDatasAndSchemas', () => {
   //   expect(treema.childrenTreemas.key.integrated).toBe(false)
   //   expect(Object.keys(treema.data).length).toBe(0)
 });
-
-
-
 
 describe('getListOfPaths', () => {
   it('properly orders', () => {
