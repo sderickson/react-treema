@@ -3,7 +3,7 @@ import './base.scss';
 import './core.scss';
 import './extra.scss';
 import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler } from './types';
-import { noopLib, walk } from './utils';
+import { noopLib, populateRequireds, walk } from './utils';
 import {
   reducer,
   TreemaContext,
@@ -54,6 +54,12 @@ const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
   },
 };
 
+const TreemaIntegerNodeDefinition: TreemaTypeDefinition = {
+  display: ({ data }) => {
+    return <span>{data}</span>;
+  },
+};
+
 const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
   display: ({ data }) => {
     return <span>{JSON.stringify(data)}</span>;
@@ -73,6 +79,7 @@ const typeMapping: { [key: string]: TreemaTypeDefinition } = {
   'number': TreemaNumberNodeDefinition,
   'boolean': TreemaBooleanNodeDefinition,
   'null': TreemaNullNodeDefinition,
+  'integer': TreemaIntegerNodeDefinition,
 };
 
 interface TreemaNodeLayoutProps {
@@ -223,7 +230,10 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [state, dispatch] = useReducer(reducer, { data, schemaLib: lib, rootSchema: schema, closed });
+  const populatedData = useMemo(() => {
+    return populateRequireds(data, schema, lib);
+  }, [data, schema, lib]);
+  const [state, dispatch] = useReducer(reducer, { data: populatedData, schemaLib: lib, rootSchema: schema, closed });
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {

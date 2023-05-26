@@ -185,7 +185,8 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
   return workingSchemas;
 };
 
-const baseTypes: BaseType[] = ['boolean', 'number', 'string', 'array', 'object', 'null'];
+// Notes that the first base type is effectively the "default" type for a schema without a type specified
+const baseTypes: BaseType[] = ['string', 'boolean', 'number', 'array', 'object', 'null'];
 
 const spreadTypes = (schema: SupportedJsonSchema): WorkingSchema[] => {
   const workingSchemas: WorkingSchema[] = [];
@@ -324,3 +325,48 @@ export const cloneDeep = (data: any): any => {
 
   return clone;
 };
+
+export const getValueForRequiredType: (type: BaseType) => any = (type: BaseType) => {
+  switch (type) {
+    case 'boolean':
+      return false;
+    case 'number':
+    case 'integer':
+      return 0;
+    case 'string':
+      return '';
+    case 'array':
+      return [];
+    case 'object':
+      return {};
+    case 'null':
+      return null;
+  }
+}
+
+export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, lib: SchemaLib): any => {
+  const returnData = cloneDeep(givenData) || {};
+  walk(returnData, schema, lib, ({data, schema}) => {
+    if (schema.required && getType(data) === 'object') {
+      for (const key of schema.required) {
+        if (data[key] !== undefined) { 
+          continue;
+        }
+        if (schema.default && schema.default[key]) {
+          data[key] = cloneDeep(schema.default[key]);
+        } else {
+          const childSchema = getChildSchema(key, schema);
+          const workingSchema = buildWorkingSchemas(childSchema, lib)[0];
+          const schemaDefault = workingSchema.default;
+          if (schemaDefault) {
+            data[key] = cloneDeep(schemaDefault);
+          } else {
+            const type = workingSchema.type;
+            data[key] = getValueForRequiredType(type);
+          }
+        }
+      }
+    }
+  });
+  return returnData;
+}

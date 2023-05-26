@@ -30,7 +30,7 @@ export interface SchemaLib {
   addSchema: (schema: SupportedJsonSchema) => void;
 }
 
-export type BaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string';
+export type BaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string' | 'integer';
 
 export interface SupportedJsonSchema {
   type?: BaseType | BaseType[];
@@ -39,7 +39,7 @@ export interface SupportedJsonSchema {
   displayProperty?: string;
   title?: string;
   patternProperties?: { [key: string]: SupportedJsonSchema };
-  additionalProperties?: SupportedJsonSchema;
+  additionalProperties?: SupportedJsonSchema | boolean;
   additionalItems?: SupportedJsonSchema;
   $ref?: string;
   allOf?: SupportedJsonSchema[];
@@ -47,6 +47,7 @@ export interface SupportedJsonSchema {
   anyOf?: SupportedJsonSchema[];
   description?: string;
   default?: any;
+  required?: string[];
 }
 
 /**
@@ -76,10 +77,11 @@ export interface WorkingSchema {
   displayProperty?: string;
   title?: string;
   patternProperties?: { [key: string]: SupportedJsonSchema };
-  additionalProperties?: SupportedJsonSchema;
+  additionalProperties?: SupportedJsonSchema | boolean;
   additionalItems?: SupportedJsonSchema;
   description?: string;
   default?: any;
+  required?: string[];
 }
 
 export interface TreemaNodeContext {

@@ -1,5 +1,5 @@
 import { SupportedJsonSchema } from './types';
-import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath, cloneDeep } from './utils';
+import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath, cloneDeep, populateRequireds } from './utils';
 import tv4 from 'tv4';
 
 const schemaLib = wrapTv4(tv4);
@@ -176,3 +176,82 @@ describe('cloneDeep', () => {
     expect(cloneDeep(originalArray)).not.toBe(originalArray);
   });
 });
+
+describe('populateRequireds', () => {
+  const schema: SupportedJsonSchema = {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "string": { type: "string" },
+      "number": { type: "number" },
+      "null": { type: "null" },
+      "boolean": { type: "boolean" },
+      "array": { type: "array", items: { type: 'number', default: 42 } },
+      "object": { type: "object" },
+      "integer": { type: "integer" },
+      "def": { 'default': 1337 }
+    },
+    "required": ['integer', 'string', 'number', 'null','boolean','array','object','def']
+  };
+  const data = {};
+
+  it('populates all required values with generic data', () => {
+    const result = populateRequireds(data, schema, schemaLib);
+    expect(result['string']).toBe('');
+    expect(result['number']).toBe(0);
+    expect(result['integer']).toBe(0);
+    expect(result['null']).toBe(null);
+    expect(result['boolean']).toBe(false);
+    expect(JSON.stringify(result['array'])).toBe(JSON.stringify([]));
+    expect(JSON.stringify(result['object'])).toBe(JSON.stringify({}));
+    expect(result['def']).toBe(1337);
+  });
+
+  it('populates data from the object\'s default property', () => {
+    const schema: SupportedJsonSchema = {
+      type: 'object',
+      default: { key1: 'object default' },
+      required: ['key1']
+    };
+    const result = populateRequireds({}, schema, schemaLib);
+    expect(result['key1']).toBe('object default');
+  });
+
+  it('populates data based on the child schema type', () => {
+    const schema: SupportedJsonSchema = {
+      type: 'object',
+      required: ['key2'],
+      properties: {
+        key2: { type: 'number' }
+      }
+    };
+    const result = populateRequireds({}, schema, schemaLib);
+    expect(result['key2']).toBe(0);
+  });
+
+  it('populates data from the child schema\'s default property', () => {
+    const schema: SupportedJsonSchema = {
+      type: 'object',
+      required: ['key3'],
+      properties: {
+        key3: { default: 'inner default' }
+      }
+    };
+    const result = populateRequireds({}, schema, schemaLib);
+    expect(result['key3']).toBe('inner default');
+  });
+
+  it('populates data as an empty string if nothing else is available', () => {
+    const schema: SupportedJsonSchema = {
+      required: ['key4']
+    };
+    const result = populateRequireds({}, schema, schemaLib);
+    expect(result['key4']).toBe('');
+  });
+
+});
+
+  // it 'populates required values with defaults', ->
+  //   expect(treema.get('/def')).toBe(1337)
+  //   treema.childrenTreemas['array'].addNewChild()
+  //   expect(treema.$el.find('input').val()).toBe('42')

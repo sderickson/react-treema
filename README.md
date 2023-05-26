@@ -22,21 +22,21 @@ And http://codecombat.github.io/treema/demo.html
 - [X] items, properties, patternProperties, additionalProperties, additionalItems
 - [X] Description prop
 - [X] Default data
+- [X] Required data
 
 #### In Progress
-- [ ] Required data
+- [ ] getters/setters
 
 #### TODO
-- [ ] Shift/Meta click
 - [ ] Editing
+- [ ] Shift/Meta click
+- [ ] Callbacks
+- [ ] Custom treema nodes
 - [ ] readOnly
 - [ ] Copy/Paste
 - [ ] Prevent editing into bad schema states
-- [ ] Callbacks
-- [ ] Custom treema nodes
 - [ ] Extras (2d point, etc)
 - [ ] getChildSchema, canAddProperty
-- [ ] getters/setters
 - [ ] undo/redo
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
