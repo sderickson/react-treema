@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { getParentPath, getType, noopLib, walk } from './utils';
+import { getParentPath, getType, noopLib, walk, splitJsonPointer, clone } from './utils';
 import { SchemaLib, SupportedJsonSchema, TreemaNodeContext, JsonPointer, ValidatorError, WorkingSchema } from './types';
 import { createSelector } from 'reselect';
 
@@ -86,7 +86,21 @@ export const setPathClosed = (path: JsonPointer, closed: boolean): SetPathClosed
   };
 };
 
-type TreemaAction = SelectPathAction | NavigateUpAction | NavigateDownAction | NavigateInAction | NavigateOutAction | SetPathClosedAction;
+type SetDataAction = {
+  type: 'set_data_action';
+  data: any;
+  path: JsonPointer;
+};
+
+export const setData = (path: JsonPointer, data: any): SetDataAction => {
+  return {
+    type: 'set_data_action',
+    data,
+    path,
+  };
+};
+
+type TreemaAction = SelectPathAction | NavigateUpAction | NavigateDownAction | NavigateInAction | NavigateOutAction | SetPathClosedAction | SetDataAction;
 
 // Reducer
 
@@ -105,6 +119,7 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       }
 
       return { ...state, lastSelected: action.path };
+
     case 'navigate_up_action':
       paths = getListOfPaths(state).slice(1);
       paths.indexOf(state.lastSelected || '');
@@ -120,6 +135,7 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       nextPathParent = getParentPath(nextPath);
 
       return { ...state, lastSelected: getClosed(state)[nextPathParent] ? nextPathParent : nextPath };
+
     case 'navigate_down_action':
       paths = getListOfPaths(state).slice(1);
       if (state.lastSelected === undefined) {
@@ -132,6 +148,7 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       }
 
       return { ...state, lastSelected: paths[index] };
+
     case 'navigate_in_action':
       paths = getListOfPaths(state).slice(1);
       index = paths.indexOf(state.lastSelected || '');
@@ -142,6 +159,7 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       }
 
       return state;
+
     case 'navigate_out_action':
       let parentPath = getParentPath(state.lastSelected || '');
       if (parentPath) {
@@ -149,8 +167,30 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       }
 
       return state;
+
     case 'set_path_closed_action':
       return { ...state, closed: { ...state.closed, [action.path]: action.closed } };
+
+    case 'set_data_action':
+      if (action.path === '') {
+        return { ...state, data: action.data };
+      }
+
+      // clone the data only as much as is necessary, leaving the original data intact
+      const newData = clone(state.data, { shallow: true });
+      let currentChildData = state.data;
+      let newChildData = newData
+      const segments = splitJsonPointer(action.path);
+      const lastSegment = segments.pop();
+      segments.forEach((pathSegment: string) => {
+        const parsedSegment = getType(currentChildData) === 'array' ? parseInt(pathSegment) : pathSegment;
+        currentChildData = currentChildData[parsedSegment];
+        newChildData[parsedSegment] = clone(currentChildData, { shallow: true });
+        newChildData = newChildData[parsedSegment];
+      });
+      newChildData[lastSegment as string] = action.data;
+      return { ...state, data: newData };
+
     default:
       console.error('Unknown action', action);
   }

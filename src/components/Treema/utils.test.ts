@@ -1,5 +1,5 @@
 import { SupportedJsonSchema } from './types';
-import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath, cloneDeep, populateRequireds } from './utils';
+import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath, clone, populateRequireds } from './utils';
 import tv4 from 'tv4';
 
 const schemaLib = wrapTv4(tv4);
@@ -162,19 +162,27 @@ describe('utils', () => {
   });
 });
 
-describe('cloneDeep', () => {
+describe('clone', () => {
   it('clones all JSON types', () => {
-    expect(cloneDeep(null)).toBe(null);
-    expect(cloneDeep(1)).toBe(1);
-    expect(cloneDeep('string')).toBe('string');
-    expect(cloneDeep(true)).toBe(true);
-    expect(cloneDeep([1])).toEqual([1]);
-    expect(cloneDeep({ foo: 'bar' })).toEqual({ foo: 'bar' });
+    expect(clone(null)).toBe(null);
+    expect(clone(1)).toBe(1);
+    expect(clone('string')).toBe('string');
+    expect(clone(true)).toBe(true);
+    expect(clone([1])).toEqual([1]);
+    expect(clone({ foo: 'bar' })).toEqual({ foo: 'bar' });
     const originalObject = { foo: 'bar' };
-    expect(cloneDeep(originalObject)).not.toBe(originalObject);
+    expect(clone(originalObject)).not.toBe(originalObject);
     const originalArray = [1];
-    expect(cloneDeep(originalArray)).not.toBe(originalArray);
+    expect(clone(originalArray)).not.toBe(originalArray);
   });
+
+  it('takes a shallow option', () => {
+    const originalObject = { foo: { bar: 'baz' } };
+    const clonedObject = clone(originalObject, { shallow: true });
+    expect(clonedObject).toEqual(originalObject);
+    expect(clonedObject).not.toBe(originalObject);
+    expect(clonedObject.foo).toBe(originalObject.foo);
+  })
 });
 
 describe('populateRequireds', () => {

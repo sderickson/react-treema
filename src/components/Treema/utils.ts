@@ -308,22 +308,30 @@ export const getDataByPath = (data: any, path: JsonPointer): any => {
   return returnData;
 };
 
-export const cloneDeep = (data: any): any => {
-  let clone = data;
+interface CloneOptions {
+  shallow?: boolean;
+}
+export const clone = (data: any, options?: CloneOptions): any => {
+  let result = data;
   const type = getType(data);
   if (type === 'object') {
-    clone = {};
+    result = {};
   }
   if (type === 'array') {
-    clone = [];
+    result = [];
   }
   if (['object', 'array'].includes(type)) {
+    const shallow = options && options.shallow;
     for (const [key, value] of Object.entries(data)) {
-      clone[key] = cloneDeep(value);
+      if (shallow) {
+        result[key] = value;
+      } else {
+        result[key] = clone(value, options);
+      }
     }
   }
 
-  return clone;
+  return result;
 };
 
 export const getValueForRequiredType: (type: BaseType) => any = (type: BaseType) => {
@@ -345,7 +353,7 @@ export const getValueForRequiredType: (type: BaseType) => any = (type: BaseType)
 };
 
 export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, lib: SchemaLib): any => {
-  const returnData = cloneDeep(givenData) || {};
+  const returnData = clone(givenData) || {};
   walk(returnData, schema, lib, ({ data, schema }) => {
     if (schema.required && getType(data) === 'object') {
       for (const key of schema.required) {
@@ -353,13 +361,13 @@ export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, l
           continue;
         }
         if (schema.default && schema.default[key]) {
-          data[key] = cloneDeep(schema.default[key]);
+          data[key] = clone(schema.default[key]);
         } else {
           const childSchema = getChildSchema(key, schema);
           const workingSchema = buildWorkingSchemas(childSchema, lib)[0];
           const schemaDefault = workingSchema.default;
           if (schemaDefault) {
-            data[key] = cloneDeep(schemaDefault);
+            data[key] = clone(schemaDefault);
           } else {
             const type = workingSchema.type;
             data[key] = getValueForRequiredType(type);
@@ -371,3 +379,8 @@ export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, l
 
   return returnData;
 };
+
+export const splitJsonPointer = (path: JsonPointer): string[] => {
+  // Not actually following the whole spec, but this'll do for now.
+  return path.split('/').slice(1);
+}
