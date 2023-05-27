@@ -75,24 +75,11 @@ export interface SupportedJsonSchema {
  * Note that working schemas do *not* contain other working schemas. It is expected if you
  * are considering a child value, you will get the working schema for it as needed separately.
  */
-export interface WorkingSchema {
-  type: BaseType;
-  items?: SupportedJsonSchema | SupportedJsonSchema[];
-  properties?: { [key: string]: SupportedJsonSchema };
-  displayProperty?: string;
-  title?: string;
-  patternProperties?: { [key: string]: SupportedJsonSchema };
-  additionalProperties?: SupportedJsonSchema | boolean;
-  additionalItems?: SupportedJsonSchema;
-  description?: string;
-  default?: any;
-  required?: string[];
-  minLength?: number;
-  maxLength?: number;
-  format?: string;
-  minimum?: number;
-  maximum?: number;
-}
+export type WorkingSchema = 
+  Omit<
+    SupportedJsonSchema,
+    "$ref" | "allOf" | "anyOf" | "oneOf"
+  > & { type: BaseType };
 
 export interface TreemaNodeContext {
   data: any;
