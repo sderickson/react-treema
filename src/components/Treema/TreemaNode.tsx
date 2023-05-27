@@ -44,6 +44,12 @@ import {
 import './base.scss';
 
 
+/**
+ * TreemaNode creates and uses refs to the inputs that these definitions set up. Apparently in order
+ * for these to work in hook-land, you have to wrap the functional component in forwardRef.
+ * Definitions don't worry about this, but TreemaNode does, so it handles wrapping definitions
+ * so that they're usable.
+ */
 interface TreemaTypeDefinitionWrapped {
   display: (props: DisplayProps) => ReactNode;
   edit?: React.ForwardRefExoticComponent<EditProps & React.RefAttributes<HTMLInputElement>>;
@@ -71,11 +77,23 @@ const typeMapping: { [key: string]: TreemaTypeDefinitionWrapped } = {
   'integer': wrapTypeDefinition(TreemaIntegerNodeDefinition),
 };
 
-interface TreemaNodeLayoutProps {
+interface TreemaNodeProps {
   path: JsonPointer;
 }
 
-export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
+/**
+ * For each value within a JSON object, there will be a TreemaNode to represent it.
+ * TreemaNodes rely heavily on state and selectors to get necessary information, keying
+ * entirely off the path that is given to it to render.
+ * 
+ * TreemaNode handles:
+ * - Rendering the "key" and "value" of the node
+ * - Rendering an input element if the value is being edited
+ * - Mouse events
+ * - Maintaining focus
+ * - Rendering its children, if the value is an array or object
+ */
+export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   // Common way to layout treema nodes generally. Should not include any schema specific logic.
   const { dispatch, state } = useContext(TreemaContext);
   const data = getDataAtPath(state, path);
@@ -179,7 +197,7 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
       {childrenKeys.length && canOpen && isOpen ? (
         <div className="treema-children">
           {childrenKeys.map((childPath: JsonPointer) => {
-            return <TreemaNodeLayout key={childPath} path={childPath} />;
+            return <TreemaNode key={childPath} path={childPath} />;
           })}
         </div>
       ) : null}

@@ -34,7 +34,7 @@ import {
 } from './state/selectors';
 import { reducer } from './state/reducer';
 import { TreemaContext } from './state';
-import { TreemaNodeLayout } from './TreemaNodeLayout';
+import { TreemaNode } from './TreemaNode';
 
 
 export interface TreemaRootProps {
@@ -88,7 +88,11 @@ export interface TreemaRootProps {
  */
 export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent }) => {
 
-  // Initialize global state
+  /**
+   * TreemaRoot handles initializing the state, and updating it when props change. This includes
+   * what paths are open or closed, populating required fields, and initializing a noop schema
+   * library if none is provided.
+   */
   const lib = schemaLib || noopLib;
   const closed: { [key: JsonPointer]: boolean } = useMemo(() => {
     if (initOpen === undefined) {
@@ -112,7 +116,10 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   const [state, dispatch] = useReducer(reducer, { data: populatedData, schemaLib: lib, rootSchema: schema, closed });
 
 
-  // Global focus and keyboard event handling
+  /**
+   * Being at the top level, TreemaRoot is responsible for handling keyboard events. It should describe
+   * at a high level how the state changes, and rely on the reducer to handle the details.
+   */
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -156,11 +163,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         if (state.editing && state.lastSelected) {
           dispatch(setData(state.lastSelected, state.editingData));
           dispatch(endEdit());
-          if (event.shiftKey) {
-            dispatch(navigateUp());
-          } else {
-            dispatch(navigateDown());
-          }
+          dispatch(event.shiftKey ? navigateUp() : navigateDown());
           dispatch(beginEdit());
         } else if (state.lastSelected) {
           dispatch(beginEdit(state.lastSelected));
@@ -180,7 +183,10 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   }, [onKeyDown]);
 
 
-  // Callbacks
+  /** 
+   * In addition to handling the inputs for the base Treema interface, TreemaRoot also handles
+   * callbacks, mainly via the onEvent prop.
+   */
   useEffect(() => {
     if (!onEvent) return;
     onEvent({
@@ -190,11 +196,13 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   }, [state.lastSelected, onEvent]);
 
 
-  // Render
+  /** 
+   * Render, providing the context for the various nodes.
+   */
   return (
     <TreemaContext.Provider value={{ state, dispatch }}>
       <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>
-        <TreemaNodeLayout path={''} />
+        <TreemaNode path={''} />
       </div>
     </TreemaContext.Provider>
   );
