@@ -1,3 +1,4 @@
+import { TreemaTypeDefinitionWrapped } from '../definitions/types';
 import {
   SchemaLib,
   SupportedJsonSchema,
@@ -12,6 +13,7 @@ export interface TreemaState {
   closed: { [path: JsonPointer]: boolean };
   editing?: JsonPointer;
   editingData?: any;
+  definitions: { [key: string]: TreemaTypeDefinitionWrapped }
 }
 
 export interface ContextInterface {

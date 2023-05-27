@@ -2,6 +2,7 @@ import { TreemaState } from './types';
 import { setData } from './actions';
 import { noopLib } from '../utils';
 import { reducer } from './reducer';
+import { coreDefinitions } from '../definitions';
 
 describe('setData action', () => {
   it('takes a path and sets the given data there, returning an object cloned where necessary', () => {
@@ -16,6 +17,7 @@ describe('setData action', () => {
       rootSchema: {},
       schemaLib: noopLib,
       closed: {},
+      definitions: coreDefinitions
     };
     const action = setData('/b/1/foo', 'bar');
     const result = reducer(state, action);

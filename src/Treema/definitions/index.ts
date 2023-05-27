@@ -11,13 +11,11 @@ import './extra.scss';
 import {
   forwardRef
 } from 'react';
-import './base.scss';
 import {
   EditProps,
   TreemaTypeDefinition,
   TreemaTypeDefinitionWrapped,
 } from './types';
-import './base.scss';
 
 /**
  * TreemaNode creates and uses refs to the inputs that these definitions use. Apparently in order

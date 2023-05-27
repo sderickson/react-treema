@@ -37,6 +37,7 @@ import {
 import { reducer } from './state/reducer';
 import { TreemaContext } from './state';
 import { TreemaNode } from './TreemaNode';
+import { coreDefinitions } from './definitions';
 
 
 export interface TreemaRootProps {
@@ -115,7 +116,13 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   const populatedData = useMemo(() => {
     return populateRequireds(data, schema, lib);
   }, [data, schema, lib]);
-  const [state, dispatch] = useReducer(reducer, { data: populatedData, schemaLib: lib, rootSchema: schema, closed });
+  const [state, dispatch] = useReducer(reducer, {
+    data: populatedData,
+    schemaLib: lib,
+    rootSchema: schema,
+    closed,
+    definitions: coreDefinitions,
+  });
 
 
   /**

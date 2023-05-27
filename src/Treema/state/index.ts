@@ -8,6 +8,7 @@ const defaultContextData: ContextInterface = {
     schemaLib: noopLib,
     rootSchema: { 'type': 'null' },
     closed: {},
+    definitions: {},
   },
   dispatch: () => {},
 };
