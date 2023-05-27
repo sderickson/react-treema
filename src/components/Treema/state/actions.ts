@@ -102,7 +102,7 @@ export const setData = (path: JsonPointer, data: any): SetDataAction => {
   };
 };
 
-type TreemaAction =
+export type TreemaAction =
   SelectPathAction | 
   NavigateUpAction |
   NavigateDownAction | 
