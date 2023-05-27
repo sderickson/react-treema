@@ -25,10 +25,10 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Required data
 
 #### In Progress
+- [ ] Editing
 - [ ] getters/setters
 
 #### TODO
-- [ ] Editing
 - [ ] Shift/Meta click
 - [ ] Callbacks
 - [ ] Custom treema nodes

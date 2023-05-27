@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo, forwardRef } from 'react';
+import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo, forwardRef, ForwardedRef } from 'react';
 import './base.scss';
 import './core.scss';
 import './extra.scss';
@@ -37,13 +37,20 @@ interface EditProps {
   data: any;
   schema: WorkingSchema;
   onChange: (data: any) => void;
-  ref?: React.RefObject<HTMLInputElement>;
 }
 
 interface TreemaTypeDefinition {
   display: (props: DisplayProps) => ReactNode;
-  // edit?: (props: EditProps) => ReactNode;
-  edit?: FC<EditProps>;
+  edit?: React.ForwardRefRenderFunction<HTMLInputElement, EditProps>;
+  usesTextarea?: boolean;
+}
+
+/**
+ * Same as the above, but having wrapped any "edit" function in forwardRef.
+ */
+interface TreemaTypeDefinitionWrapped {
+  display: (props: DisplayProps) => ReactNode;
+  edit?: React.ForwardRefExoticComponent<EditProps & React.RefAttributes<HTMLInputElement>>;
   usesTextarea?: boolean;
 }
 
@@ -65,11 +72,11 @@ const TreemaStringNodeDefinition: TreemaTypeDefinition = {
   display: ({ data }) => {
     return <span>{data}</span>;
   },
-  edit: forwardRef<HTMLInputElement, EditProps>(({ data, onChange }, ref) => {
+  edit: ({ data, onChange }: EditProps, ref) => {
     return <input value={data} ref={ref} onChange={(e) => {
       onChange(e.target.value);
     }} />;
-  })
+  }
 };
 
 const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
@@ -96,14 +103,25 @@ const TreemaNullNodeDefinition: TreemaTypeDefinition = {
   },
 };
 
-const typeMapping: { [key: string]: TreemaTypeDefinition } = {
-  'object': TreemaObjectNodeDefinition,
-  'array': TreemaArrayNodeDefinition,
-  'string': TreemaStringNodeDefinition,
-  'number': TreemaNumberNodeDefinition,
-  'boolean': TreemaBooleanNodeDefinition,
-  'null': TreemaNullNodeDefinition,
-  'integer': TreemaIntegerNodeDefinition,
+const wrapTypeDefinition: ((typeDefinition: TreemaTypeDefinition) => TreemaTypeDefinitionWrapped) = (typeDefinition: TreemaTypeDefinition) => {
+  const wrapped: TreemaTypeDefinitionWrapped = {
+    display: typeDefinition.display,
+    usesTextarea: typeDefinition.usesTextarea,
+  };
+  if (typeDefinition.edit) {
+    wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);
+  }
+  return wrapped;
+};
+
+const typeMapping: { [key: string]: TreemaTypeDefinitionWrapped } = {
+  'object': wrapTypeDefinition(TreemaObjectNodeDefinition),
+  'array': wrapTypeDefinition(TreemaArrayNodeDefinition),
+  'string': wrapTypeDefinition(TreemaStringNodeDefinition),
+  'number': wrapTypeDefinition(TreemaNumberNodeDefinition),
+  'boolean': wrapTypeDefinition(TreemaBooleanNodeDefinition),
+  'null': wrapTypeDefinition(TreemaNullNodeDefinition),
+  'integer': wrapTypeDefinition(TreemaIntegerNodeDefinition),
 };
 
 interface TreemaNodeLayoutProps {
