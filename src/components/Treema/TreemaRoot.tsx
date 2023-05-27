@@ -17,21 +17,23 @@ import {
   walk
 } from './utils';
 import {
-  reducer,
-  TreemaContext,
   selectPath,
   navigateUp,
   navigateDown,
-  getCanClose,
   setPathClosed,
-  getLastSelectedPath,
-  getCanOpen,
   navigateIn,
   navigateOut,
   beginEdit,
   setData,
   endEdit,
-} from './state';
+} from './state/actions';
+import {
+  getCanClose,
+  getLastSelectedPath,
+  getCanOpen,
+} from './state/selectors';
+import { reducer } from './state/reducer';
+import { TreemaContext } from './state';
 import { TreemaNodeLayout } from './TreemaNodeLayout';
 
 

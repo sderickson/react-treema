@@ -16,18 +16,22 @@ import {
 } from './types';
 import {
   TreemaContext,
+} from './state';
+import {
   selectPath,
   setPathClosed,
+  setData,
+  endEdit,
+  editValue,
+} from './state/actions';
+import {
   getClosed,
   getSchemaErrorsByPath,
   getWorkingSchema,
   getDataAtPath,
   getIsDefaultRoot,
   getChildOrderForPath,
-  setData,
-  endEdit,
-  editValue,
-} from './state';
+} from './state/selectors';
 import {
   TreemaArrayNodeDefinition,
   TreemaBooleanNodeDefinition,
