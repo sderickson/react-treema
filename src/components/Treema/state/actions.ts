@@ -82,7 +82,7 @@ type EndEditAction = {
   type: 'end_editing_action';
 }
 
-export const endEdit = (newValue?: any): EndEditAction => {
+export const endEdit = (): EndEditAction => {
   return {
     type: 'end_editing_action',
   };
