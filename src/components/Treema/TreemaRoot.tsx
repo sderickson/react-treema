@@ -1,9 +1,21 @@
-import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo, forwardRef, ForwardedRef } from 'react';
-import './base.scss';
-import './core.scss';
-import './extra.scss';
-import { JsonPointer, SchemaLib, SupportedJsonSchema, BaseType, TreemaEventHandler, WorkingSchema } from './types';
-import { noopLib, populateRequireds, walk } from './utils';
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useReducer,
+  useMemo
+} from 'react';
+import {
+  JsonPointer,
+  SchemaLib,
+  SupportedJsonSchema,
+  TreemaEventHandler
+} from './types';
+import {
+  noopLib,
+  populateRequireds,
+  walk
+} from './utils';
 import {
   reducer,
   TreemaContext,
@@ -13,260 +25,15 @@ import {
   getCanClose,
   setPathClosed,
   getLastSelectedPath,
-  getClosed,
   getCanOpen,
   navigateIn,
   navigateOut,
-  getSchemaErrorsByPath,
-  getWorkingSchema,
-  getDataAtPath,
-  getIsDefaultRoot,
-  getChildOrderForPath,
   beginEdit,
   setData,
   endEdit,
-  editValue,
 } from './state';
+import { TreemaNodeLayout } from './TreemaNodeLayout';
 
-interface DisplayProps {
-  data: any;
-  schema: WorkingSchema;
-}
-
-interface EditProps {
-  data: any;
-  schema: WorkingSchema;
-  onChange: (data: any) => void;
-}
-
-interface TreemaTypeDefinition {
-  display: (props: DisplayProps) => ReactNode;
-  edit?: React.ForwardRefRenderFunction<HTMLInputElement, EditProps>;
-  usesTextarea?: boolean;
-}
-
-/**
- * Same as the above, but having wrapped any "edit" function in forwardRef.
- */
-interface TreemaTypeDefinitionWrapped {
-  display: (props: DisplayProps) => ReactNode;
-  edit?: React.ForwardRefExoticComponent<EditProps & React.RefAttributes<HTMLInputElement>>;
-  usesTextarea?: boolean;
-}
-
-const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
-  display: ({ data, schema }) => {
-    const display = schema.displayProperty ? `{${JSON.stringify(data[schema.displayProperty])}}` : JSON.stringify(data);
-
-    return <span>{display}</span>;
-  },
-};
-
-const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
-  display: () => {
-    return <span></span>;
-  },
-};
-
-
-const stringInputTypes = [
-  'color',
-  'date',
-  'datetime-local',
-  'email',
-  'password',
-  'tel',
-  'text',
-  'time',
-  'url',
-]
-const TreemaStringNodeDefinition: TreemaTypeDefinition = {
-  display: ({ data }) => {
-    return <span>{data}</span>;
-  },
-  edit: ({ data, schema, onChange }: EditProps, ref) => {
-    return <input
-      value={data}
-      ref={ref}
-      onChange={(e) => { onChange(e.target.value); }}
-      maxLength={schema.maxLength || undefined}
-      minLength={schema.minLength || undefined}
-      type={schema.format && stringInputTypes.includes(schema.format) ? schema.format : undefined}
-    />;
-  }
-};
-
-const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
-  display: ({ data }) => {
-    return <span>{data}</span>;
-  },
-  edit: ({ data, schema, onChange }: EditProps, ref) => {
-    return <input
-      value={data}
-      ref={ref}
-      onChange={(e) => { onChange(parseFloat(e.target.value)); }}
-      type='number'
-      min={schema.minimum || undefined}
-      max={schema.maximum || undefined}
-    />;
-  }
-};
-
-const TreemaIntegerNodeDefinition: TreemaTypeDefinition = {
-  display: ({ data }) => {
-    return <span>{data}</span>;
-  },
-};
-
-const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
-  display: ({ data }) => {
-    return <span>{JSON.stringify(data)}</span>;
-  },
-};
-
-const TreemaNullNodeDefinition: TreemaTypeDefinition = {
-  display: () => {
-    return <span>null</span>;
-  },
-};
-
-const wrapTypeDefinition: ((typeDefinition: TreemaTypeDefinition) => TreemaTypeDefinitionWrapped) = (typeDefinition: TreemaTypeDefinition) => {
-  const wrapped: TreemaTypeDefinitionWrapped = {
-    display: typeDefinition.display,
-    usesTextarea: typeDefinition.usesTextarea,
-  };
-  if (typeDefinition.edit) {
-    wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);
-  }
-  return wrapped;
-};
-
-const typeMapping: { [key: string]: TreemaTypeDefinitionWrapped } = {
-  'object': wrapTypeDefinition(TreemaObjectNodeDefinition),
-  'array': wrapTypeDefinition(TreemaArrayNodeDefinition),
-  'string': wrapTypeDefinition(TreemaStringNodeDefinition),
-  'number': wrapTypeDefinition(TreemaNumberNodeDefinition),
-  'boolean': wrapTypeDefinition(TreemaBooleanNodeDefinition),
-  'null': wrapTypeDefinition(TreemaNullNodeDefinition),
-  'integer': wrapTypeDefinition(TreemaIntegerNodeDefinition),
-};
-
-interface TreemaNodeLayoutProps {
-  path: JsonPointer;
-}
-
-export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
-  // Common way to layout treema nodes generally. Should not include any schema specific logic.
-  const { dispatch, state } = useContext(TreemaContext);
-  const data = getDataAtPath(state, path);
-  const isOpen = !getClosed(state)[path];
-  const isEditing = state.editing === path;
-  const workingSchema = getWorkingSchema(state, path);
-  const name = workingSchema.title || path?.split('/').pop();
-  const canOpen = workingSchema.type === 'object' || workingSchema.type === 'array';
-  const schemaType: BaseType = workingSchema.type;
-  const definition = typeMapping[schemaType];
-  const description = workingSchema.description;
-  const childrenKeys = getChildOrderForPath(state, path) || [];
-  const isSelected = state.lastSelected === path;
-  const errors = getSchemaErrorsByPath(state)[path] || [];
-  const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
-  const isDefaultRoot = getIsDefaultRoot(state, path);
-
-  // Event handlers
-  const onSelect = useCallback(
-    (e: React.MouseEvent) => {
-      if(isEditing) {
-        // don't let parent elements grab focus
-        e.stopPropagation();
-        return;
-      };
-      if (state.editing && state.lastSelected) {
-        // clicked off a row being edited; save changes and end edit 
-        dispatch(setData(state.lastSelected, state.editingData));
-        dispatch(endEdit());
-      }
-      e.stopPropagation();
-      dispatch(selectPath(path || ''));
-    },
-    [dispatch, path, state.editing, state.editingData, state.lastSelected],
-  );
-  const onToggle = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      dispatch(setPathClosed(path, isOpen));
-    },
-    [isOpen, path, dispatch],
-  );
-
-  // Handle focus
-  const displayRef = React.useRef<HTMLDivElement>(null);
-  const editRef = React.useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (isSelected) {
-      isEditing ? editRef.current?.focus() : displayRef.current?.focus();
-    }
-  });  
-
-  // CSS classes
-  const classNames = [
-    'treema-node',
-    isOpen ? 'treema-open' : 'treema-closed',
-    path === '' ? 'treema-root' : '',
-    isSelected ? 'treema-selected' : '',
-    errors.length ? 'treema-has-error' : '',
-    isDefaultRoot ? 'treema-default-stub' : '',
-  ];
-
-  const valueClassNames = [
-    'treema-value',
-    'treema-' + schemaType,
-    isEditing ? 'treema-edit' : 'treema-display'
-  ]
-
-  const onChange = useCallback(
-    (val: any) => {dispatch(editValue(val))},
-    [dispatch],
-  )
-
-  // Render
-  return (
-    <div className={classNames.join(' ')} onClick={onSelect}>
-      {canOpen && path !== '' && <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}></span>}
-
-      {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
-
-      <div ref={displayRef} tabIndex={-1} className="treema-row">
-        {name && (
-          <span className="treema-key" title={description}>
-            {name}:{' '}
-          </span>
-        )}
-
-        <div className={valueClassNames.join(' ')}>
-          {
-            isEditing && definition.edit
-              ? <definition.edit
-                  data={state.editingData}
-                  schema={workingSchema}
-                  onChange={onChange}
-                  ref={editRef}
-                />
-              : definition.display({ data, schema: workingSchema })
-          }
-        </div>
-      </div>
-
-      {childrenKeys.length && canOpen && isOpen ? (
-        <div className="treema-children">
-          {childrenKeys.map((childPath: JsonPointer) => {
-            return <TreemaNodeLayout key={childPath} path={childPath} />;
-          })}
-        </div>
-      ) : null}
-    </div>
-  );
-};
 
 export interface TreemaRootProps {
   /**
@@ -318,6 +85,8 @@ export interface TreemaRootProps {
  * provide a JSON Schema validator library which will thoroughly enforce the schema and provide error messages.
  */
 export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent }) => {
+
+  // Initialize global state
   const lib = schemaLib || noopLib;
   const closed: { [key: JsonPointer]: boolean } = useMemo(() => {
     if (initOpen === undefined) {
@@ -339,6 +108,9 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     return populateRequireds(data, schema, lib);
   }, [data, schema, lib]);
   const [state, dispatch] = useReducer(reducer, { data: populatedData, schemaLib: lib, rootSchema: schema, closed });
+
+
+  // Global focus and keyboard event handling
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -405,6 +177,8 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     };
   }, [onKeyDown]);
 
+
+  // Callbacks
   useEffect(() => {
     if (!onEvent) return;
     onEvent({
@@ -413,6 +187,8 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     });
   }, [state.lastSelected, onEvent]);
 
+
+  // Render
   return (
     <TreemaContext.Provider value={{ state, dispatch }}>
       <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>

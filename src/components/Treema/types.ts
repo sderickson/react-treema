@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export type JsonPointer = string;
 
 export interface ChangeSelectEvent {
@@ -86,4 +88,21 @@ export interface TreemaNodeContext {
   schema: WorkingSchema;
   path: string;
   possibleSchemas?: WorkingSchema[];
+}
+
+export interface DisplayProps {
+  data: any;
+  schema: WorkingSchema;
+}
+
+export interface EditProps {
+  data: any;
+  schema: WorkingSchema;
+  onChange: (data: any) => void;
+}
+
+export interface TreemaTypeDefinition {
+  display: (props: DisplayProps) => ReactNode;
+  edit?: React.ForwardRefRenderFunction<HTMLInputElement, EditProps>;
+  usesTextarea?: boolean;
 }
