@@ -9,8 +9,6 @@ import { JsonPointer } from '../types';
 import { TreemaAction } from './actions';
 import {
   getListOfPaths,
-  getAnyAncestorsClosed,
-  getClosed,
   getAllDatasAndSchemas,
   getNextRow,
   getPreviousRow,
@@ -20,7 +18,6 @@ export function reducer(state: TreemaState, action: TreemaAction) {
   let paths: JsonPointer[];
   let index: number;
   let nextPath: JsonPointer;
-  let nextPathParent: JsonPointer;
   switch (action.type) {
     case 'select_path_action':
       if (action.path === undefined) {
