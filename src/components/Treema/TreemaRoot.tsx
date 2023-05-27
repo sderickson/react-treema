@@ -90,6 +90,7 @@ const TreemaStringNodeDefinition: TreemaTypeDefinition = {
       ref={ref}
       onChange={(e) => { onChange(e.target.value); }}
       maxLength={schema.maxLength || undefined}
+      minLength={schema.minLength || undefined}
       type={schema.format && stringInputTypes.includes(schema.format) ? schema.format : undefined}
     />;
   }
@@ -99,6 +100,16 @@ const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
   display: ({ data }) => {
     return <span>{data}</span>;
   },
+  edit: ({ data, schema, onChange }: EditProps, ref) => {
+    return <input
+      value={data}
+      ref={ref}
+      onChange={(e) => { onChange(parseFloat(e.target.value)); }}
+      type='number'
+      min={schema.minimum || undefined}
+      max={schema.maximum || undefined}
+    />;
+  }
 };
 
 const TreemaIntegerNodeDefinition: TreemaTypeDefinition = {

@@ -475,3 +475,25 @@ export const StringFormats = {
     },
   },
 };
+
+export const StringInputRestrictions = {
+  args: {
+    data: {
+      max10: 9,
+      maxLength10: '1234567890',
+      min10: 11,
+      minLength10: '12345678901',
+      patternAllCaps: 'ABC',
+    },
+    schema: {
+      'type': 'object',
+      'properties': {
+        'max10': { 'type': 'number', 'maximum': 10 },
+        'maxLength10': { 'type': 'string', 'maxLength': 10 },
+        'min10': { 'type': 'number', 'minimum': 10 },
+        'minLength10': { 'type': 'string', 'minLength': 10 },
+        'patternAllCaps': { 'type': 'string', 'pattern': '^[A-Z]+$' },
+      },
+    },
+  },
+}
