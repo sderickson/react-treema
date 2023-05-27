@@ -1,5 +1,5 @@
 import React from 'react';
-import { TreemaTypeDefinition } from '../types';
+import { TreemaTypeDefinition } from './types';
 
 export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
   display: () => {

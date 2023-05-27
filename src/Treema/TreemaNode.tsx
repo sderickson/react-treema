@@ -1,21 +1,14 @@
 import React, {
   FC,
-  ReactNode,
   useCallback,
   useContext,
   useEffect,
-  forwardRef
 } from 'react';
 import './base.scss';
 import {
   JsonPointer,
   BaseType,
 } from './types';
-import {
-  DisplayProps,
-  EditProps,
-  TreemaTypeDefinition
-} from './definitions/types';
 import {
   TreemaContext,
 } from './state';
@@ -35,49 +28,10 @@ import {
   getChildOrderForPath,
 } from './state/selectors';
 import {
-  TreemaArrayNodeDefinition,
-  TreemaBooleanNodeDefinition,
-  TreemaIntegerNodeDefinition,
-  TreemaNullNodeDefinition,
-  TreemaNumberNodeDefinition,
-  TreemaObjectNodeDefinition,
-  TreemaStringNodeDefinition
+  coreDefinitions
 } from './definitions';
 import './base.scss';
 
-
-/**
- * TreemaNode creates and uses refs to the inputs that these definitions set up. Apparently in order
- * for these to work in hook-land, you have to wrap the functional component in forwardRef.
- * Definitions don't worry about this, but TreemaNode does, so it handles wrapping definitions
- * so that they're usable.
- */
-interface TreemaTypeDefinitionWrapped {
-  display: (props: DisplayProps) => ReactNode;
-  edit?: React.ForwardRefExoticComponent<EditProps & React.RefAttributes<HTMLInputElement>>;
-  usesTextarea?: boolean;
-}
-
-const wrapTypeDefinition: ((typeDefinition: TreemaTypeDefinition) => TreemaTypeDefinitionWrapped) = (typeDefinition: TreemaTypeDefinition) => {
-  const wrapped: TreemaTypeDefinitionWrapped = {
-    display: typeDefinition.display,
-    usesTextarea: typeDefinition.usesTextarea,
-  };
-  if (typeDefinition.edit) {
-    wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);
-  }
-  return wrapped;
-};
-
-const typeMapping: { [key: string]: TreemaTypeDefinitionWrapped } = {
-  'object': wrapTypeDefinition(TreemaObjectNodeDefinition),
-  'array': wrapTypeDefinition(TreemaArrayNodeDefinition),
-  'string': wrapTypeDefinition(TreemaStringNodeDefinition),
-  'number': wrapTypeDefinition(TreemaNumberNodeDefinition),
-  'boolean': wrapTypeDefinition(TreemaBooleanNodeDefinition),
-  'null': wrapTypeDefinition(TreemaNullNodeDefinition),
-  'integer': wrapTypeDefinition(TreemaIntegerNodeDefinition),
-};
 
 interface TreemaNodeProps {
   path: JsonPointer;
@@ -105,7 +59,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const name = workingSchema.title || path?.split('/').pop();
   const canOpen = workingSchema.type === 'object' || workingSchema.type === 'array';
   const schemaType: BaseType = workingSchema.type;
-  const definition = typeMapping[schemaType];
+  const definition = coreDefinitions[schemaType];
   const description = workingSchema.description;
   const childrenKeys = getChildOrderForPath(state, path) || [];
   const isSelected = state.lastSelected === path;

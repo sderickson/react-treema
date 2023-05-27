@@ -1,5 +1,5 @@
 import React from 'react';
-import { TreemaTypeDefinition, EditProps } from '../types';
+import { TreemaTypeDefinition, EditProps } from './types';
 
 export const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
   display: ({ data }) => {

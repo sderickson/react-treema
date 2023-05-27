@@ -1,5 +1,5 @@
 import React from 'react';
-import { TreemaTypeDefinition } from '../types';
+import { TreemaTypeDefinition } from './types';
 
 export const TreemaIntegerNodeDefinition: TreemaTypeDefinition = {
   display: ({ data }) => {
