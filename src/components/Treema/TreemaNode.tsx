@@ -10,10 +10,12 @@ import './base.scss';
 import {
   JsonPointer,
   BaseType,
+} from './types';
+import {
   DisplayProps,
   EditProps,
   TreemaTypeDefinition
-} from './types';
+} from './definitions/types';
 import {
   TreemaContext,
 } from './state';

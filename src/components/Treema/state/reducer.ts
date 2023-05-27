@@ -12,6 +12,8 @@ import {
   getAnyAncestorsClosed,
   getClosed,
   getAllDatasAndSchemas,
+  getNextRow,
+  getPreviousRow,
 } from './selectors';
 
 export function reducer(state: TreemaState, action: TreemaAction) {
@@ -31,33 +33,11 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       return { ...state, lastSelected: action.path };
 
     case 'navigate_up_action':
-      paths = getListOfPaths(state).slice(1);
-      paths.indexOf(state.lastSelected || '');
-      if (state.lastSelected === undefined || paths.indexOf(state.lastSelected) === 0) {
-        index = paths.length - 1;
-      } else {
-        index = paths.indexOf(state.lastSelected) - 1;
-      }
-      while (index > 0 && getAnyAncestorsClosed(state, paths[index])) {
-        index--;
-      }
-      nextPath = paths[index];
-      nextPathParent = getParentPath(nextPath);
-
-      return { ...state, lastSelected: getClosed(state)[nextPathParent] ? nextPathParent : nextPath };
+      return { ...state, lastSelected: getPreviousRow(state) };
 
     case 'navigate_down_action':
-      paths = getListOfPaths(state).slice(1);
-      if (state.lastSelected === undefined) {
-        index = 0;
-      } else {
-        index = Math.min(paths.indexOf(state.lastSelected || '') + 1, paths.length - 1);
-        while (index < paths.length - 1 && getAnyAncestorsClosed(state, paths[index])) {
-          index++;
-        }
-      }
-
-      return { ...state, lastSelected: paths[index] };
+      const nextSelected = getNextRow(state);
+      return { ...state, lastSelected: nextSelected };
 
     case 'navigate_in_action':
       paths = getListOfPaths(state).slice(1);

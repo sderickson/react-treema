@@ -288,3 +288,36 @@ export const getIsDefaultRoot: (state: TreemaState, path: JsonPointer) => boolea
     return datasAndSchemas[path].defaultRoot;
   },
 );
+
+export const getNextRow: (state: TreemaState) => JsonPointer = (state: TreemaState) => {
+  let index = 0;
+  const paths = getListOfPaths(state).slice(1);
+  if (state.lastSelected === undefined) {
+    index = 0;
+  } else {
+    index = Math.min(paths.indexOf(state.lastSelected || '') + 1, paths.length - 1);
+    while (index < paths.length - 1 && getAnyAncestorsClosed(state, paths[index])) {
+      index++;
+    }
+  }
+  return paths[index];
+}
+
+export const getPreviousRow: (state: TreemaState) => JsonPointer = (state: TreemaState) => {
+  let index: number;
+  let nextPath: JsonPointer;
+  let nextPathParent: JsonPointer;
+  const paths = getListOfPaths(state).slice(1);
+  if (state.lastSelected === undefined || paths.indexOf(state.lastSelected) === 0) {
+    index = paths.length - 1;
+  } else {
+    index = paths.indexOf(state.lastSelected) - 1;
+  }
+  while (index > 0 && getAnyAncestorsClosed(state, paths[index])) {
+    index--;
+  }
+  nextPath = paths[index];
+  nextPathParent = getParentPath(nextPath);
+
+  return getClosed(state)[nextPathParent] ? nextPathParent : nextPath;
+}

@@ -1,6 +1,8 @@
-import { ReactNode } from 'react';
-
 export type JsonPointer = string;
+
+/**
+ * Event types
+ */
 
 export interface ChangeSelectEvent {
   type: 'change_select_event';
@@ -10,6 +12,10 @@ export interface ChangeSelectEvent {
 export type TreemaEvent = ChangeSelectEvent;
 
 export type TreemaEventHandler = (event: TreemaEvent) => void;
+
+/**
+ * Validator types
+ */
 
 export interface ValidatorResponse {
   valid: boolean;
@@ -29,8 +35,11 @@ export type SchemaValidator = (data: any, schema: SupportedJsonSchema) => Valida
 export interface SchemaLib {
   validateMultiple: SchemaValidator;
   getSchemaRef: (ref: string) => SupportedJsonSchema;
-  addSchema: (schema: SupportedJsonSchema) => void;
 }
+
+/**
+ * Json Schema types
+ */
 
 export type BaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string' | 'integer';
 
@@ -88,21 +97,4 @@ export interface TreemaNodeContext {
   schema: WorkingSchema;
   path: string;
   possibleSchemas?: WorkingSchema[];
-}
-
-export interface DisplayProps {
-  data: any;
-  schema: WorkingSchema;
-}
-
-export interface EditProps {
-  data: any;
-  schema: WorkingSchema;
-  onChange: (data: any) => void;
-}
-
-export interface TreemaTypeDefinition {
-  display: (props: DisplayProps) => ReactNode;
-  edit?: React.ForwardRefRenderFunction<HTMLInputElement, EditProps>;
-  usesTextarea?: boolean;
 }

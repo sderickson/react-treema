@@ -31,6 +31,9 @@ import {
   getCanClose,
   getLastSelectedPath,
   getCanOpen,
+  getOrderInfo,
+  getNextRow,
+  getPreviousRow,
 } from './state/selectors';
 import { reducer } from './state/reducer';
 import { TreemaContext } from './state';
@@ -164,7 +167,12 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           dispatch(setData(state.lastSelected, state.editingData));
           dispatch(endEdit());
           dispatch(event.shiftKey ? navigateUp() : navigateDown());
-          dispatch(beginEdit());
+
+          // don't begin edit of the next row if we're at the end
+          const nextSelection = event.shiftKey ? getPreviousRow(state) : getNextRow(state);
+          if (nextSelection !== state.lastSelected) {
+            dispatch(beginEdit());
+          }
         } else if (state.lastSelected) {
           dispatch(beginEdit(state.lastSelected));
         }
