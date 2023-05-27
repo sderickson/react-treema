@@ -31,7 +31,6 @@ import {
   getCanClose,
   getLastSelectedPath,
   getCanOpen,
-  getOrderInfo,
   getNextRow,
   getPreviousRow,
 } from './state/selectors';
