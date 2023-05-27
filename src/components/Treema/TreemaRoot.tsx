@@ -1,8 +1,8 @@
-import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo } from 'react';
+import React, { FC, ReactNode, useCallback, useContext, useEffect, useReducer, useMemo, forwardRef } from 'react';
 import './base.scss';
 import './core.scss';
 import './extra.scss';
-import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaNodeContext, BaseType, TreemaEventHandler } from './types';
+import { JsonPointer, SchemaLib, SupportedJsonSchema, BaseType, TreemaEventHandler, WorkingSchema } from './types';
 import { noopLib, populateRequireds, walk } from './utils';
 import {
   reducer,
@@ -22,10 +22,29 @@ import {
   getDataAtPath,
   getIsDefaultRoot,
   getChildOrderForPath,
+  beginEdit,
+  setData,
+  endEdit,
+  editValue,
 } from './state';
 
+interface DisplayProps {
+  data: any;
+  schema: WorkingSchema;
+}
+
+interface EditProps {
+  data: any;
+  schema: WorkingSchema;
+  onChange: (data: any) => void;
+  ref?: React.RefObject<HTMLInputElement>;
+}
+
 interface TreemaTypeDefinition {
-  display: (props: TreemaNodeContext) => ReactNode;
+  display: (props: DisplayProps) => ReactNode;
+  // edit?: (props: EditProps) => ReactNode;
+  edit?: FC<EditProps>;
+  usesTextarea?: boolean;
 }
 
 const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
@@ -46,6 +65,11 @@ const TreemaStringNodeDefinition: TreemaTypeDefinition = {
   display: ({ data }) => {
     return <span>{data}</span>;
   },
+  edit: forwardRef<HTMLInputElement, EditProps>(({ data, onChange }, ref) => {
+    return <input value={data} ref={ref} onChange={(e) => {
+      onChange(e.target.value);
+    }} />;
+  })
 };
 
 const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
@@ -91,6 +115,7 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
   const { dispatch, state } = useContext(TreemaContext);
   const data = getDataAtPath(state, path);
   const isOpen = !getClosed(state)[path];
+  const isEditing = state.editing === path;
   const workingSchema = getWorkingSchema(state, path);
   const name = workingSchema.title || path?.split('/').pop();
   const canOpen = workingSchema.type === 'object' || workingSchema.type === 'array';
@@ -106,10 +131,20 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
   // Event handlers
   const onSelect = useCallback(
     (e: React.MouseEvent) => {
+      if(isEditing) {
+        // don't let parent elements grab focus
+        e.stopPropagation();
+        return;
+      };
+      if (state.editing && state.lastSelected) {
+        // clicked off a row being edited; save changes and end edit 
+        dispatch(setData(state.lastSelected, state.editingData));
+        dispatch(endEdit());
+      }
       e.stopPropagation();
       dispatch(selectPath(path || ''));
     },
-    [dispatch, path],
+    [dispatch, path, state.editing, state.editingData, state.lastSelected],
   );
   const onToggle = useCallback(
     (e: React.MouseEvent) => {
@@ -120,10 +155,13 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
   );
 
   // Handle focus
-  const ref = React.useRef<HTMLDivElement>(null);
-  if (isSelected) {
-    ref.current?.focus();
-  }
+  const displayRef = React.useRef<HTMLDivElement>(null);
+  const editRef = React.useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (isSelected) {
+      isEditing ? editRef.current?.focus() : displayRef.current?.focus();
+    }
+  });  
 
   // CSS classes
   const classNames = [
@@ -135,6 +173,17 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
     isDefaultRoot ? 'treema-default-stub' : '',
   ];
 
+  const valueClassNames = [
+    'treema-value',
+    'treema-' + schemaType,
+    isEditing ? 'treema-edit' : 'treema-display'
+  ]
+
+  const onChange = useCallback(
+    (val: any) => {dispatch(editValue(val))},
+    [dispatch],
+  )
+
   // Render
   return (
     <div className={classNames.join(' ')} onClick={onSelect}>
@@ -142,14 +191,25 @@ export const TreemaNodeLayout: FC<TreemaNodeLayoutProps> = ({ path }) => {
 
       {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
 
-      <div ref={ref} tabIndex={-1} className="treema-row">
+      <div ref={displayRef} tabIndex={-1} className="treema-row">
         {name && (
           <span className="treema-key" title={description}>
             {name}:{' '}
           </span>
         )}
 
-        <div className={'treema-value treema-' + schemaType}>{definition.display({ data, schema: workingSchema, path })}</div>
+        <div className={valueClassNames.join(' ')}>
+          {
+            isEditing && definition.edit
+              ? <definition.edit
+                  data={state.editingData}
+                  schema={workingSchema}
+                  onChange={onChange}
+                  ref={editRef}
+                />
+              : definition.display({ data, schema: workingSchema })
+          }
+        </div>
       </div>
 
       {childrenKeys.length && canOpen && isOpen ? (
@@ -237,14 +297,16 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      event.preventDefault();
-      if (event.key === 'ArrowUp') {
+      if (event.key === 'ArrowUp' && !state.editing) {
+        event.preventDefault();
         dispatch(navigateUp());
       }
-      if (event.key === 'ArrowDown') {
+      if (event.key === 'ArrowDown' && !state.editing) {
+        event.preventDefault();
         dispatch(navigateDown());
       }
-      if (event.key === 'ArrowLeft') {
+      if (event.key === 'ArrowLeft' && !state.editing) {
+        event.preventDefault();
         const selectedPath = getLastSelectedPath(state);
         if (getCanClose(state, selectedPath)) {
           dispatch(setPathClosed(selectedPath, true));
@@ -252,7 +314,8 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           dispatch(navigateOut());
         }
       }
-      if (event.key === 'ArrowRight') {
+      if (event.key === 'ArrowRight' && !state.editing) {
+        event.preventDefault();
         const selectedPath = getLastSelectedPath(state);
         if (getCanOpen(state, selectedPath)) {
           dispatch(setPathClosed(selectedPath, false));
@@ -261,8 +324,28 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         }
       }
       if (event.key === 'Escape') {
+        event.preventDefault();
+        if (state.editing) {
+          dispatch(endEdit());
+          return;
+        }
         dispatch(selectPath(undefined));
         rootRef.current?.focus();
+      }
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        if (state.editing && state.lastSelected) {
+          dispatch(setData(state.lastSelected, state.editingData));
+          dispatch(endEdit());
+          if (event.shiftKey) {
+            dispatch(navigateUp());
+          } else {
+            dispatch(navigateDown());
+          }
+          dispatch(beginEdit());
+        } else if (state.lastSelected) {
+          dispatch(beginEdit(state.lastSelected));
+        }
       }
     },
     [dispatch, state],

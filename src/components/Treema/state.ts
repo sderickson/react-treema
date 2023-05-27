@@ -11,6 +11,8 @@ export interface TreemaState {
   rootSchema: SupportedJsonSchema;
   lastSelected?: JsonPointer;
   closed: { [path: JsonPointer]: boolean };
+  editing?: JsonPointer;
+  editingData?: any;
 }
 
 export interface ContextInterface {
@@ -86,6 +88,40 @@ export const setPathClosed = (path: JsonPointer, closed: boolean): SetPathClosed
   };
 };
 
+type BeginEditAction = {
+  type: 'begin_edit_action';
+  path?: JsonPointer;
+};
+
+export const beginEdit = (path?: JsonPointer): BeginEditAction => {
+  return {
+    type: 'begin_edit_action',
+    path,
+  };
+};
+
+type EditValueAction = {
+  type: 'edit_value_action';
+  newValue: any;
+}
+
+export const editValue = (newValue: any): EditValueAction => {
+  return {
+    type: 'edit_value_action',
+    newValue,
+  }
+}
+
+type EndEditAction = {
+  type: 'end_editing_action';
+}
+
+export const endEdit = (newValue?: any): EndEditAction => {
+  return {
+    type: 'end_editing_action',
+  };
+};
+
 type SetDataAction = {
   type: 'set_data_action';
   data: any;
@@ -100,7 +136,17 @@ export const setData = (path: JsonPointer, data: any): SetDataAction => {
   };
 };
 
-type TreemaAction = SelectPathAction | NavigateUpAction | NavigateDownAction | NavigateInAction | NavigateOutAction | SetPathClosedAction | SetDataAction;
+type TreemaAction =
+  SelectPathAction | 
+  NavigateUpAction |
+  NavigateDownAction | 
+  NavigateInAction | 
+  NavigateOutAction | 
+  SetPathClosedAction | 
+  SetDataAction | 
+  BeginEditAction | 
+  EditValueAction | 
+  EndEditAction; 
 
 // Reducer
 
@@ -190,6 +236,20 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       });
       newChildData[lastSegment as string] = action.data;
       return { ...state, data: newData };
+
+    case 'begin_edit_action':
+      const path = action.path || state.lastSelected;
+      if (!path) {
+        return { ...state };
+      }
+      const initialData = getAllDatasAndSchemas(state)[path].data;
+      return { ...state, editing: path, editingData: initialData };
+
+    case 'edit_value_action':
+      return { ...state, editingData: action.newValue };
+
+    case 'end_editing_action':
+      return { ...state, editing: undefined };
 
     default:
       console.error('Unknown action', action);

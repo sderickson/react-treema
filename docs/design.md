@@ -20,3 +20,14 @@ What I might do is have a selector which takes a JSON pointer input to get the w
 I tried this, and it didn't work out. At least my initial attempt didn't cache the way I wanted; the parent schema was re-evaluated for each child. So instead I'm doing a much selector which runs the walk function, caches that result, and then selectors for data and working schemas pull from that. Perhaps this could be made more efficient... especially when data starts changing. But that can be an optimization for another day.
 
 Also, I'm making one change with how working schemas work from before: they now spread types, so that working schemas have one single defined type. I think this will simplify logic and UI as well. Or I might run into some reason why I didn't do this before. Tally ho.
+
+# Editing Nodes
+I got away with having a simple function for display for each type of node, but I don't think it's going to be that simple for editing, due to hooks. I think though I can just specify a ReactNode type, and use the props as the interface. What should the interface be?
+
+* ref -> to be used for the input so Treema can manage focus
+* data, schema -> both needed in current code quite a bit
+* onChange -> for when the input changes
+
+Then the layout node just renders the edit node, focuses the ref, and all's good.
+
+Also, should just have one ref, most likely? Don't need one ref for each node in the tree; that might be unnecessarily slow.
