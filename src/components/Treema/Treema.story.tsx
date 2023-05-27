@@ -441,3 +441,37 @@ export const RequiredValues = {
     },
   },
 };
+
+/**
+ * String format types are supported, and will use the appropriate browser input type.
+ * Support may vary based on browser.
+ */
+export const StringFormats = {
+  args: {
+    data: {
+      'color': '#ff0000',
+      'date': '2021-01-01',
+      'datetime-local': '2021-01-01T00:00:00',
+      'email': 'test@example.com',
+      'password': 'password',
+      'tel': '1234567890',
+      'text': 'text',
+      'time': '00:00:00',
+      'url': 'https://example.com',
+    },
+    schema: {
+      'type': 'object',
+      'properties': {
+        'color': { 'type': 'string', 'format': 'color' },
+        'date': { 'type': 'string', 'format': 'date' },
+        'datetime-local': { 'type': 'string', 'format': 'datetime-local' },
+        'email': { 'type': 'string', 'format': 'email' },
+        'password': { 'type': 'string', 'format': 'password' },
+        'tel': { 'type': 'string', 'format': 'tel' },
+        'text': { 'type': 'string', 'format': 'text' },
+        'time': { 'type': 'string', 'format': 'time' },
+        'url': { 'type': 'string', 'format': 'url' },
+      },
+    },
+  },
+};

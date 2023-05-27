@@ -48,6 +48,8 @@ export interface SupportedJsonSchema {
   description?: string;
   default?: any;
   required?: string[];
+  maxLength?: number;
+  format?: string;
 }
 
 /**
@@ -82,6 +84,8 @@ export interface WorkingSchema {
   description?: string;
   default?: any;
   required?: string[];
+  maxLength?: number;
+  format?: string;
 }
 
 export interface TreemaNodeContext {
