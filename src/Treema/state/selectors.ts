@@ -12,6 +12,7 @@ import {
   TreemaState,
 } from './types'
 import { createSelector } from 'reselect';
+import { TreemaTypeDefinitionWrapped } from '../definitions/types';
 
 // ----------------------------------------------------------------------------
 // Base data selectors
@@ -19,6 +20,7 @@ export const getData = (state: TreemaState) => state.data;
 export const getRootSchema = (state: TreemaState) => state.rootSchema;
 export const getSchemaLib = (state: TreemaState) => state.schemaLib;
 export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';
+export const getDefinitions = (state: TreemaState) => state.definitions;
 
 
 // ----------------------------------------------------------------------------
@@ -157,6 +159,13 @@ export const getIsDefaultRoot: (state: TreemaState, path: JsonPointer) => boolea
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
   (path, datasAndSchemas) => {
     return datasAndSchemas[path].defaultRoot;
+  },
+);
+
+export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => TreemaTypeDefinitionWrapped = createSelector(
+  [(_, path: JsonPointer) => path, getAllDatasAndSchemas, getDefinitions],
+  (path, datasAndSchemas, definitions) => {
+    return definitions[datasAndSchemas[path].schema.type];
   },
 );
 

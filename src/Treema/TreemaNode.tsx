@@ -26,10 +26,8 @@ import {
   getDataAtPath,
   getIsDefaultRoot,
   getChildOrderForPath,
+  getDefinitionAtPath,
 } from './state/selectors';
-import {
-  coreDefinitions
-} from './definitions';
 import './base.scss';
 
 
@@ -59,7 +57,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const name = workingSchema.title || path?.split('/').pop();
   const canOpen = workingSchema.type === 'object' || workingSchema.type === 'array';
   const schemaType: BaseType = workingSchema.type;
-  const definition = coreDefinitions[schemaType];
+  const definition = getDefinitionAtPath(state, path);
   const description = workingSchema.description;
   const childrenKeys = getChildOrderForPath(state, path) || [];
   const isSelected = state.lastSelected === path;
