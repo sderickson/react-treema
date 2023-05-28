@@ -28,8 +28,8 @@ const wrapTypeDefinition: ((typeDefinition: TreemaTypeDefinition) => TreemaTypeD
   const wrapped: TreemaTypeDefinitionWrapped = {
     display: typeDefinition.display,
     usesTextarea: typeDefinition.usesTextarea,
-    editable: typeDefinition.editable || true,
-    directlyEditable: typeDefinition.directlyEditable || true,
+    editable: typeDefinition.editable ?? true,
+    directlyEditable: typeDefinition.directlyEditable ?? true,
   };
   if (typeDefinition.edit) {
     wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);

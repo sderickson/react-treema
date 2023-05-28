@@ -33,6 +33,7 @@ import {
   getCanOpen,
   getNextRow,
   getPreviousRow,
+  canEditPathDirectly,
 } from './state/selectors';
 import { reducer } from './state/reducer';
 import { TreemaContext } from './state';
@@ -169,18 +170,23 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       }
       if (event.key === 'Enter') {
         event.preventDefault();
+        if (!state.editing && state.lastSelected && canEditPathDirectly(state, state.lastSelected)) {
+          // Are currently not editing a row that is editable. Edit it and be done.
+          dispatch(beginEdit(state.lastSelected));
+          return;
+        }
         if (state.editing && state.lastSelected) {
+          // Are currently editing a node. Commit changes.
           dispatch(setData(state.lastSelected, state.editingData));
           dispatch(endEdit());
-          dispatch(event.shiftKey ? navigateUp() : navigateDown());
+        }
 
-          // don't begin edit of the next row if we're at the end
-          const nextSelection = event.shiftKey ? getPreviousRow(state) : getNextRow(state);
-          if (nextSelection !== state.lastSelected) {
-            dispatch(beginEdit());
-          }
-        } else if (state.lastSelected) {
-          dispatch(beginEdit(state.lastSelected));
+        // At this point either the current row can't be edited, or just finished editing a row.
+        // Move to the next row and begin editing it if possible (and we're not at either end of the treema).
+        dispatch(event.shiftKey ? navigateUp() : navigateDown());
+        const nextSelection = event.shiftKey ? getPreviousRow(state) : getNextRow(state);
+        if (nextSelection !== state.lastSelected && canEditPathDirectly(state, nextSelection)) {
+          dispatch(beginEdit());
         }
       }
     },

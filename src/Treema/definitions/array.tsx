@@ -5,4 +5,5 @@ export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
   display: () => {
     return <span></span>;
   },
+  directlyEditable: false,
 };

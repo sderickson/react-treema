@@ -12,6 +12,7 @@ import {
   getAllDatasAndSchemas,
   getNextRow,
   getPreviousRow,
+  canEditPathDirectly,
 } from './selectors';
 
 export function reducer(state: TreemaState, action: TreemaAction) {
@@ -66,7 +67,7 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       // clone the data only as much as is necessary, leaving the original data intact
       const newData = clone(state.data, { shallow: true });
       let currentChildData = state.data;
-      let newChildData = newData
+      let newChildData = newData;
       const segments = splitJsonPointer(action.path);
       const lastSegment = segments.pop();
       segments.forEach((pathSegment: string) => {
@@ -81,7 +82,10 @@ export function reducer(state: TreemaState, action: TreemaAction) {
     case 'begin_edit_action':
       const path = action.path || state.lastSelected;
       if (!path) {
-        return { ...state };
+        return state;
+      }
+      if (!canEditPathDirectly(state, path)) {
+        return state;
       }
       const initialData = getAllDatasAndSchemas(state)[path].data;
       return { ...state, editing: path, editingData: initialData };

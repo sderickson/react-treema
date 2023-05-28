@@ -7,5 +7,6 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
 
     return <span>{display}</span>;
   },
+  directlyEditable: false,
 };
 

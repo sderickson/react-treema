@@ -26,6 +26,10 @@ And http://codecombat.github.io/treema/demo.html
 
 #### In Progress
 - [ ] Editing
+  - [ ] Make validator story work, able to fix all invalid data
+  - [ ] Make default story work, able to set data
+  - [ ] Make arrays and objects able to add children
+  - [ ] Make able to delete properties and children
 - [ ] getters/setters
 
 #### TODO
