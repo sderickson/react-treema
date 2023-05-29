@@ -2,9 +2,12 @@ import React from 'react';
 import { TreemaTypeDefinition } from './types';
 
 export const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
+  valueClassName: 'treema-boolean',
+
   display: ({ data }) => {
     return <span>{JSON.stringify(data)}</span>;
   },
+
   edit: ({ data, onChange }, ref) => {
     return <span>
       {JSON.stringify(data)}
@@ -16,4 +19,16 @@ export const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
       />
     </span>
   }
+
+  /*
+    TODO
+    onSpacePressed: -> @toggleValue()
+    onFPressed: -> @toggleValue(false)
+    onTPressed: -> @toggleValue(true)
+    saveChanges: -> 
+    onClick: (e) ->
+      value = $(e.target).closest('.treema-value')
+      return super(e) unless value.length
+      @toggleValue() if @canEdit()
+   */
 };

@@ -13,9 +13,12 @@ const stringInputTypes = [
   'url',
 ]
 export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
+  valueClassName: 'treema-string',
+
   display: ({ data }) => {
     return <span>{data}</span>;
   },
+  
   edit: ({ data, schema, onChange }: EditProps, ref) => {
     return <input
       value={data}
@@ -25,5 +28,5 @@ export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
       minLength={schema.minLength || undefined}
       type={schema.format && stringInputTypes.includes(schema.format) ? schema.format : undefined}
     />;
-  }
+  },
 };

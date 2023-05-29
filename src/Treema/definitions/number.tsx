@@ -2,9 +2,12 @@ import React from 'react';
 import { TreemaTypeDefinition, EditProps } from './types';
 
 export const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
+  valueClassName: 'treema-number',
+
   display: ({ data }) => {
     return <span>{data}</span>;
   },
+  
   edit: ({ data, schema, onChange }: EditProps, ref) => {
     return <input
       value={data}

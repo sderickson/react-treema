@@ -21,6 +21,7 @@ export const getRootSchema = (state: TreemaState) => state.rootSchema;
 export const getSchemaLib = (state: TreemaState) => state.schemaLib;
 export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';
 export const getDefinitions = (state: TreemaState) => state.definitions;
+export const getSettings = (state: TreemaState) => state.settings;
 
 
 // ----------------------------------------------------------------------------
@@ -162,6 +163,10 @@ export const getIsDefaultRoot: (state: TreemaState, path: JsonPointer) => boolea
   },
 );
 
+
+// ----------------------------------------------------------------------------
+// Definition, settings based selectors
+
 export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => TreemaTypeDefinitionWrapped = createSelector(
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas, getDefinitions],
   (path, datasAndSchemas, definitions) => {
@@ -173,6 +178,13 @@ export const canEditPathDirectly: (state: TreemaState, path: JsonPointer) => boo
   [(state, path) => getDefinitionAtPath(state, path)],
   (definition) => {
     return definition.editable && definition.directlyEditable;
+  },
+);
+
+export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
+  [(state, path) => getDefinitionAtPath(state, path), getSettings],
+  (definition, settings) => {
+    return definition.collection && definition.editable && !settings.readOnly;
   },
 );
 

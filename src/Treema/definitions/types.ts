@@ -20,14 +20,13 @@ export interface TreemaTypeDefinition {
   
   editable?: boolean;            // can be changed
   directlyEditable?: boolean;    // can be changed at this level directly
-  
-  // TODO
   collection?: boolean;          // acts like an array or object
   ordered?: boolean;             // acts like an array
   keyed?: boolean;               // acts like an object
   skipTab?: boolean;             // is skipped over when tabbing between elements for editing
-  valueClass?: string;           // class to put onto the value div
+  valueClassName?: string;       // class to put onto the value div
   removeOnEmptyDelete?: boolean; // ???
+  sort?: boolean;                // whether to keep the collection sorted
 }
 
 export interface TreemaTypeDefinitionWrapped {
@@ -37,4 +36,11 @@ export interface TreemaTypeDefinitionWrapped {
 
   editable: boolean;            // can be changed
   directlyEditable: boolean;    // can be changed at this level directly
+  collection: boolean;          // acts like an array or object
+  ordered: boolean;             // acts like an array
+  keyed: boolean;               // acts like an object
+  skipTab: boolean;             // is skipped over when tabbing between elements for editing
+  valueClassName: string;       // class to put onto the value div
+  removeOnEmptyDelete: boolean; // ???
+  sort: boolean;                // whether to keep the collection sorted
 }

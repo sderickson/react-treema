@@ -27,6 +27,7 @@ import {
   getIsDefaultRoot,
   getChildOrderForPath,
   getDefinitionAtPath,
+  canAddChildAtPath,
 } from './state/selectors';
 import './base.scss';
 
@@ -116,7 +117,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
 
   const valueClassNames = [
     'treema-value',
-    'treema-' + schemaType,
+    definition.valueClassName,
     isEditing ? 'treema-edit' : 'treema-display'
   ]
 
@@ -155,6 +156,12 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
           })}
         </div>
       ) : null}
+
+      {canAddChildAtPath(state, path) && (
+        <div className='treema-add-child'>
+          +
+        </div>)
+      }
     </div>
   );
 };
