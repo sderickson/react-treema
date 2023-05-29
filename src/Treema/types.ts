@@ -64,6 +64,7 @@ export interface SupportedJsonSchema {
   format?: string;
   minimum?: number;
   maximum?: number;
+  readOnly?: boolean;
 }
 
 /**

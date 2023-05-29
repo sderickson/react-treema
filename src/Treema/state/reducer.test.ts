@@ -1,7 +1,7 @@
 import { TreemaState } from './types';
-import { setData } from './actions';
+import { setData, beginAddProperty, endAddProperty, editAddProperty } from './actions';
 import { reducer } from './reducer';
-import { getDefaultState } from '../test-utils';
+import { dispatchMultiple, getDefaultState } from '../test-utils';
 
 describe('setData action', () => {
   it('takes a path and sets the given data there, returning an object cloned where necessary', () => {
@@ -58,5 +58,28 @@ describe('setData action', () => {
       explicitlySetValue: 'explicitly set value',
       deepDefaultValue: { setString: 'string', setArray: [ 1, 5, 3 ] }
     })
+  });
+});
+
+describe('add property actions', () => {
+  it('adds a property to an object', () => {
+    const state: TreemaState = {
+      ...getDefaultState(),
+      data: {
+        'a': {},
+        'b': [
+          {},
+          {},
+        ]
+      },
+    };
+    const newState = dispatchMultiple(state, [
+      beginAddProperty('/a'),
+      editAddProperty('foo'),
+      endAddProperty(),
+    ]);
+    
+    // data has been set
+    expect(newState.data.a.foo).toEqual('');
   });
 });

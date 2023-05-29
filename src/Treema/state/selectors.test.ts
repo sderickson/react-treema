@@ -1,10 +1,11 @@
 import { TreemaState } from './types';
 import { getAllDatasAndSchemas, getListOfPaths } from './selectors';
-import { noopLib } from '../utils';
+import { getDefaultState } from '../test-utils';
 
 describe('getAllDatasAndSchemas', () => {
   it('includes default data information', () => {
     const state: TreemaState = {
+      ...getDefaultState(),
       data: {
         explicitlySetValue: 'explicitly set value',
         deepDefaultValue: {
@@ -22,8 +23,6 @@ describe('getAllDatasAndSchemas', () => {
           },
         },
       },
-      schemaLib: noopLib,
-      closed: {},
     };
     const result = getAllDatasAndSchemas(state);
 
@@ -45,12 +44,10 @@ describe('getAllDatasAndSchemas', () => {
 
   it('includes properties for object nodes which are specified in a default object that are not included in the data', () => {
     const state: TreemaState = {
-      data: {},
+      ...getDefaultState(),
       rootSchema: {
         default: { key: 'value' },
       },
-      schemaLib: noopLib,
-      closed: {},
     };
     const result = getAllDatasAndSchemas(state);
     expect(result['/key']).toBeTruthy();
@@ -90,6 +87,7 @@ describe('getAllDatasAndSchemas', () => {
 describe('getListOfPaths', () => {
   it('properly orders', () => {
     const state: TreemaState = {
+      ...getDefaultState(),
       data: {
         explicitlySetValue: 'explicitly set value',
         deepDefaultValue: {
@@ -107,8 +105,6 @@ describe('getListOfPaths', () => {
           },
         },
       },
-      schemaLib: noopLib,
-      closed: {},
     };
     const result = getListOfPaths(state);
     expect(result).toEqual([

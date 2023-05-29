@@ -17,6 +17,8 @@ import {
   setData,
   endEdit,
   editValue,
+  beginAddProperty,
+  editAddProperty,
 } from './state/actions';
 import {
   getClosed,
@@ -27,6 +29,7 @@ import {
   getChildOrderForPath,
   getDefinitionAtPath,
   canAddChildAtPath,
+  getPropertiesAvailableAtPath,
 } from './state/selectors';
 import './base.scss';
 
@@ -63,6 +66,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const errors = getSchemaErrorsByPath(state)[path] || [];
   const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
   const isDefaultRoot = getIsDefaultRoot(state, path);
+  const isAddingProperty = state.addingProperty === path;
 
   // Event handlers
   const onSelect = useCallback(
@@ -89,8 +93,19 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     },
     [isOpen, path, dispatch],
   );
-  const onChange = useCallback(
+  const onChangeValue = useCallback(
     (val: any) => {dispatch(editValue(val))},
+    [dispatch],
+  );
+  const onAddChild = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      dispatch(beginAddProperty(path))
+    },
+    [dispatch, path],
+  );
+  const onChangeAddProperty = useCallback(
+    (val: any) => { dispatch(editAddProperty(val)) },
     [dispatch],
   );
 
@@ -98,8 +113,8 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const displayRef = React.useRef<HTMLDivElement>(null);
   const editRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
-    if (isSelected) {
-      isEditing ? editRef.current?.focus() : displayRef.current?.focus();
+    if (isSelected || isEditing || isAddingProperty) {
+      isEditing || isAddingProperty ? editRef.current?.focus() : displayRef.current?.focus();
     }
   });  
 
@@ -139,7 +154,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
               ? <definition.edit
                   data={state.editingData}
                   schema={workingSchema}
-                  onChange={onChange}
+                  onChange={onChangeValue}
                   ref={editRef}
                 />
               : definition.display({ data, schema: workingSchema })
@@ -155,11 +170,27 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
         </div>
       ) : null}
 
-      {canAddChildAtPath(state, path) && (
-        <div className='treema-add-child'>
-          +
-        </div>)
-      }
+      { isAddingProperty && (
+        <>
+          <input
+            className="treema-new-prop"
+            type='text'
+            ref={editRef}
+            list="treema-new-prop-datalist"
+            onChange={(e) => { onChangeAddProperty(e.target.value); }}
+          />
+          <datalist id="treema-new-prop-datalist">
+            {getPropertiesAvailableAtPath(state, path).map((prop) => 
+              <option label={prop.title} value={prop.key} key={prop.key} />
+            )}
+          </datalist>
+        </>
+      )}
+      { canAddChildAtPath(state, path) && (
+        <div className='treema-add-child' onClick={onAddChild}>
+          <span>+</span>
+        </div>
+      )}
     </div>
   );
 };

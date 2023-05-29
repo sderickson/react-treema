@@ -8,7 +8,6 @@ export const noopValidator: SchemaValidator = () => {
 export const noopLib: SchemaLib = {
   validateMultiple: noopValidator,
   getSchemaRef: () => ({}),
-  addSchema: () => {},
 };
 
 type Tv4 = any;
@@ -34,9 +33,6 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
     },
     getSchemaRef: (ref) => {
       return tv4.getSchema(ref);
-    },
-    addSchema: (schema) => {
-      tv4.addSchema(schema);
     },
   };
 };
@@ -65,9 +61,6 @@ export const wrapAjv = (ajv: any): SchemaLib => {
     },
     getSchemaRef: (ref) => {
       return ajv.getSchema(ref);
-    },
-    addSchema: (schema) => {
-      ajv.addSchema(schema);
     },
   };
 };

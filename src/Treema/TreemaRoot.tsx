@@ -26,6 +26,7 @@ import {
   beginEdit,
   setData,
   endEdit,
+  endAddProperty,
 } from './state/actions';
 import {
   getCanClose,
@@ -134,15 +135,15 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === 'ArrowUp' && !state.editing) {
+      if (event.key === 'ArrowUp' && !state.editing && !state.addingProperty) {
         event.preventDefault();
         dispatch(navigateUp());
       }
-      if (event.key === 'ArrowDown' && !state.editing) {
+      if (event.key === 'ArrowDown' && !state.editing && !state.addingProperty) {
         event.preventDefault();
         dispatch(navigateDown());
       }
-      if (event.key === 'ArrowLeft' && !state.editing) {
+      if (event.key === 'ArrowLeft' && !state.editing && !state.addingProperty) {
         event.preventDefault();
         const selectedPath = getLastSelectedPath(state);
         if (getCanClose(state, selectedPath)) {
@@ -151,7 +152,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           dispatch(navigateOut());
         }
       }
-      if (event.key === 'ArrowRight' && !state.editing) {
+      if (event.key === 'ArrowRight' && !state.editing && !state.addingProperty) {
         event.preventDefault();
         const selectedPath = getLastSelectedPath(state);
         if (getCanOpen(state, selectedPath)) {
@@ -171,6 +172,11 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       }
       if (event.key === 'Enter') {
         event.preventDefault();
+        if (state.addingProperty) {
+          dispatch(endAddProperty());
+          dispatch(beginEdit(state.addingProperty + '/' + state.addingPropertyKey));
+          return;
+        };
         if (!state.editing && state.lastSelected && canEditPathDirectly(state, state.lastSelected)) {
           // Are currently not editing a row that is editable. Edit it and be done.
           dispatch(beginEdit(state.lastSelected));

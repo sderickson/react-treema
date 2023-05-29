@@ -163,6 +163,31 @@ export const getIsDefaultRoot: (state: TreemaState, path: JsonPointer) => boolea
   },
 );
 
+interface KeyTitlePair {
+  key: string;
+  title: string;
+}
+
+export const getPropertiesAvailableAtPath: (state: TreemaState, path: JsonPointer) => KeyTitlePair[] = createSelector(
+  [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
+  (path, datasAndSchemas) => {
+    const { schema, data } = datasAndSchemas[path];
+    if (!schema.properties) {
+      return [];
+    }
+    const properties: KeyTitlePair[] = [];
+    for (const key of Object.keys(schema.properties)) {
+      const childSchema = schema.properties[key];
+      if (data[key] !== undefined) continue;
+      if (childSchema.format === 'hidden') continue;
+      if (childSchema.readOnly) continue;
+      properties.push({ key, title: childSchema.title || key });
+    }
+    properties.sort()
+    return properties;
+  },
+);
+
 
 // ----------------------------------------------------------------------------
 // Definition, settings based selectors

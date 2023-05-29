@@ -1,7 +1,5 @@
 import { JsonPointer } from '../types';
 
-
-
 type SelectPathAction = {
   type: 'select_path_action';
   path: JsonPointer | undefined;
@@ -102,6 +100,42 @@ export const setData = (path: JsonPointer, data: any): SetDataAction => {
   };
 };
 
+type BeginAddPropertyAction = {
+  type: 'begin_add_property_action';
+  path: JsonPointer;
+};
+
+export const beginAddProperty = (path: JsonPointer): BeginAddPropertyAction => {
+  return {
+    type: 'begin_add_property_action',
+    path,
+  };
+};
+
+type EditAddPropertyAction = {
+  type: 'edit_add_property_action';
+  keyToAdd: string;
+};
+
+export const editAddProperty = (keyToAdd: string): EditAddPropertyAction => {
+  return {
+    type: 'edit_add_property_action',
+    keyToAdd,
+  };
+};
+
+type EndAddPropertyAction = {
+  type: 'end_add_property_action';
+  cancel: boolean;
+};
+
+export const endAddProperty = (cancel?: boolean): EndAddPropertyAction => {
+  return {
+    type: 'end_add_property_action',
+    cancel: cancel || false,
+  };
+};
+
 export type TreemaAction =
   SelectPathAction | 
   NavigateUpAction |
@@ -112,4 +146,8 @@ export type TreemaAction =
   SetDataAction | 
   BeginEditAction | 
   EditValueAction | 
-  EndEditAction; 
+  EndEditAction |
+  BeginAddPropertyAction |
+  EditAddPropertyAction |
+  EndAddPropertyAction
+; 

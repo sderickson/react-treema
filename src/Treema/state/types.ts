@@ -19,6 +19,8 @@ export interface TreemaState {
   closed: { [path: JsonPointer]: boolean };
   editing?: JsonPointer;
   editingData?: any;
+  addingProperty?: JsonPointer;
+  addingPropertyKey?: string;
   definitions: { [key: string]: TreemaTypeDefinitionWrapped },
   settings: TreemaSettings;
 }
