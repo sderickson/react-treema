@@ -170,8 +170,8 @@ export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => Tre
 );
 
 export const canEditPathDirectly: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
-  [(_, path) => path, (state, path) => getDefinitionAtPath(state, path)],
-  (path, definition) => {
+  [(state, path) => getDefinitionAtPath(state, path)],
+  (definition) => {
     return definition.editable && definition.directlyEditable;
   },
 );
