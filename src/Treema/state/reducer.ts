@@ -70,9 +70,12 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       let newChildData = newData;
       const segments = splitJsonPointer(action.path);
       const lastSegment = segments.pop();
+      let currentPath = '';
+      const datasAndSchemas = getAllDatasAndSchemas(state);
       segments.forEach((pathSegment: string) => {
+        currentPath += '/' + pathSegment;
         const parsedSegment = getType(currentChildData) === 'array' ? parseInt(pathSegment) : pathSegment;
-        currentChildData = currentChildData[parsedSegment];
+        currentChildData = datasAndSchemas[currentPath].data;
         newChildData[parsedSegment] = clone(currentChildData, { shallow: true });
         newChildData = newChildData[parsedSegment];
       });

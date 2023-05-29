@@ -34,4 +34,35 @@ describe('setData action', () => {
     expect(result.data.a).toBe(state.data.a);
     expect(result.data.b[0]).toBe(state.data.b[0]);
   });
+
+  it('fills in defaults if needed', () => {
+    const state: TreemaState = {
+      data: {
+        explicitlySetValue: 'explicitly set value',
+        deepDefaultValue: {
+          setString: 'string',
+        },
+      },
+      rootSchema: {
+        'type': 'object',
+        default: {
+          'default': 'default value',
+          'deepDefaultValue': {
+            'setString': 'default string',
+            'setNumber': 123,
+            'setArray': [1, 2, 3],
+          },
+        },
+      },
+      schemaLib: noopLib,
+      closed: {},
+      definitions: coreDefinitions,
+    };
+    const action = setData('/deepDefaultValue/setArray/1', 5);
+    const result = reducer(state, action);
+    expect(result.data).toEqual({
+      explicitlySetValue: 'explicitly set value',
+      deepDefaultValue: { setString: 'string', setArray: [ 1, 5, 3 ] }
+    })
+  });
 });
