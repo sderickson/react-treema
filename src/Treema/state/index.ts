@@ -9,6 +9,7 @@ const defaultContextData: ContextInterface = {
     rootSchema: { 'type': 'null' },
     closed: {},
     definitions: {},
+    settings: {},
   },
   dispatch: () => {},
 };

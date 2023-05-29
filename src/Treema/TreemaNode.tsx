@@ -7,7 +7,6 @@ import React, {
 import './base.scss';
 import {
   JsonPointer,
-  BaseType,
 } from './types';
 import {
   TreemaContext,
@@ -57,7 +56,6 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const workingSchema = getWorkingSchema(state, path);
   const name = workingSchema.title || path?.split('/').pop();
   const canOpen = workingSchema.type === 'object' || workingSchema.type === 'array';
-  const schemaType: BaseType = workingSchema.type;
   const definition = getDefinitionAtPath(state, path);
   const description = workingSchema.description;
   const childrenKeys = getChildOrderForPath(state, path) || [];
