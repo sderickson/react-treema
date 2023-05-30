@@ -1,7 +1,7 @@
 import React from 'react';
-import { TreemaRoot } from './TreemaRoot';
+import { TreemaRoot } from '../TreemaRoot';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { JsonPointer, SupportedJsonSchema, TreemaEvent } from './types';
+import { JsonPointer, SupportedJsonSchema, TreemaEvent } from '../types';
 
 describe('arrow key navigation', () => {
   const schema: SupportedJsonSchema = {

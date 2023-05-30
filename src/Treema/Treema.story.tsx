@@ -5,7 +5,7 @@ import Ajv from 'ajv';
 import { wrapAjv } from './utils';
 
 export default {
-  title: 'TreemaRoot',
+  title: 'Main/Treema',
   component: TreemaRoot,
   tags: ['autodocs'],
 };

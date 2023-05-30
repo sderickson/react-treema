@@ -179,32 +179,56 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       }
       if (event.key === 'Enter') {
         event.preventDefault();
-        if (state.addingProperty && state.lastSelected) {
+
+        // Are currently adding a property. Commit changes, and unless we're shift-entering, begin editing the new property.
+        if (
+          state.addingProperty
+           && state.lastSelected)
+        {
           dispatch(endAddProperty());
           if (!event.shiftKey) {
             dispatch(beginEdit(normalizeToPath(state.lastSelected) + '/' + state.addingPropertyKey));
             return;  
           }
-        };
-        if (!event.shiftKey && !state.editing && state.lastSelected && !isInsertPropertyPlaceholder(state.lastSelected) && canEditPathDirectly(state, state.lastSelected)) {
-          // Are currently not editing a row that is editable. Edit it and be done.
+        }
+
+        // Are currently not editing a row that is editable. Edit it and be done.
+        if (
+          !event.shiftKey
+          && !state.editing
+          && state.lastSelected
+          && !isInsertPropertyPlaceholder(state.lastSelected)
+          && canEditPathDirectly(state, state.lastSelected))
+        {
           dispatch(beginEdit(state.lastSelected));
           return;
         }
-        if (!event.shiftKey && !state.addingProperty && state.lastSelected && isInsertPropertyPlaceholder(state.lastSelected)) {
+
+        // Are focused on an "add property" placeholder. Begin adding a property, unless we're shift-entering.
+        if (
+          !event.shiftKey
+          && !state.addingProperty
+          && state.lastSelected
+          && isInsertPropertyPlaceholder(state.lastSelected)
+        ) {
           dispatch(beginAddProperty(state.lastSelected));
           return;
         }
-        if (state.editing && state.lastSelected) {
-          // Are currently editing a node. Commit changes.
+
+        // Are currently editing a node. Commit changes before navigating.
+        if (
+          state.editing
+          && state.lastSelected
+        ) {
           dispatch(setData(state.lastSelected, state.editingData));
           dispatch(endEdit());
         }
 
-        // At this point either the current row can't be edited, or just finished editing a row.
-        // Move to the next row and begin editing it if possible (and we're not at either end of the treema).
+        // At this point we're in a state where we should move up or down, then decide what to do next depending on where we land.
         dispatch(event.shiftKey ? navigateUp() : navigateDown());
         const nextSelection = event.shiftKey ? getPreviousRow(state) : getNextRow(state);
+
+        // If can edit, or add a property, do so.
         if (isInsertPropertyPlaceholder(nextSelection)) {
           dispatch(beginAddProperty(nextSelection));
         } else if (nextSelection !== state.lastSelected && canEditPathDirectly(state, normalizeToPath(nextSelection))) {
