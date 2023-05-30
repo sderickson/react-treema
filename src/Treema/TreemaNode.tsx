@@ -4,7 +4,6 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
-import './base.scss';
 import {
   JsonPointer,
 } from './types';
