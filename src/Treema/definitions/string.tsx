@@ -18,7 +18,7 @@ export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
   display: ({ data }) => {
     return <span>{data}</span>;
   },
-  
+
   edit: ({ data, schema, onChange }: EditProps, ref) => {
     return <input
       value={data}
@@ -27,6 +27,7 @@ export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
       maxLength={schema.maxLength || undefined}
       minLength={schema.minLength || undefined}
       type={schema.format && stringInputTypes.includes(schema.format) ? schema.format : undefined}
+      data-testid="treema-edit-string-input"
     />;
   },
 };

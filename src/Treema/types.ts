@@ -9,7 +9,12 @@ export interface ChangeSelectEvent {
   path: JsonPointer | undefined;
 }
 
-export type TreemaEvent = ChangeSelectEvent;
+export interface ChangeDataEvent {
+  type: 'change_data_event';
+  data: any;
+}
+
+export type TreemaEvent = ChangeSelectEvent | ChangeDataEvent;
 
 export type TreemaEventHandler = (event: TreemaEvent) => void;
 

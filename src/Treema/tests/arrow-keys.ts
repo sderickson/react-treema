@@ -91,7 +91,7 @@ export const eitherEnd: GenericTest = {
   }
 }
 
-export const genericKeyboardTests: GenericTest[] = [
+export const arrowKeyTests: GenericTest[] = [
   downStartTest,
   skipClosed,
   rightOpens,
@@ -100,7 +100,7 @@ export const genericKeyboardTests: GenericTest[] = [
   eitherEnd,
 ];
 
-export const args: Partial<TreemaRootProps> = {
+export const args: TreemaRootProps = {
   schemaLib: noopLib,
   onEvent,
   initOpen: 1,

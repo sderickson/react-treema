@@ -3,7 +3,8 @@ import React, {
   useCallback,
   useEffect,
   useReducer,
-  useMemo
+  useMemo,
+  useRef,
 } from 'react';
 import {
   JsonPointer,
@@ -253,13 +254,23 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
    * In addition to handling the inputs for the base Treema interface, TreemaRoot also handles
    * callbacks, mainly via the onEvent prop.
    */
+  const prevLastSelected = useRef(state.lastSelected);
+  const prevData = useRef(state.data);
   useEffect(() => {
     if (!onEvent) return;
-    onEvent({
-      type: 'change_select_event',
-      path: state.lastSelected,
-    });
-  }, [state.lastSelected, onEvent]);
+    if (prevLastSelected.current !== state.lastSelected) {
+      onEvent({
+        type: 'change_select_event',
+        path: state.lastSelected,
+      });  
+    }
+    if (prevData.current !== state.data) {
+      onEvent({
+        type: 'change_data_event',
+        data: state.data,
+      });
+    }
+  }, [state.lastSelected, state.data, onEvent]);
 
 
   /** 

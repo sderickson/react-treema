@@ -3,6 +3,9 @@ import * as storybookTestingLibrary from '@storybook/testing-library';
 import * as mainJest from '@jest/globals';
 import * as mainTestingLibrary from '@testing-library/react';
 import { JsonPointer, TreemaEvent } from '../types';
+import userEvent from '@testing-library/user-event'
+
+const user = userEvent.setup()
 
 type Jest = typeof storybookJest | typeof mainJest;
 type TestingLibrary = typeof storybookTestingLibrary | typeof mainTestingLibrary;
@@ -12,9 +15,13 @@ export function sleep(ms: number) {
 }
 
 let lastPath: JsonPointer | undefined;
+let lastData: any;
 export const onEvent = (event: TreemaEvent) => {
   if (event.type === 'change_select_event') {
     lastPath = event.path;
+  }
+  if (event.type === 'change_data_event') {
+    lastData = event.data;
   }
 };
 
@@ -56,7 +63,21 @@ export class TreemaStorybookTestContext {
     await sleep(this.speed);
   }
 
+  async fireEnter(): Promise<void> {
+    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'Enter', code: 'Enter' });
+    await sleep(this.speed);
+  }
+
+  async type(input: string): Promise<void> {
+    await user.keyboard(input);
+    await sleep(this.speed);
+  }
+  
   getLastPath(): JsonPointer | undefined {
     return lastPath;
+  }
+
+  getData(): any {
+    return lastData;
   }
 }

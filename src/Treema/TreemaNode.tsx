@@ -182,6 +182,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
             ref={editRef}
             list="treema-new-prop-datalist"
             onChange={(e) => { onChangeAddProperty(e.target.value); }}
+            data-testid="treema-new-prop-input"
           />
           <datalist id="treema-new-prop-datalist">
             {getPropertiesAvailableAtPath(state, path).map((prop) => 
