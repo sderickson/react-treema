@@ -178,8 +178,9 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         dispatch(selectPath(undefined));
         rootRef.current?.focus();
       }
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' || event.key === 'Tab') {
         event.preventDefault();
+        const tryToEdit = event.key === 'Enter';
 
         // Are currently adding a property. Commit changes, and unless we're shift-entering, begin editing the new property.
         if (
@@ -187,7 +188,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
            && state.lastSelected)
         {
           dispatch(endAddProperty());
-          if (!event.shiftKey) {
+          if (tryToEdit && !event.shiftKey) {
             dispatch(beginEdit(normalizeToPath(state.lastSelected) + '/' + state.addingPropertyKey));
             return;  
           }
@@ -199,8 +200,9 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           && !state.editing
           && state.lastSelected
           && !isInsertPropertyPlaceholder(state.lastSelected)
-          && canEditPathDirectly(state, state.lastSelected))
-        {
+          && canEditPathDirectly(state, state.lastSelected)
+          && tryToEdit
+        ) {
           dispatch(beginEdit(state.lastSelected));
           return;
         }
@@ -211,6 +213,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           && !state.addingProperty
           && state.lastSelected
           && isInsertPropertyPlaceholder(state.lastSelected)
+          && tryToEdit
         ) {
           dispatch(beginAddProperty(state.lastSelected));
           return;
@@ -229,11 +232,15 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         dispatch(event.shiftKey ? navigateUp() : navigateDown());
         const nextSelection = event.shiftKey ? getPreviousRow(state) : getNextRow(state);
 
-        // If can edit, or add a property, do so.
-        if (isInsertPropertyPlaceholder(nextSelection)) {
-          dispatch(beginAddProperty(nextSelection));
-        } else if (nextSelection !== state.lastSelected && canEditPathDirectly(state, normalizeToPath(nextSelection))) {
-          dispatch(beginEdit());
+        if (tryToEdit) {
+          // If can edit, or add a property, do so.
+          if (isInsertPropertyPlaceholder(nextSelection)) {
+            dispatch(beginAddProperty(nextSelection));
+          } else if (nextSelection !== state.lastSelected && canEditPathDirectly(state, normalizeToPath(nextSelection))) {
+            dispatch(beginEdit());
+          }
+        } else {
+          dispatch(selectPath(nextSelection));
         }
       }
     },
