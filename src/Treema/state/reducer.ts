@@ -8,7 +8,7 @@ import {
   buildWorkingSchemas,
   getValueForRequiredType
 } from '../utils';
-import { TreemaState } from './types'
+import { TreemaState, OrderEntry } from './types'
 import { JsonPointer } from '../types';
 import { TreemaAction } from './actions';
 import {
@@ -17,37 +17,47 @@ import {
   getNextRow,
   getPreviousRow,
   canEditPathDirectly,
+  normalizeToPath,
+  isInsertPropertyPlaceholder,
 } from './selectors';
 
-export function reducer(state: TreemaState, action: TreemaAction) {
-  let paths: JsonPointer[];
+export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
+  let paths: OrderEntry[];
   let index: number;
-  let nextPath: JsonPointer;
+  let nextPath: OrderEntry;
   switch (action.type) {
     case 'select_path_action':
-      if (action.path === undefined) {
-        let newState = { ...state };
-        delete newState.lastSelected;
+      let newState = { 
+        ...state
+      };
 
+      // make sure we don't have any editing state hanging around
+      delete newState.editing;
+      delete newState.editingData;
+      delete newState.addingProperty;
+      delete newState.addingPropertyKey;
+        
+      if (action.path === undefined) {
+        delete newState.lastSelected;
         return newState;
       }
-
-      return { ...state, lastSelected: action.path };
+      newState.lastSelected = action.path;
+      return newState;
 
     case 'navigate_up_action':
-      return { ...state, lastSelected: getPreviousRow(state) };
+      return { ...state, lastSelected: normalizeToPath(getPreviousRow(state, action.skipAddProperties)) };
 
     case 'navigate_down_action':
-      const nextSelected = getNextRow(state);
-      return { ...state, lastSelected: nextSelected };
+      const nextSelected = getNextRow(state, action.skipAddProperties);
+      return { ...state, lastSelected: normalizeToPath(nextSelected) };
 
     case 'navigate_in_action':
       paths = getListOfPaths(state).slice(1);
       index = paths.indexOf(state.lastSelected || '');
       nextPath = paths[index + 1];
-      if (nextPath.indexOf(paths[index]) === 0) {
+      if (normalizeToPath(nextPath).indexOf(normalizeToPath(paths[index])) === 0) {
         // only navigate in if it's a child of the current path
-        return { ...state, lastSelected: nextPath };
+        return { ...state, lastSelected: normalizeToPath(nextPath) };
       }
 
       return state;
@@ -70,7 +80,7 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       return { ...state, data: setDataAtPath(state, action.path, action.data) };
 
     case 'begin_edit_action':
-      const path = action.path || state.lastSelected;
+      const path = action.path || normalizeToPath(state.lastSelected || '');
       if (!path) {
         return state;
       }
@@ -87,16 +97,21 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       return { ...state, editing: undefined };
 
     case 'begin_add_property_action':
-      return { ...state, addingProperty: action.path };
+      let p = action.path;
+      if (!isInsertPropertyPlaceholder(action.path)) {
+        p = 'addTo:' + action.path;
+      }
+      return { ...state, addingProperty: true, lastSelected: p, addingPropertyKey: '' };
 
     case 'edit_add_property_action':
       return { ...state, addingPropertyKey: action.keyToAdd };
 
     case 'end_add_property_action':
-      if (state.addingPropertyKey === undefined || state.addingProperty === undefined || action.cancel) {
+      if (state.addingPropertyKey === undefined || state.addingProperty === undefined || action.cancel || !state.lastSelected) {
+        console.log('okay', { ...state, addingProperty: undefined, addingPropertyKey: undefined });
         return { ...state, addingProperty: undefined, addingPropertyKey: undefined };
       }
-      const parentSchema = getAllDatasAndSchemas(state)[state.addingProperty].schema;
+      const parentSchema = getAllDatasAndSchemas(state)[normalizeToPath(state.lastSelected)].schema;
       const childSchema = getChildSchema(state.addingPropertyKey, parentSchema);
       const workingSchema = chooseWorkingSchema(
         undefined,
@@ -105,10 +120,10 @@ export function reducer(state: TreemaState, action: TreemaAction) {
       );
       return {
         ...state,
-        addingProperty: undefined,
+        addingProperty: false,
         data: setDataAtPath(
           state,
-          state.addingProperty + '/' + state.addingPropertyKey,
+          normalizeToPath(state.lastSelected) + '/' + state.addingPropertyKey,
           getValueForRequiredType(workingSchema.type)
         )
       };

@@ -497,3 +497,14 @@ export const StringInputRestrictions = {
     },
   },
 }
+
+export const ManyPropertyAdditions = {
+  args: {
+    data: {
+      'a': {
+        'b': {},
+      },
+    },
+    schema: {},
+  },
+}

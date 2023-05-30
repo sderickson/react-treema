@@ -26,6 +26,7 @@ import {
   beginEdit,
   setData,
   endEdit,
+  beginAddProperty,
   endAddProperty,
 } from './state/actions';
 import {
@@ -35,6 +36,8 @@ import {
   getNextRow,
   getPreviousRow,
   canEditPathDirectly,
+  normalizeToPath,
+  isInsertPropertyPlaceholder,
 } from './state/selectors';
 import { reducer } from './state/reducer';
 import { TreemaContext } from './state';
@@ -137,11 +140,11 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     (event: KeyboardEvent) => {
       if (event.key === 'ArrowUp' && !state.editing && !state.addingProperty) {
         event.preventDefault();
-        dispatch(navigateUp());
+        dispatch(navigateUp(true));
       }
       if (event.key === 'ArrowDown' && !state.editing && !state.addingProperty) {
         event.preventDefault();
-        dispatch(navigateDown());
+        dispatch(navigateDown(true));
       }
       if (event.key === 'ArrowLeft' && !state.editing && !state.addingProperty) {
         event.preventDefault();
@@ -167,19 +170,29 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           dispatch(endEdit());
           return;
         }
+        if (state.addingProperty) {
+          dispatch(endAddProperty(true));
+          return;
+        }
         dispatch(selectPath(undefined));
         rootRef.current?.focus();
       }
       if (event.key === 'Enter') {
         event.preventDefault();
-        if (state.addingProperty) {
+        if (state.addingProperty && state.lastSelected) {
           dispatch(endAddProperty());
-          dispatch(beginEdit(state.addingProperty + '/' + state.addingPropertyKey));
-          return;
+          if (!event.shiftKey) {
+            dispatch(beginEdit(normalizeToPath(state.lastSelected) + '/' + state.addingPropertyKey));
+            return;  
+          }
         };
-        if (!state.editing && state.lastSelected && canEditPathDirectly(state, state.lastSelected)) {
+        if (!event.shiftKey && !state.editing && state.lastSelected && !isInsertPropertyPlaceholder(state.lastSelected) && canEditPathDirectly(state, state.lastSelected)) {
           // Are currently not editing a row that is editable. Edit it and be done.
           dispatch(beginEdit(state.lastSelected));
+          return;
+        }
+        if (!event.shiftKey && !state.addingProperty && state.lastSelected && isInsertPropertyPlaceholder(state.lastSelected)) {
+          dispatch(beginAddProperty(state.lastSelected));
           return;
         }
         if (state.editing && state.lastSelected) {
@@ -192,7 +205,9 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         // Move to the next row and begin editing it if possible (and we're not at either end of the treema).
         dispatch(event.shiftKey ? navigateUp() : navigateDown());
         const nextSelection = event.shiftKey ? getPreviousRow(state) : getNextRow(state);
-        if (nextSelection !== state.lastSelected && canEditPathDirectly(state, nextSelection)) {
+        if (isInsertPropertyPlaceholder(nextSelection)) {
+          dispatch(beginAddProperty(nextSelection));
+        } else if (nextSelection !== state.lastSelected && canEditPathDirectly(state, normalizeToPath(nextSelection))) {
           dispatch(beginEdit());
         }
       }

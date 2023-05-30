@@ -66,7 +66,8 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const errors = getSchemaErrorsByPath(state)[path] || [];
   const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
   const isDefaultRoot = getIsDefaultRoot(state, path);
-  const isAddingProperty = state.addingProperty === path;
+  const isAddingProperty = "addTo:" + path === state.lastSelected && state.addingProperty;
+  const isFocusedOnAddProperty = "addTo:" + path === state.lastSelected && !state.addingProperty;
 
   // Event handlers
   const onSelect = useCallback(
@@ -112,9 +113,13 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   // Handle focus
   const displayRef = React.useRef<HTMLDivElement>(null);
   const editRef = React.useRef<HTMLInputElement>(null);
+  const addPropRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (isSelected || isEditing || isAddingProperty) {
       isEditing || isAddingProperty ? editRef.current?.focus() : displayRef.current?.focus();
+    }
+    if (isFocusedOnAddProperty) {
+      addPropRef.current?.focus();
     }
   });  
 
@@ -142,9 +147,9 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
 
       <div ref={displayRef} tabIndex={-1} className="treema-row">
-        {name && (
+        {name !== undefined && (
           <span className="treema-key" title={description}>
-            {name}:{' '}
+            {name === '' ? '(empty string)' : name}:{' '}
           </span>
         )}
 
@@ -187,7 +192,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
         </>
       )}
       { canAddChildAtPath(state, path) && (
-        <div className='treema-add-child' onClick={onAddChild}>
+        <div className='treema-add-child' onClick={onAddChild} ref={addPropRef} tabIndex={-1}>
           <span>+</span>
         </div>
       )}

@@ -30,6 +30,7 @@ And http://codecombat.github.io/treema/demo.html
   - [ ] Make arrays and objects able to add children
   - [ ] Make able to delete properties and children
   - [ ] Make validator story work, able to fix all invalid data
+  - [ ] Be able to edit working schema
 - [ ] getters/setters
 
 #### TODO

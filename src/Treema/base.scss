@@ -64,6 +64,10 @@
   &:hover {
     background-color: #ccf;
   }
+
+  &:focus {
+    box-shadow: 0px 0px 3px #aaf;
+  }
 }
 .treema-full > .treema-children > .treema-add-child {
   display: none;

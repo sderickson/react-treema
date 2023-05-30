@@ -1,4 +1,5 @@
 import { JsonPointer } from '../types';
+import { OrderEntry } from './types';
 
 type SelectPathAction = {
   type: 'select_path_action';
@@ -14,9 +15,11 @@ export const selectPath = (path: JsonPointer | undefined): SelectPathAction => {
 
 type NavigateUpAction = {
   type: 'navigate_up_action';
+  skipAddProperties?: boolean;
 };
 type NavigateDownAction = {
   type: 'navigate_down_action';
+  skipAddProperties?: boolean;
 };
 type NavigateInAction = {
   type: 'navigate_in_action';
@@ -25,11 +28,11 @@ type NavigateOutAction = {
   type: 'navigate_out_action';
 };
 
-export const navigateUp = (): NavigateUpAction => {
-  return { type: 'navigate_up_action' };
+export const navigateUp = (skipAddProperties?: boolean): NavigateUpAction => {
+  return { type: 'navigate_up_action', skipAddProperties };
 };
-export const navigateDown = (): NavigateDownAction => {
-  return { type: 'navigate_down_action' };
+export const navigateDown = (skipAddProperties?: boolean): NavigateDownAction => {
+  return { type: 'navigate_down_action', skipAddProperties };
 };
 export const navigateIn = (): NavigateInAction => {
   return { type: 'navigate_in_action' };
@@ -102,7 +105,7 @@ export const setData = (path: JsonPointer, data: any): SetDataAction => {
 
 type BeginAddPropertyAction = {
   type: 'begin_add_property_action';
-  path: JsonPointer;
+  path: OrderEntry;
 };
 
 export const beginAddProperty = (path: JsonPointer): BeginAddPropertyAction => {

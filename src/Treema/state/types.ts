@@ -11,6 +11,9 @@ export interface TreemaSettings {
   skipValidation?: boolean;
 }
 
+export type InsertPropertyPlaceholder = string;
+export type OrderEntry = JsonPointer|InsertPropertyPlaceholder;
+
 export interface TreemaState {
   data: any;
   schemaLib: SchemaLib;
@@ -19,7 +22,7 @@ export interface TreemaState {
   closed: { [path: JsonPointer]: boolean };
   editing?: JsonPointer;
   editingData?: any;
-  addingProperty?: JsonPointer;
+  addingProperty?: boolean;
   addingPropertyKey?: string;
   definitions: { [key: string]: TreemaTypeDefinitionWrapped },
   settings: TreemaSettings;
