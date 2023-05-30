@@ -18,6 +18,7 @@ import {
   editValue,
   beginAddProperty,
   editAddProperty,
+  beginEdit,
 } from './state/actions';
 import {
   getClosed,
@@ -31,6 +32,11 @@ import {
   getPropertiesAvailableAtPath,
 } from './state/selectors';
 import './base.scss';
+import {
+  getChildWorkingSchema,
+  getValueForRequiredType,
+  clone,
+} from './utils';
 
 
 interface TreemaNodeProps {
@@ -100,7 +106,15 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const onAddChild = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      dispatch(beginAddProperty(path))
+      if (workingSchema.type === 'object') {
+        dispatch(beginAddProperty(path))
+      } else if (workingSchema.type === 'array') {
+        const childSchema = getChildWorkingSchema(data.length, workingSchema, state.schemaLib);
+        const newData = childSchema.default ? clone(childSchema.default) : getValueForRequiredType(childSchema.type);
+        dispatch(setData(path + '/' + data.length, newData));
+        dispatch(selectPath(path + '/' + data.length));
+        dispatch(beginEdit(path + '/' + data.length));
+      } 
     },
     [dispatch, path],
   );

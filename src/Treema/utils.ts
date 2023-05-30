@@ -252,6 +252,17 @@ export const getChildSchema = (key: string | number, schema: SupportedJsonSchema
   return {};
 };
 
+export const getChildWorkingSchema: (key: string | number, schema: SupportedJsonSchema, lib: SchemaLib) => WorkingSchema = (
+  key: string | number,
+  schema: SupportedJsonSchema,
+  lib: SchemaLib,
+) => {
+  const childSchema = getChildSchema(key, schema);
+  const workingSchemas = buildWorkingSchemas(childSchema, lib);
+  const workingSchema = chooseWorkingSchema(undefined, workingSchemas, lib);
+  return workingSchema;
+};
+
 const resolveReference = (schema: SupportedJsonSchema, lib: SchemaLib): SupportedJsonSchema => {
   if (schema.$ref) {
     const resolved = lib.getSchemaRef(schema.$ref);
