@@ -23,25 +23,25 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Description prop
 - [X] Default data
 - [X] Required data
-
-#### In Progress
-- [ ] Editing
+- [X] Editing
   - [X] Make default story work, able to set data
   - [X] Make arrays and objects able to add children
   - [X] Make able to delete properties and children
-  - [ ] Make validator story work, able to fix all invalid data
-  - [ ] Be able to edit working schema
-- [ ] getters/setters
+- [X] Callbacks
+
+#### In Progress
+- [ ] Custom treema nodes
 
 #### TODO
+- [ ] getters/setters
+- [ ] getChildSchema, canAddProperty, other exposed utilities
+- [ ] Edit working schemas
 - [ ] Shift/Meta click
-- [ ] Callbacks
-- [ ] Custom treema nodes
 - [ ] readOnly
 - [ ] Copy/Paste
-- [ ] Prevent editing into bad schema states
+- [ ] Preventing adding items, props where no more can be added
+- [ ] Prevent editing into other bad schema states
 - [ ] Extras (2d point, etc)
-- [ ] getChildSchema, canAddProperty
 - [ ] undo/redo
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
@@ -59,29 +59,12 @@ To start the developing run :
 yarn start
 ```
 
-This will build a version of your library, run the watcher and also run Storybook.
+This will build Treema and run Storybook.
 To open Storybook manually open your Browser and navigate to [http://localhost:6060](http://localhost:6060).
-Start developing your components in `src/components` folder and update the `src/index.js` file accordingly.
-Always provide an `YourComponent.story.tsx` file, so your component will show up in Storybook.
-
-You can refer to example `Button` component, but I think you'll get the idea.
-
-### Proposals (Babel)
-
-For smoother development some Babel plugin are included
-- [class-properties](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-class-properties)
-- [object-rest-spread](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread)
-- [optional-chaining](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-optional-chaining)
-
-## Styling your components
-
-`SCSS` and `CSS` are supported out of the box just import your styles into your component like you normally would do.
-For the use of  `CSS Modules` refer to [rollup-plugin-postcss](https://github.com/egoist/rollup-plugin-postcss)
 
 ## Testing
 
 Testing is done with [Jest](https://facebook.github.io/jest/) and [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/)
-You can refer to `Button.test.js` as an example.
 ```
 yarn test
 ```
@@ -89,13 +72,18 @@ or (for getting coverage)
 ```
 yarn test:coverage
 ```
+or (for automatic running)
+```
+yarn test:watch
+```
+
+Note that Storybook is also set up to run the interactive tests. Unit tests are not run in Storybook.
 
 
 ## Linting
 
 Linting is set up through [ESLint](https://eslint.org/) and configured with  [eslint-config-react-app](https://www.npmjs.com/package/eslint-config-react-app) and
 [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier).
-You can modify linting rules by overriding them in the `.eslintrc.json` file.
 
 ```
 yarn lint
@@ -107,7 +95,9 @@ yarn lint:fix
 
 ## Publishing your library to NPM
 
-To release your library to NPM or your private Registry, make sure you have an active account at [NPM](https://www.npmjs.com/), your `.npmrc` file is correctly setup and the repository url in `package.json` file is set to your repository url, then:
+`TODO`
+
+To release to NPM, make sure you have an active account at [NPM](https://www.npmjs.com/), your `.npmrc` file is correctly setup and the repository url in `package.json` file is set to your repository url, then:
 
 ```
 yarn release
@@ -118,6 +108,8 @@ yarn release
 For custom layouts, styling and more information about Storybook, please refer to [Storybook](https://storybook.js.org/basics/writing-stories/) documentation.
 
 #### Deploy Storybook to GitHub Pages
+
+`TODO`
 
 Make sure the repository url in `package.json` file is set to your repository url, then:
 
@@ -131,6 +123,7 @@ yarn deploy
 - `yarn build` : Builds your library (build can be found in `dist` folder).
 - `yarn storybook:build` : Builds the static Storybook in case you want to deploy it.
 - `yarn test` : Runs the tests.
+- `yarn test:watch` : Runs the tests with a watcher.
 - `yarn test:coverage`: Runs the test and shows the coverage.
 - `yarn lint` : Runs the linter, Typescript typecheck and stylelint.
 - `yarn lint:fix` : Runs the linter, Typescript typecheck and stylelint and fixes automatic fixable issues.
