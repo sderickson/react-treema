@@ -1,14 +1,6 @@
 import { TreemaRoot } from '../TreemaRoot';
 import type { Meta } from '@storybook/react';
-import {
-  args,
-  downStartTest,
-  rightOpens,
-  skipClosed,
-  traverseOpenCollections,
-  closeCollections,
-  eitherEnd,
-} from './arrow-keys';
+import { args, downStartTest, rightOpens, skipClosed, traverseOpenCollections, closeCollections, eitherEnd } from './arrow-keys';
 import { wrapGenericTestInStory, Story } from './utils-storybook';
 
 /**

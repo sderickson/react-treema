@@ -1,9 +1,6 @@
 import { TreemaRoot } from '../TreemaRoot';
 import type { Meta } from '@storybook/react';
-import {
-  args,
-  editRow,
-} from './enter-key';
+import { args, editRow } from './enter-key';
 import { wrapGenericTestInStory, Story } from './utils-storybook';
 
 /**

@@ -6,9 +6,9 @@ import {
   getChildSchema,
   chooseWorkingSchema,
   buildWorkingSchemas,
-  getValueForRequiredType
+  getValueForRequiredType,
 } from '../utils';
-import { TreemaState, OrderEntry } from './types'
+import { TreemaState, OrderEntry } from './types';
 import { JsonPointer } from '../types';
 import { TreemaAction } from './actions';
 import {
@@ -27,8 +27,8 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
   let nextPath: OrderEntry;
   switch (action.type) {
     case 'select_path_action':
-      let newState = { 
-        ...state
+      let newState = {
+        ...state,
       };
 
       // make sure we don't have any editing state hanging around
@@ -36,12 +36,14 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       delete newState.editingData;
       delete newState.addingProperty;
       delete newState.addingPropertyKey;
-        
+
       if (action.path === undefined) {
         delete newState.lastSelected;
+
         return newState;
       }
       newState.lastSelected = action.path;
+
       return newState;
 
     case 'navigate_up_action':
@@ -49,6 +51,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
 
     case 'navigate_down_action':
       const nextSelected = getNextRow(state, action.skipAddProperties);
+
       return { ...state, lastSelected: normalizeToPath(nextSelected) };
 
     case 'navigate_in_action':
@@ -77,6 +80,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       if (action.path === '') {
         return { ...state, data: action.data };
       }
+
       return { ...state, data: setDataAtPath(state, action.path, action.data) };
 
     case 'begin_edit_action':
@@ -88,6 +92,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         return state;
       }
       const initialData = getAllDatasAndSchemas(state)[path].data;
+
       return { ...state, editing: path, editingData: initialData, lastSelected: path };
 
     case 'edit_value_action':
@@ -101,6 +106,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       if (!isInsertPropertyPlaceholder(action.path)) {
         p = 'addTo:' + action.path;
       }
+
       return { ...state, addingProperty: true, lastSelected: p, addingPropertyKey: '' };
 
     case 'edit_add_property_action':
@@ -112,21 +118,18 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       }
       const parentSchema = getAllDatasAndSchemas(state)[normalizeToPath(state.lastSelected)].schema;
       const childSchema = getChildSchema(state.addingPropertyKey, parentSchema);
-      const workingSchema = chooseWorkingSchema(
-        undefined,
-        buildWorkingSchemas(childSchema, state.schemaLib),
-        state.schemaLib
-      );
+      const workingSchema = chooseWorkingSchema(undefined, buildWorkingSchemas(childSchema, state.schemaLib), state.schemaLib);
+
       return {
         ...state,
         addingProperty: false,
         data: setDataAtPath(
           state,
           normalizeToPath(state.lastSelected) + '/' + state.addingPropertyKey,
-          getValueForRequiredType(workingSchema.type)
-        )
+          getValueForRequiredType(workingSchema.type),
+        ),
       };
-      
+
     case 'delete_action':
       const parent = getParentPath(action.path);
       const parentData = getAllDatasAndSchemas(state)[parent].data;
@@ -139,7 +142,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       } else {
         delete newData[lastSegment as string];
       }
-      
+
       // figure out what the next selection should be. Find the previous row
       // in the *old* state. Then figure out what its next row is in the *new* state
       let previousRow = getPreviousRow(state, true);
@@ -149,6 +152,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       const s = { ...state, data: setDataAtPath(state, parent, newData), lastSelected: previousRow };
       const getNextRowResult = getNextRow(s, true);
       s.lastSelected = getNextRowResult;
+
       return s;
 
     default:
@@ -178,5 +182,6 @@ const setDataAtPath = (state: TreemaState, path: JsonPointer, data: any): any =>
     newChildData = newChildData[parsedSegment];
   });
   newChildData[lastSegment as string] = data;
+
   return newData;
-}
+};

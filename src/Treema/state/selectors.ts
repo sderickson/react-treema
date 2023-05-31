@@ -1,17 +1,6 @@
-import {
-  getParentPath,
-  getType,
-  walk
-} from '../utils';
-import { 
-  JsonPointer,
-  ValidatorError,
-  WorkingSchema
-} from '../types';
-import {
-  TreemaState,
-  OrderEntry
-} from './types'
+import { getParentPath, getType, walk } from '../utils';
+import { JsonPointer, ValidatorError, WorkingSchema } from '../types';
+import { TreemaState, OrderEntry } from './types';
 import { createSelector } from 'reselect';
 import { TreemaTypeDefinitionWrapped } from '../definitions/types';
 
@@ -23,7 +12,6 @@ export const getSchemaLib = (state: TreemaState) => state.schemaLib;
 export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';
 export const getDefinitions = (state: TreemaState) => state.definitions;
 export const getSettings = (state: TreemaState) => state.settings;
-
 
 // ----------------------------------------------------------------------------
 // Error selectors
@@ -184,11 +172,11 @@ export const getPropertiesAvailableAtPath: (state: TreemaState, path: JsonPointe
       if (childSchema.readOnly) continue;
       properties.push({ key, title: childSchema.title || key });
     }
-    properties.sort()
+    properties.sort();
+
     return properties;
   },
 );
-
 
 // ----------------------------------------------------------------------------
 // Definition, settings based selectors
@@ -214,7 +202,6 @@ export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boole
   },
 );
 
-
 // ----------------------------------------------------------------------------
 // Order selectors
 
@@ -223,7 +210,7 @@ export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boole
 //   parentPath: JsonPointer;
 // }
 
-export const isInsertPropertyPlaceholder = (path: OrderEntry) : boolean => {
+export const isInsertPropertyPlaceholder = (path: OrderEntry): boolean => {
   return path.indexOf('addTo:') === 0;
 };
 
@@ -231,11 +218,12 @@ export const normalizeToPath = (path: OrderEntry): JsonPointer => {
   if (isInsertPropertyPlaceholder(path)) {
     return path.slice(6);
   }
+
   return path;
 };
 
 type OrderInfo = {
-  pathOrder: (OrderEntry)[];
+  pathOrder: OrderEntry[];
   pathToChildren: { [key: JsonPointer]: JsonPointer[] };
 };
 
@@ -246,8 +234,8 @@ type OrderInfo = {
  * default or not, as well as what each object and array's children should be.
  */
 export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSchemas): OrderInfo => {
-  const pathList: (OrderEntry)[] = [];
-  let stack: (OrderEntry)[] = [''];
+  const pathList: OrderEntry[] = [];
+  let stack: OrderEntry[] = [''];
   const pathToChildren: { [key: JsonPointer]: JsonPointer[] } = {};
   while (stack.length) {
     const path = stack.shift() as JsonPointer;
@@ -331,11 +319,8 @@ export const getNextRow: (state: TreemaState, skipAddProperties?: boolean) => Or
     const currentIndex = paths.indexOf(state.lastSelected || '');
     index = Math.min(currentIndex + 1, paths.length - 1);
     while (
-      index < paths.length
-      && (
-        getAnyAncestorsClosed(state, normalizeToPath(paths[index]))
-        || (skipAddProperties && isInsertPropertyPlaceholder(paths[index]))
-      )
+      index < paths.length &&
+      (getAnyAncestorsClosed(state, normalizeToPath(paths[index])) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))
     ) {
       index++;
     }
@@ -344,8 +329,9 @@ export const getNextRow: (state: TreemaState, skipAddProperties?: boolean) => Or
       index = currentIndex;
     }
   }
+
   return paths[index];
-}
+};
 
 export const getPreviousRow: (state: TreemaState, skipAddProperties?: boolean) => OrderEntry = (state, skipAddProperties) => {
   if (state.lastSelected === '') {
@@ -361,20 +347,16 @@ export const getPreviousRow: (state: TreemaState, skipAddProperties?: boolean) =
     index = paths.indexOf(state.lastSelected) - 1;
   }
   while (
-    index > 0
-    && (
-      getAnyAncestorsClosed(state, normalizeToPath(paths[index]))
-      || (skipAddProperties && isInsertPropertyPlaceholder(paths[index]))
-    )
-    ) {
+    index > 0 &&
+    (getAnyAncestorsClosed(state, normalizeToPath(paths[index])) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))
+  ) {
     index--;
   }
   nextPath = paths[index];
   nextPathParent = getParentPath(normalizeToPath(nextPath));
 
   return getClosed(state)[nextPathParent] ? nextPathParent : nextPath;
-}
-
+};
 
 // ----------------------------------------------------------------------------
 // Open / Closed selectors

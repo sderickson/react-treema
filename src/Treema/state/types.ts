@@ -1,9 +1,5 @@
 import { TreemaTypeDefinitionWrapped } from '../definitions/types';
-import {
-  SchemaLib,
-  SupportedJsonSchema,
-  JsonPointer
-} from '../types';
+import { SchemaLib, SupportedJsonSchema, JsonPointer } from '../types';
 
 export interface TreemaSettings {
   readOnly?: boolean;
@@ -12,7 +8,7 @@ export interface TreemaSettings {
 }
 
 export type InsertPropertyPlaceholder = string;
-export type OrderEntry = JsonPointer|InsertPropertyPlaceholder;
+export type OrderEntry = JsonPointer | InsertPropertyPlaceholder;
 
 export interface TreemaState {
   data: any;
@@ -24,7 +20,7 @@ export interface TreemaState {
   editingData?: any;
   addingProperty?: boolean;
   addingPropertyKey?: string;
-  definitions: { [key: string]: TreemaTypeDefinitionWrapped },
+  definitions: { [key: string]: TreemaTypeDefinitionWrapped };
   settings: TreemaSettings;
 }
 
@@ -32,4 +28,3 @@ export interface ContextInterface {
   state: TreemaState;
   dispatch: React.Dispatch<any>;
 }
-

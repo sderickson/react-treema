@@ -19,6 +19,6 @@ export const wrapGenericTestInStory = (test: GenericTest, args: TreemaRootProps)
       const context = new TreemaStorybookTestContext(root, jest, testLibrary);
       await sleep(100);
       await test.test(context);
-    }
+    },
   };
 };

@@ -92,11 +92,7 @@ export interface SupportedJsonSchema {
  * Note that working schemas do *not* contain other working schemas. It is expected if you
  * are considering a child value, you will get the working schema for it as needed separately.
  */
-export type WorkingSchema = 
-  Omit<
-    SupportedJsonSchema,
-    "$ref" | "allOf" | "anyOf" | "oneOf"
-  > & { type: BaseType };
+export type WorkingSchema = Omit<SupportedJsonSchema, '$ref' | 'allOf' | 'anyOf' | 'oneOf'> & { type: BaseType };
 
 export interface TreemaNodeContext {
   data: any;

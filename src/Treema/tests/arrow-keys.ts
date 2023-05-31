@@ -9,10 +9,10 @@ export const downStartTest: GenericTest = {
     await ctx.fireFocus();
     await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/name');
-  }
-}
+  },
+};
 
-export const skipClosed: GenericTest = { 
+export const skipClosed: GenericTest = {
   name: 'up and down arrows skip closed collections',
   test: async (ctx) => {
     await ctx.fireArrowDown();
@@ -22,8 +22,8 @@ export const skipClosed: GenericTest = {
     ctx.expect(ctx.getLastPath()).toEqual('/address');
     await ctx.fireArrowUp();
     ctx.expect(ctx.getLastPath()).toEqual('/numbers');
-  }
-}
+  },
+};
 
 export const rightOpens: GenericTest = {
   name: 'right arrow opens a collection',
@@ -34,8 +34,8 @@ export const rightOpens: GenericTest = {
     await ctx.fireArrowRight();
     await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/numbers/0');
-  }
-}
+  },
+};
 
 export const traverseOpenCollections: GenericTest = {
   name: 'up and down traverses open collections',
@@ -58,8 +58,8 @@ export const traverseOpenCollections: GenericTest = {
     ctx.expect(ctx.getLastPath()).toEqual('/numbers/1');
     await ctx.fireArrowUp();
     ctx.expect(ctx.getLastPath()).toEqual('/numbers/0');
-  }
-}
+  },
+};
 
 export const closeCollections: GenericTest = {
   name: 'left arrow closes a collection',
@@ -76,8 +76,8 @@ export const closeCollections: GenericTest = {
     ctx.expect(ctx.getLastPath()).toEqual('/numbers');
     await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/address');
-  }
-}
+  },
+};
 
 export const eitherEnd: GenericTest = {
   name: 'up arrow wraps at the top of the collection, down arrow stays at the bottom',
@@ -88,17 +88,10 @@ export const eitherEnd: GenericTest = {
     ctx.expect(ctx.getLastPath()).toEqual('/address');
     await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/address');
-  }
-}
+  },
+};
 
-export const arrowKeyTests: GenericTest[] = [
-  downStartTest,
-  skipClosed,
-  rightOpens,
-  traverseOpenCollections,
-  closeCollections,
-  eitherEnd,
-];
+export const arrowKeyTests: GenericTest[] = [downStartTest, skipClosed, rightOpens, traverseOpenCollections, closeCollections, eitherEnd];
 
 export const args: TreemaRootProps = {
   schemaLib: noopLib,

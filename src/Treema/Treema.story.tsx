@@ -496,7 +496,7 @@ export const StringInputRestrictions = {
       },
     },
   },
-}
+};
 
 export const ManyPropertyAdditions = {
   args: {
@@ -507,4 +507,4 @@ export const ManyPropertyAdditions = {
     },
     schema: {},
   },
-}
+};

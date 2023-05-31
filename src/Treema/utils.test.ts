@@ -182,7 +182,7 @@ describe('clone', () => {
     expect(clonedObject).toEqual(originalObject);
     expect(clonedObject).not.toBe(originalObject);
     expect(clonedObject.foo).toBe(originalObject.foo);
-  })
+  });
 });
 
 describe('populateRequireds', () => {

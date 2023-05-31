@@ -1,22 +1,6 @@
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useReducer,
-  useMemo,
-  useRef,
-} from 'react';
-import {
-  JsonPointer,
-  SchemaLib,
-  SupportedJsonSchema,
-  TreemaEventHandler
-} from './types';
-import {
-  noopLib,
-  populateRequireds,
-  walk
-} from './utils';
+import React, { FC, useCallback, useEffect, useReducer, useMemo, useRef } from 'react';
+import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaEventHandler } from './types';
+import { noopLib, populateRequireds, walk } from './utils';
 import {
   selectPath,
   navigateUp,
@@ -45,7 +29,6 @@ import { reducer } from './state/reducer';
 import { TreemaContext } from './state';
 import { TreemaNode } from './TreemaNode';
 import { coreDefinitions } from './definitions';
-
 
 export interface TreemaRootProps {
   /**
@@ -97,7 +80,6 @@ export interface TreemaRootProps {
  * provide a JSON Schema validator library which will thoroughly enforce the schema and provide error messages.
  */
 export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent }) => {
-
   /**
    * TreemaRoot handles initializing the state, and updating it when props change. This includes
    * what paths are open or closed, populating required fields, and initializing a noop schema
@@ -131,7 +113,6 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     definitions: coreDefinitions,
     settings: {},
   });
-
 
   /**
    * Being at the top level, TreemaRoot is responsible for handling keyboard events. It should describe
@@ -170,10 +151,12 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         event.preventDefault();
         if (state.editing) {
           dispatch(endEdit());
+
           return;
         }
         if (state.addingProperty) {
           dispatch(endAddProperty(true));
+
           return;
         }
         dispatch(selectPath(undefined));
@@ -184,47 +167,44 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         const tryToEdit = event.key === 'Enter';
 
         // Are currently adding a property. Commit changes, and unless we're shift-entering, begin editing the new property.
-        if (
-          state.addingProperty
-           && state.lastSelected)
-        {
+        if (state.addingProperty && state.lastSelected) {
           dispatch(endAddProperty());
           if (tryToEdit && !event.shiftKey) {
             dispatch(beginEdit(normalizeToPath(state.lastSelected) + '/' + state.addingPropertyKey));
-            return;  
+
+            return;
           }
         }
 
         // Are currently not editing a row that is editable. Edit it and be done.
         if (
-          !event.shiftKey
-          && !state.editing
-          && state.lastSelected
-          && !isInsertPropertyPlaceholder(state.lastSelected)
-          && canEditPathDirectly(state, state.lastSelected)
-          && tryToEdit
+          !event.shiftKey &&
+          !state.editing &&
+          state.lastSelected &&
+          !isInsertPropertyPlaceholder(state.lastSelected) &&
+          canEditPathDirectly(state, state.lastSelected) &&
+          tryToEdit
         ) {
           dispatch(beginEdit(state.lastSelected));
+
           return;
         }
 
         // Are focused on an "add property" placeholder. Begin adding a property, unless we're shift-entering.
         if (
-          !event.shiftKey
-          && !state.addingProperty
-          && state.lastSelected
-          && isInsertPropertyPlaceholder(state.lastSelected)
-          && tryToEdit
+          !event.shiftKey &&
+          !state.addingProperty &&
+          state.lastSelected &&
+          isInsertPropertyPlaceholder(state.lastSelected) &&
+          tryToEdit
         ) {
           dispatch(beginAddProperty(state.lastSelected));
+
           return;
         }
 
         // Are currently editing a node. Commit changes before navigating.
-        if (
-          state.editing
-          && state.lastSelected
-        ) {
+        if (state.editing && state.lastSelected) {
           dispatch(setData(state.lastSelected, state.editingData));
           dispatch(endEdit());
         }
@@ -270,8 +250,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     };
   }, [onKeyDown]);
 
-
-  /** 
+  /**
    * In addition to handling the inputs for the base Treema interface, TreemaRoot also handles
    * callbacks, mainly via the onEvent prop.
    */
@@ -283,7 +262,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       onEvent({
         type: 'change_select_event',
         path: state.lastSelected,
-      });  
+      });
     }
     if (prevData.current !== state.data) {
       onEvent({
@@ -293,8 +272,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     }
   }, [state.lastSelected, state.data, onEvent]);
 
-
-  /** 
+  /**
    * Render, providing the context for the various nodes.
    */
   return (

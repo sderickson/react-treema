@@ -3,9 +3,9 @@ import * as storybookTestingLibrary from '@storybook/testing-library';
 import * as mainJest from '@jest/globals';
 import * as mainTestingLibrary from '@testing-library/react';
 import { JsonPointer, TreemaEvent } from '../types';
-import userEvent from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event';
 
-const user = userEvent.setup()
+const user = userEvent.setup();
 
 type Jest = typeof storybookJest | typeof mainJest;
 type TestingLibrary = typeof storybookTestingLibrary | typeof mainTestingLibrary;
@@ -77,7 +77,7 @@ export class TreemaStorybookTestContext {
     await user.keyboard(input);
     await sleep(this.speed);
   }
-  
+
   getLastPath(): JsonPointer | undefined {
     return lastPath;
   }

@@ -13,17 +13,15 @@ export const deleteAllData: GenericTest = {
     await ctx.fireBackspace();
     const data = ctx.getData();
     ctx.expect(data).toEqual([]);
-  }
-}
+  },
+};
 
-export const deleteKeyTests: GenericTest[] = [
-  deleteAllData,
-];
+export const deleteKeyTests: GenericTest[] = [deleteAllData];
 
 export const args: TreemaRootProps = {
   schemaLib: noopLib,
   onEvent,
-  data: [1,2,3],
+  data: [1, 2, 3],
   schema: {
     type: 'array',
     items: {

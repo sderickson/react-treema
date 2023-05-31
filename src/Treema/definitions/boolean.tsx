@@ -9,16 +9,20 @@ export const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
   },
 
   edit: ({ data, onChange }, ref) => {
-    return <span>
-      {JSON.stringify(data)}
-      <input
-        type="checkbox"
-        checked={data}
-        ref={ref}
-        onChange={(e) => { onChange(e.target.checked); }}
-      />
-    </span>
-  }
+    return (
+      <span>
+        {JSON.stringify(data)}
+        <input
+          type="checkbox"
+          checked={data}
+          ref={ref}
+          onChange={(e) => {
+            onChange(e.target.checked);
+          }}
+        />
+      </span>
+    );
+  },
 
   /*
     TODO

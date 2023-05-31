@@ -13,10 +13,10 @@ export const getDefaultState = (): TreemaState => {
     definitions: coreDefinitions,
     settings: {},
   };
-}
+};
 
 export const dispatchMultiple = (state: TreemaState, actions: TreemaAction[]) => {
   return actions.reduce((s, action) => {
     return reducer(s, action);
   }, state);
-}
+};

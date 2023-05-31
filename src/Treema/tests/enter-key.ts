@@ -8,16 +8,14 @@ export const editRow: GenericTest = {
   test: async (ctx) => {
     await ctx.fireFocus();
     await ctx.fireEnter();
-    await ctx.type("Hi!");
+    await ctx.type('Hi!');
     await ctx.fireEnter();
     const data = ctx.getData();
     ctx.expect(data.name).toEqual('BobHi!');
-  }
-}
+  },
+};
 
-export const enterKeyTests: GenericTest[] = [
-  editRow,
-];
+export const enterKeyTests: GenericTest[] = [editRow];
 
 export const args: TreemaRootProps = {
   schemaLib: noopLib,

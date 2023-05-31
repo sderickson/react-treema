@@ -260,6 +260,7 @@ export const getChildWorkingSchema: (key: string | number, schema: SupportedJson
   const childSchema = getChildSchema(key, schema);
   const workingSchemas = buildWorkingSchemas(childSchema, lib);
   const workingSchema = chooseWorkingSchema(undefined, workingSchemas, lib);
+
   return workingSchema;
 };
 
@@ -387,4 +388,4 @@ export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, l
 export const splitJsonPointer = (path: JsonPointer): string[] => {
   // Not actually following the whole spec, but this'll do for now.
   return path.split('/').slice(1);
-}
+};

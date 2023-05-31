@@ -9,15 +9,12 @@ describe('setData action', () => {
       ...getDefaultState(),
       data: {
         'a': {},
-        'b': [
-          {},
-          {},
-        ]
+        'b': [{}, {}],
       },
     };
     const action = setData('/b/1/foo', 'bar');
     const result = reducer(state, action);
-    
+
     // data has been set
     expect(result.data.b[1].foo).toEqual('bar');
 
@@ -56,8 +53,8 @@ describe('setData action', () => {
     const result = reducer(state, action);
     expect(result.data).toEqual({
       explicitlySetValue: 'explicitly set value',
-      deepDefaultValue: { setString: 'string', setArray: [ 1, 5, 3 ] }
-    })
+      deepDefaultValue: { setString: 'string', setArray: [1, 5, 3] },
+    });
   });
 });
 
@@ -67,18 +64,11 @@ describe('add property actions', () => {
       ...getDefaultState(),
       data: {
         'a': {},
-        'b': [
-          {},
-          {},
-        ]
+        'b': [{}, {}],
       },
     };
-    const newState = dispatchMultiple(state, [
-      beginAddProperty('/a'),
-      editAddProperty('foo'),
-      endAddProperty(),
-    ]);
-    
+    const newState = dispatchMultiple(state, [beginAddProperty('/a'), editAddProperty('foo'), endAddProperty()]);
+
     // data has been set
     expect(newState.data.a.foo).toEqual('');
   });
@@ -92,39 +82,28 @@ describe('delete action', () => {
         'a': {
           'foo': 'bar',
         },
-        'b': [
-          {},
-          {},
-        ]
+        'b': [{}, {}],
       },
     };
     const action = deleteAction('/a/foo');
     const result = reducer(state, action);
-    
+
     // data has been set
     expect(result.data).toEqual({
       'a': {},
-      'b': [
-        {},
-        {},
-      ]
+      'b': [{}, {}],
     });
   });
 
   it('deletes an item from an array', () => {
     const state: TreemaState = {
       ...getDefaultState(),
-      data: [
-        'first',
-        'second',
-      ]
+      data: ['first', 'second'],
     };
     const action = deleteAction('/0');
     const result = reducer(state, action);
-    
+
     // data has been set
-    expect(result.data).toEqual([
-      'second',
-    ]);
+    expect(result.data).toEqual(['second']);
   });
 });

@@ -8,23 +8,19 @@ import { TreemaIntegerNodeDefinition } from './integer';
 import './core.scss';
 import './extra.scss';
 
-import {
-  forwardRef
-} from 'react';
-import {
-  EditProps,
-  TreemaTypeDefinition,
-  TreemaTypeDefinitionWrapped,
-} from './types';
+import { forwardRef } from 'react';
+import { EditProps, TreemaTypeDefinition, TreemaTypeDefinitionWrapped } from './types';
 
 /**
  * TreemaNode creates and uses refs to the inputs that these definitions use. Apparently in order
  * for these to work in hook-land, you have to wrap the functional component in forwardRef.
  * Definitions don't worry about this, so wrapping happens here.
- * 
+ *
  * Wrapping also fills in defaults for configuration properties.
  */
-const wrapTypeDefinition: ((typeDefinition: TreemaTypeDefinition) => TreemaTypeDefinitionWrapped) = (typeDefinition: TreemaTypeDefinition) => {
+const wrapTypeDefinition: (typeDefinition: TreemaTypeDefinition) => TreemaTypeDefinitionWrapped = (
+  typeDefinition: TreemaTypeDefinition,
+) => {
   const wrapped: TreemaTypeDefinitionWrapped = {
     display: typeDefinition.display,
     usesTextarea: typeDefinition.usesTextarea,
@@ -41,6 +37,7 @@ const wrapTypeDefinition: ((typeDefinition: TreemaTypeDefinition) => TreemaTypeD
   if (typeDefinition.edit) {
     wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);
   }
+
   return wrapped;
 };
 

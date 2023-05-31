@@ -70,18 +70,18 @@ export const beginEdit = (path?: JsonPointer): BeginEditAction => {
 type EditValueAction = {
   type: 'edit_value_action';
   newValue: any;
-}
+};
 
 export const editValue = (newValue: any): EditValueAction => {
   return {
     type: 'edit_value_action',
     newValue,
-  }
-}
+  };
+};
 
 type EndEditAction = {
   type: 'end_editing_action';
-}
+};
 
 export const endEdit = (): EndEditAction => {
   return {
@@ -152,18 +152,17 @@ export const deleteAction = (path: JsonPointer): DeleteAction => {
 };
 
 export type TreemaAction =
-  SelectPathAction | 
-  NavigateUpAction |
-  NavigateDownAction | 
-  NavigateInAction | 
-  NavigateOutAction | 
-  SetPathClosedAction | 
-  SetDataAction | 
-  BeginEditAction | 
-  EditValueAction | 
-  EndEditAction |
-  BeginAddPropertyAction |
-  EditAddPropertyAction |
-  EndAddPropertyAction |
-  DeleteAction
-; 
+  | SelectPathAction
+  | NavigateUpAction
+  | NavigateDownAction
+  | NavigateInAction
+  | NavigateOutAction
+  | SetPathClosedAction
+  | SetDataAction
+  | BeginEditAction
+  | EditValueAction
+  | EndEditAction
+  | BeginAddPropertyAction
+  | EditAddPropertyAction
+  | EndAddPropertyAction
+  | DeleteAction;

@@ -117,9 +117,9 @@ describe('getListOfPaths', () => {
       '/deepDefaultValue/setArray/0',
       '/deepDefaultValue/setArray/1',
       '/deepDefaultValue/setArray/2',
-      "addTo:/deepDefaultValue",
+      'addTo:/deepDefaultValue',
       '/default',
-      "addTo:",
+      'addTo:',
     ]);
   });
 });
