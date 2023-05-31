@@ -27,8 +27,8 @@ And http://codecombat.github.io/treema/demo.html
 #### In Progress
 - [ ] Editing
   - [X] Make default story work, able to set data
-  - [ ] Make arrays and objects able to add children
-  - [ ] Make able to delete properties and children
+  - [X] Make arrays and objects able to add children
+  - [X] Make able to delete properties and children
   - [ ] Make validator story work, able to fix all invalid data
   - [ ] Be able to edit working schema
 - [ ] getters/setters

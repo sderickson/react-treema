@@ -348,6 +348,9 @@ export const getNextRow: (state: TreemaState, skipAddProperties?: boolean) => Or
 }
 
 export const getPreviousRow: (state: TreemaState, skipAddProperties?: boolean) => OrderEntry = (state, skipAddProperties) => {
+  if (state.lastSelected === '') {
+    return '';
+  }
   let index: number;
   let nextPath: OrderEntry;
   let nextPathParent: OrderEntry;
