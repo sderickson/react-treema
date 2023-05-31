@@ -29,6 +29,7 @@ import {
   endEdit,
   beginAddProperty,
   endAddProperty,
+  deleteAction,
 } from './state/actions';
 import {
   getCanClose,
@@ -241,6 +242,19 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           }
         } else {
           dispatch(selectPath(nextSelection));
+        }
+      }
+      if (event.key === 'Backspace' && !state.editing && !state.addingProperty) {
+        event.preventDefault();
+        if (isInsertPropertyPlaceholder(state.lastSelected || '')) {
+          return;
+        }
+        if (state.lastSelected) {
+          let nextSelection = getNextRow(state, true);
+          if (nextSelection === state.lastSelected) {
+            nextSelection = getPreviousRow(state, true);
+          }
+          dispatch(deleteAction(state.lastSelected));
         }
       }
     },

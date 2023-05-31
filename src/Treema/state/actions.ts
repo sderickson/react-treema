@@ -139,6 +139,18 @@ export const endAddProperty = (cancel?: boolean): EndAddPropertyAction => {
   };
 };
 
+type DeleteAction = {
+  type: 'delete_action';
+  path: JsonPointer;
+};
+
+export const deleteAction = (path: JsonPointer): DeleteAction => {
+  return {
+    type: 'delete_action',
+    path,
+  };
+};
+
 export type TreemaAction =
   SelectPathAction | 
   NavigateUpAction |
@@ -152,5 +164,6 @@ export type TreemaAction =
   EndEditAction |
   BeginAddPropertyAction |
   EditAddPropertyAction |
-  EndAddPropertyAction
+  EndAddPropertyAction |
+  DeleteAction
 ; 

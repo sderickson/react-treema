@@ -108,7 +108,6 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
 
     case 'end_add_property_action':
       if (state.addingPropertyKey === undefined || state.addingProperty === undefined || action.cancel || !state.lastSelected) {
-        console.log('okay', { ...state, addingProperty: undefined, addingPropertyKey: undefined });
         return { ...state, addingProperty: undefined, addingPropertyKey: undefined };
       }
       const parentSchema = getAllDatasAndSchemas(state)[normalizeToPath(state.lastSelected)].schema;
@@ -127,6 +126,31 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
           getValueForRequiredType(workingSchema.type)
         )
       };
+      
+    case 'delete_action':
+      const parent = getParentPath(action.path);
+      const parentData = getAllDatasAndSchemas(state)[parent].data;
+      const newData = clone(parentData, { shallow: true });
+      const segments = splitJsonPointer(action.path);
+      const lastSegment = segments.pop();
+      if (getType(parentData) === 'array') {
+        const parsedSegment = parseInt(lastSegment as string);
+        newData.splice(parsedSegment, 1);
+      } else {
+        delete newData[lastSegment as string];
+      }
+      
+      // figure out what the next selection should be. Find the previous row
+      // in the *old* state. Then figure out what its next row is in the *new* state
+      let previousRow = getPreviousRow(state, true);
+      if (previousRow === action.path) {
+        previousRow = '';
+      }
+      const s = { ...state, data: setDataAtPath(state, parent, newData), lastSelected: previousRow };
+      const getNextRowResult = getNextRow(s, true);
+      s.lastSelected = getNextRowResult;
+      return s;
+
     default:
       console.error('Unknown action', action);
   }
@@ -135,6 +159,9 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
 }
 
 const setDataAtPath = (state: TreemaState, path: JsonPointer, data: any): any => {
+  if (path === '') {
+    return data;
+  }
   // clone the data only as much as is necessary, leaving the original data intact
   const newData = clone(state.data, { shallow: true });
   let currentChildData = state.data;

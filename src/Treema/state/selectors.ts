@@ -322,6 +322,9 @@ export const getChildOrderForPath = createSelector([getOrderInfo, (_, path: Json
 export const getNextRow: (state: TreemaState, skipAddProperties?: boolean) => OrderEntry = (state, skipAddProperties) => {
   let index = 0;
   const paths = getListOfPaths(state).slice(1);
+  if (paths.length === 0) {
+    return '';
+  }
   if (state.lastSelected === undefined) {
     index = 0;
   } else {

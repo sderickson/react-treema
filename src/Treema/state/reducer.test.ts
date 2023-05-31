@@ -1,5 +1,5 @@
 import { TreemaState } from './types';
-import { setData, beginAddProperty, endAddProperty, editAddProperty } from './actions';
+import { setData, beginAddProperty, endAddProperty, editAddProperty, deleteAction } from './actions';
 import { reducer } from './reducer';
 import { dispatchMultiple, getDefaultState } from '../test-utils';
 
@@ -81,5 +81,50 @@ describe('add property actions', () => {
     
     // data has been set
     expect(newState.data.a.foo).toEqual('');
+  });
+});
+
+describe('delete action', () => {
+  it('deletes a property from an object', () => {
+    const state: TreemaState = {
+      ...getDefaultState(),
+      data: {
+        'a': {
+          'foo': 'bar',
+        },
+        'b': [
+          {},
+          {},
+        ]
+      },
+    };
+    const action = deleteAction('/a/foo');
+    const result = reducer(state, action);
+    
+    // data has been set
+    expect(result.data).toEqual({
+      'a': {},
+      'b': [
+        {},
+        {},
+      ]
+    });
+  });
+
+  it('deletes an item from an array', () => {
+    const state: TreemaState = {
+      ...getDefaultState(),
+      data: [
+        'first',
+        'second',
+      ]
+    };
+    const action = deleteAction('/0');
+    const result = reducer(state, action);
+    
+    // data has been set
+    expect(result.data).toEqual([
+      'second',
+    ]);
   });
 });
