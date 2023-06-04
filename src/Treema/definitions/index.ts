@@ -31,7 +31,6 @@ const wrapTypeDefinition: (typeDefinition: TreemaTypeDefinition) => TreemaTypeDe
     collection: typeDefinition.collection ?? false,
     ordered: typeDefinition.ordered ?? false,
     keyed: typeDefinition.keyed ?? false,
-    skipTab: typeDefinition.skipTab ?? false,
     valueClassName: typeDefinition.valueClassName ?? '',
     removeOnEmptyDelete: typeDefinition.removeOnEmptyDelete ?? false,
     sort: typeDefinition.sort ?? false,
