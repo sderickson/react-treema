@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useContext, useEffect } from 'react';
 import { JsonPointer } from './types';
 import { TreemaContext } from './context';
-import { selectPath, setPathClosed, setData, endEdit, editValue, beginAddProperty, editAddProperty, beginEdit } from './state/actions';
+import { selectPath, setPathClosed, setData, endEdit, editValue, editAddProperty } from './state/actions';
 import {
   getClosed,
   getSchemaErrorsByPath,
@@ -15,7 +15,7 @@ import {
   hasChildrenAtPath,
 } from './state/selectors';
 import './base.scss';
-import { getChildWorkingSchema, getValueForRequiredType, clone } from './utils';
+import { handleAddChild } from './common';
 
 interface TreemaNodeProps {
   path: JsonPointer;
@@ -35,7 +35,8 @@ interface TreemaNodeProps {
  */
 export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   // Common way to layout treema nodes generally. Should not include any schema specific logic.
-  const { dispatch, state, editRefs } = useContext(TreemaContext);
+  const context = useContext(TreemaContext)
+  const { dispatch, state, editRefs } = context;
   const data = getDataAtPath(state, path);
   const isOpen = !getClosed(state)[path];
   const isEditing = state.editing === path;
@@ -87,15 +88,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const onAddChild = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      if (workingSchema.type === 'object') {
-        dispatch(beginAddProperty(path));
-      } else if (workingSchema.type === 'array') {
-        const childSchema = getChildWorkingSchema(data.length, workingSchema, state.schemaLib);
-        const newData = childSchema.default ? clone(childSchema.default) : getValueForRequiredType(childSchema.type);
-        dispatch(setData(path + '/' + data.length, newData));
-        dispatch(selectPath(path + '/' + data.length));
-        dispatch(beginEdit(path + '/' + data.length));
-      }
+      handleAddChild(path, context);
     },
     [dispatch, path, data, state.schemaLib, workingSchema],
   );

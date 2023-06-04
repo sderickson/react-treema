@@ -72,6 +72,11 @@ export class TreemaStorybookTestContext {
     await sleep(this.speed);
   }
 
+  async fireTab(): Promise<void> {
+    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'Tab', code: 'Tab' });
+    await sleep(this.speed);
+  }
+
   async fireBackspace(): Promise<void> {
     await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'Backspace', code: 'Backspace' });
     await sleep(this.speed);

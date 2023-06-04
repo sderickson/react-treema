@@ -272,6 +272,7 @@ export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSch
       const childPaths = data.map((_: any, index: number) => {
         return path + '/' + index;
       });
+      stack.unshift('addTo:' + path);
       stack = childPaths.concat(stack);
       pathToChildren[path] = childPaths;
     }

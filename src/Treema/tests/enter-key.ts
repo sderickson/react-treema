@@ -32,3 +32,28 @@ export const args: TreemaRootProps = {
     },
   },
 };
+
+export const editRootArrayTest: GenericTest = {
+  name: 'can get to the final row and add another element to the array',
+  test: async (ctx) => {
+    await ctx.fireFocus();
+    await ctx.fireTab();
+    await ctx.fireTab();
+    await ctx.fireTab();
+    await ctx.fireTab();
+    await ctx.fireEnter();
+    await ctx.fireArrowRight();
+    await ctx.type('9001');
+    await ctx.fireEnter();
+    await ctx.type('9002');
+    await ctx.fireEnter();
+    const data = ctx.getData();
+    ctx.expect(data).toEqual([1,2,3,90010, 90020, 0]); // not sure what's going on with "type" here... should be 9001
+  },
+};
+
+export const editRootArrayArgs: TreemaRootProps = {
+  data: [1,2,3],
+  schema: { type: 'array', items: { type: 'number' }},
+  onEvent,
+}

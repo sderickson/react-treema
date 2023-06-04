@@ -1,4 +1,5 @@
-import { enterKeyTests, args } from './enter-key';
+import { enterKeyTests, args, editRootArrayTest, editRootArrayArgs } from './enter-key';
 import { wrapGenericTestInJest } from './utils-jest';
 
-wrapGenericTestInJest('delete key', enterKeyTests, args);
+wrapGenericTestInJest('edit a row', enterKeyTests, args);
+wrapGenericTestInJest('add an element to the end of an array', [editRootArrayTest], editRootArrayArgs);

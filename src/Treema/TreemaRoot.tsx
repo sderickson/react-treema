@@ -30,7 +30,8 @@ import { TreemaNode } from './TreemaNode';
 import { coreDefinitions } from './definitions';
 import { TreemaTypeDefinition } from './definitions/types';
 import { NodeEventCallbackHandler } from './definitions/hooks'
-import { TreemaContext } from './context';
+import { ContextInterface, TreemaContext } from './context';
+import { handleAddChild } from './common';
 
 export interface TreemaRootProps {
   /**
@@ -218,8 +219,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           isInsertPropertyPlaceholder(state.lastSelected) &&
           tryToEdit
         ) {
-          dispatch(beginAddProperty(state.lastSelected));
-
+          handleAddChild(state.lastSelected.slice(6), context);
           return;
         }
 
@@ -236,7 +236,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         if (tryToEdit) {
           // If can edit, or add a property, do so.
           if (isInsertPropertyPlaceholder(nextSelection)) {
-            dispatch(beginAddProperty(nextSelection));
+            handleAddChild(nextSelection.slice(6), context);
           } else if (nextSelection !== state.lastSelected && canEditPathDirectly(state, normalizeToPath(nextSelection))) {
             dispatch(beginEdit());
           }
@@ -296,8 +296,9 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
    * Render, providing the context for the various nodes.
    */
   const editRefs: (React.RefObject<HTMLInputElement|HTMLTextAreaElement>)[] = useMemo(() => [], []);
+  const context: ContextInterface = { state, dispatch, keyboardCallbackRef, editRefs };
   return (
-    <TreemaContext.Provider value={{ state, dispatch, keyboardCallbackRef, editRefs }}>
+    <TreemaContext.Provider value={context}>
       <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>
         <TreemaNode path={''} />
       </div>
