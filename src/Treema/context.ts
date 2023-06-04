@@ -14,6 +14,7 @@ const defaultContextData: ContextInterface = {
     settings: {},
   },
   dispatch: () => {},
+  editRefs: [],
 };
 
 export const TreemaContext = createContext(defaultContextData);
@@ -22,4 +23,5 @@ export interface ContextInterface {
   state: TreemaState;
   dispatch: React.Dispatch<any>;
   keyboardCallbackRef?: React.MutableRefObject<NodeEventCallbackHandler | undefined>;
+  editRefs: (React.RefObject<HTMLInputElement|HTMLTextAreaElement>)[];
 }

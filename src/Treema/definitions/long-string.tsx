@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
-import { TreemaTypeDefinition, EditProps } from './types';
-import { useTreemaKeyboardEvent } from './hooks';
+import { TreemaTypeDefinition, EditProps, DisplayProps } from './types';
+import { useTreemaKeyboardEvent, useTreemaTextArea } from './hooks';
 
 export const TreemaLongStringSchema = {
   type: 'string',
@@ -9,11 +9,12 @@ export const TreemaLongStringSchema = {
 
 export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
   id: 'long-string',
-  display: ({ data }) => {
+  display: ({ data }: DisplayProps) => {
     return <div>{data}</div>;
   },
 
-  edit: ({ data, schema, onChange }: EditProps, ref) => {
+  edit: ({ data, schema, onChange }: EditProps) => {
+    const ref = useTreemaTextArea();
     useTreemaKeyboardEvent(useCallback((e: KeyboardEvent) => {
       if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) {
         return false;

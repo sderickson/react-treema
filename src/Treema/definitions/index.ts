@@ -10,8 +10,8 @@ import { TreemaLongStringNodeDefinition } from './long-string';
 import './core.scss';
 import './extra.scss';
 
-import { forwardRef } from 'react';
-import { EditProps, TreemaTypeDefinition, TreemaTypeDefinitionWrapped } from './types';
+// import { forwardRef } from 'react';
+import { TreemaTypeDefinition, TreemaTypeDefinitionWrapped } from './types';
 
 /**
  * TreemaNode creates and uses refs to the inputs that these definitions use. Apparently in order
@@ -26,10 +26,11 @@ const wrapTypeDefinition: (typeDefinition: TreemaTypeDefinition) => TreemaTypeDe
   const wrapped: TreemaTypeDefinitionWrapped = {
     display: typeDefinition.display,
     id: typeDefinition.id,
+    edit: typeDefinition.edit,
   };
-  if (typeDefinition.edit) {
-    wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);
-  }
+  // if (typeDefinition.edit) {
+  //   wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);
+  // }
 
   return wrapped;
 };

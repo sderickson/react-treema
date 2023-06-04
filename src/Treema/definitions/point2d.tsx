@@ -1,5 +1,5 @@
 import React from 'react';
-import { TreemaTypeDefinition } from './types';
+import { DisplayProps, TreemaTypeDefinition } from './types';
 
 interface Point2d {
   x: number;
@@ -22,7 +22,7 @@ export const Point2dSchema = {
 
 export const TreemaPoint2dNodeDefinition: TreemaTypeDefinition = {
   id: 'object',
-  display: (props) => {
+  display: (props: DisplayProps) => {
     const { data } = props as { data: Point2d };
     return <span>({data.x}, {data.y})</span>;
   },

@@ -35,7 +35,7 @@ interface TreemaNodeProps {
  */
 export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   // Common way to layout treema nodes generally. Should not include any schema specific logic.
-  const { dispatch, state } = useContext(TreemaContext);
+  const { dispatch, state, editRefs } = useContext(TreemaContext);
   const data = getDataAtPath(state, path);
   const isOpen = !getClosed(state)[path];
   const isEditing = state.editing === path;
@@ -108,13 +108,17 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
 
   // Handle focus
   const displayRef = React.useRef<HTMLDivElement>(null);
-  const editRef = React.useRef<HTMLInputElement>(null);
+  const addPropertyRef = React.useRef<HTMLInputElement>(null);
   const addPropRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (isSelected || isEditing || isAddingProperty) {
-      isEditing || isAddingProperty ? editRef.current?.focus() : displayRef.current?.focus();
-    }
-    if (isFocusedOnAddProperty) {
+    if (isEditing) {
+      // TODO: handle multiple refs
+      editRefs[0].current?.focus();
+    } else if (isAddingProperty) {
+      addPropertyRef.current?.focus();
+    } else if (isSelected) {
+      displayRef.current?.focus();
+    } else if (isFocusedOnAddProperty) {
       addPropRef.current?.focus();
     }
   });
@@ -147,7 +151,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
 
         <div className={valueClassNames.join(' ')}>
           {isEditing && definition.edit ? (
-            <definition.edit data={state.editingData} schema={workingSchema} onChange={onChangeValue} ref={editRef} />
+            <definition.edit data={state.editingData} schema={workingSchema} onChange={onChangeValue} />
           ) : (
             definition.display({ data, schema: workingSchema })
           )}
@@ -167,7 +171,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
           <input
             className="treema-new-prop"
             type="text"
-            ref={editRef}
+            ref={addPropertyRef}
             list="treema-new-prop-datalist"
             onChange={(e) => {
               onChangeAddProperty(e.target.value);

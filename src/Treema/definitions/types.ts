@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { WorkingSchema } from '../types';
 import './base.scss';
 
@@ -15,12 +15,12 @@ export interface EditProps {
 
 export interface TreemaTypeDefinition {
   id: string;
-  display: (props: DisplayProps) => ReactNode;
-  edit?: React.ForwardRefRenderFunction<HTMLInputElement, EditProps>;
+  display: React.FC<DisplayProps>;
+  edit?: React.FC<EditProps>;
 }
 
 export interface TreemaTypeDefinitionWrapped {
   id: string;
-  display: (props: DisplayProps) => ReactNode;
-  edit?: React.ForwardRefExoticComponent<EditProps & React.RefAttributes<HTMLInputElement>>;
+  display: React.FC<DisplayProps>;
+  edit?: React.FC<EditProps>;
 }

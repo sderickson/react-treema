@@ -1,13 +1,15 @@
 import React from 'react';
-import { TreemaTypeDefinition, EditProps } from './types';
+import { TreemaTypeDefinition, EditProps, DisplayProps } from './types';
+import { useTreemaInput } from './hooks';
 
 export const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
   id: 'number',
-  display: ({ data }) => {
+  display: ({ data }: DisplayProps) => {
     return <span>{data}</span>;
   },
 
-  edit: ({ data, schema, onChange }: EditProps, ref) => {
+  edit: ({ data, schema, onChange }: EditProps) => {
+    const ref = useTreemaInput();
     return (
       <input
         value={data}

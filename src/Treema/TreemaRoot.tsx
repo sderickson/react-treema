@@ -295,8 +295,9 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   /**
    * Render, providing the context for the various nodes.
    */
+  const editRefs: (React.RefObject<HTMLInputElement|HTMLTextAreaElement>)[] = useMemo(() => [], []);
   return (
-    <TreemaContext.Provider value={{ state, dispatch, keyboardCallbackRef }}>
+    <TreemaContext.Provider value={{ state, dispatch, keyboardCallbackRef, editRefs }}>
       <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>
         <TreemaNode path={''} />
       </div>

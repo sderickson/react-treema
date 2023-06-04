@@ -1,5 +1,6 @@
 import React from 'react';
-import { TreemaTypeDefinition, EditProps } from './types';
+import { TreemaTypeDefinition } from './types';
+import { useTreemaInput } from './hooks';
 
 const stringInputTypes = ['color', 'date', 'datetime-local', 'email', 'password', 'tel', 'text', 'time', 'url'];
 export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
@@ -8,7 +9,8 @@ export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
     return <span>{data}</span>;
   },
 
-  edit: ({ data, schema, onChange }: EditProps, ref) => {
+  edit: ({ data, schema, onChange }) => {
+    const ref = useTreemaInput();
     return (
       <input
         value={data}

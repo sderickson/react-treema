@@ -1,5 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { TreemaContext } from '../context';
+import React from 'react';
 
 export type NodeEventCallbackHandler = (event: KeyboardEvent) => boolean;
 
@@ -25,3 +26,39 @@ export const useTreemaKeyboardEvent = (callback: NodeEventCallbackHandler): Node
     };
   }, [keyboardCallbackRef]);
 };
+
+export const useTreemaInput = () => {
+  const { editRefs } = useContext(TreemaContext);
+  const editRef = React.useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    editRefs.push(editRef);
+
+    return () => {
+      const refIndex = editRefs.indexOf(editRef);
+      if (refIndex >= 0) {
+        editRefs.splice(refIndex, 1);
+      }
+    }
+  }, [editRef]);
+
+  return editRef;
+}
+
+export const useTreemaTextArea = () => {
+  const { editRefs } = useContext(TreemaContext);
+  const editRef = React.useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    editRefs.push(editRef);
+
+    return () => {
+      const refIndex = editRefs.indexOf(editRef);
+      if (refIndex >= 0) {
+        editRefs.splice(refIndex, 1);
+      }
+    }
+  }, [editRef]);
+
+  return editRef;
+}
