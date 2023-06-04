@@ -31,23 +31,27 @@ And http://codecombat.github.io/treema/demo.html
 
 #### In Progress
 - [ ] Custom treema nodes
+- [ ] Extras (2d point, etc)
 
 #### TODO
-- [ ] getters/setters
-- [ ] getChildSchema, canAddProperty, other exposed utilities
-- [ ] Edit working schemas
-- [ ] Shift/Meta click
-- [ ] readOnly
-- [ ] Copy/Paste
 - [ ] Preventing adding items, props where no more can be added
-- [ ] Prevent editing into other bad schema states
-- [ ] Extras (2d point, etc)
+- [ ] Test synchronizing with parent node, react query
+- [ ] Edit working schemas
+- [ ] readOnly
 - [ ] undo/redo
+- [ ] export getters/setters
+- [ ] export utility functions
+- [ ] Test integrating a few code editors
+- [ ] Audit css
+- [ ] Shift/Meta click
+- [ ] Copy/Paste
+- [ ] Prevent editing into other bad schema states
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
 - [ ] drag and drop (that other jquery ui thing)
 - [ ] README
 - [ ] Github pages
+- [ ] Publish
 
 
 

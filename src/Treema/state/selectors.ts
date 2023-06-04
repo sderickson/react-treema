@@ -184,7 +184,14 @@ export const getPropertiesAvailableAtPath: (state: TreemaState, path: JsonPointe
 export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => TreemaTypeDefinitionWrapped = createSelector(
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas, getDefinitions],
   (path, datasAndSchemas, definitions) => {
-    return definitions[datasAndSchemas[path].schema.type];
+
+    const { schema, data } = datasAndSchemas[path];
+    const dataType = getType(data);
+    let typeMismatch = dataType !== schema.type;
+    if (typeMismatch) {
+      return definitions[dataType];
+    }
+    return definitions[schema.format || ''] || definitions[schema.type];
   },
 );
 

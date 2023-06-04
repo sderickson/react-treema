@@ -26,9 +26,11 @@ import {
   isInsertPropertyPlaceholder,
 } from './state/selectors';
 import { reducer } from './state/reducer';
-import { TreemaContext } from './state';
 import { TreemaNode } from './TreemaNode';
 import { coreDefinitions } from './definitions';
+import { TreemaTypeDefinition } from './definitions/types';
+import { NodeEventCallbackHandler } from './definitions/hooks'
+import { TreemaContext } from './context';
 
 export interface TreemaRootProps {
   /**
@@ -72,6 +74,18 @@ export interface TreemaRootProps {
    * - `change_select_event`: when the user selects a node. Includes `path` in the event.
    */
   onEvent?: TreemaEventHandler;
+  /**
+   * Custom Treema node definitions. Use these to customize how Treema renders data
+   * of certain types. Treema will first see if there's a match for the "format" on the
+   * data's schema, then will match its "type". If no match is found, Treema will use the
+   * default node definitions, keying off what type the data currently is.
+   * 
+   * See [TreemaTypeDefinition](https://github.com/sderickson/react-treema/blob/main/src/Treema/definitions/types.ts#L16)
+   * for documentation on definitions.
+   * 
+   * @default The default definitions, which cover all JSON Schema types and a few advanced examples.
+   */
+  definitions?: { [key: string]: TreemaTypeDefinition };
 }
 
 /**
@@ -118,9 +132,15 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
    * Being at the top level, TreemaRoot is responsible for handling keyboard events. It should describe
    * at a high level how the state changes, and rely on the reducer to handle the details.
    */
+  // const nodeCallbackHandler = useTreemaKeyboardEvent();
+  const keyboardCallbackRef = useRef<NodeEventCallbackHandler>();
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
+      if (keyboardCallbackRef.current && keyboardCallbackRef.current(event) === false) {
+        return;
+      }
+
       if (event.key === 'ArrowUp' && !state.editing && !state.addingProperty) {
         event.preventDefault();
         dispatch(navigateUp(true));
@@ -238,7 +258,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         }
       }
     },
-    [dispatch, state],
+    [dispatch, state, keyboardCallbackRef],
   );
 
   useEffect(() => {
@@ -276,7 +296,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
    * Render, providing the context for the various nodes.
    */
   return (
-    <TreemaContext.Provider value={{ state, dispatch }}>
+    <TreemaContext.Provider value={{ state, dispatch, keyboardCallbackRef }}>
       <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>
         <TreemaNode path={''} />
       </div>

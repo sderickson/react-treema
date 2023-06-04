@@ -23,8 +23,3 @@ export interface TreemaState {
   definitions: { [key: string]: TreemaTypeDefinitionWrapped };
   settings: TreemaSettings;
 }
-
-export interface ContextInterface {
-  state: TreemaState;
-  dispatch: React.Dispatch<any>;
-}

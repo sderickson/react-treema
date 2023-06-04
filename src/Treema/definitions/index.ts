@@ -5,6 +5,8 @@ import { TreemaNumberNodeDefinition } from './number';
 import { TreemaObjectNodeDefinition } from './object';
 import { TreemaStringNodeDefinition } from './string';
 import { TreemaIntegerNodeDefinition } from './integer';
+import { TreemaPoint2dNodeDefinition } from './point2d';
+import { TreemaLongStringNodeDefinition } from './long-string';
 import './core.scss';
 import './extra.scss';
 
@@ -49,4 +51,6 @@ export const coreDefinitions: { [key: string]: TreemaTypeDefinitionWrapped } = {
   'boolean': wrapTypeDefinition(TreemaBooleanNodeDefinition),
   'null': wrapTypeDefinition(TreemaNullNodeDefinition),
   'integer': wrapTypeDefinition(TreemaIntegerNodeDefinition),
+  'point2d': wrapTypeDefinition(TreemaPoint2dNodeDefinition),
+  'long-string': wrapTypeDefinition(TreemaLongStringNodeDefinition),
 };

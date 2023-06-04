@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useContext, useEffect } from 'react';
 import { JsonPointer } from './types';
-import { TreemaContext } from './state';
+import { TreemaContext } from './context';
 import { selectPath, setPathClosed, setData, endEdit, editValue, beginAddProperty, editAddProperty, beginEdit } from './state/actions';
 import {
   getClosed,
@@ -40,8 +40,8 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const isEditing = state.editing === path;
   const workingSchema = getWorkingSchema(state, path);
   const name = workingSchema.title || path?.split('/').pop();
-  const canOpen = workingSchema.type === 'object' || workingSchema.type === 'array';
   const definition = getDefinitionAtPath(state, path);
+  const canOpen = definition.collection;
   const description = workingSchema.description;
   const childrenKeys = getChildOrderForPath(state, path) || [];
   const isSelected = state.lastSelected === path;
@@ -153,7 +153,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
         </div>
       </div>
 
-      {childrenKeys.length && canOpen && isOpen ? (
+      {definition.collection && childrenKeys.length && canOpen && isOpen ? (
         <div className="treema-children">
           {childrenKeys.map((childPath: JsonPointer) => {
             return <TreemaNode key={childPath} path={childPath} />;
