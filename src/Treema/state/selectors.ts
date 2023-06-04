@@ -178,6 +178,28 @@ export const getPropertiesAvailableAtPath: (state: TreemaState, path: JsonPointe
   },
 );
 
+export const hasChildrenAtPath: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
+  [
+    (state) => getAllDatasAndSchemas(state),
+    (_, path) => path,
+],
+  (datasAndSchemas, path) => {
+    const { data } = datasAndSchemas[path];
+    return ['array', 'object'].includes(getType(data));
+  },
+);
+
+export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
+  [
+    (state) => getAllDatasAndSchemas(state),
+    (_, path) => path,
+],
+  (datasAndSchemas, path) => {
+    const { data, schema } = datasAndSchemas[path];
+    return schema.readOnly !== false && ['array', 'object'].includes(getType(data));
+  },
+);
+
 // ----------------------------------------------------------------------------
 // Definition, settings based selectors
 
@@ -198,14 +220,7 @@ export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => Tre
 export const canEditPathDirectly: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
   [(state, path) => getDefinitionAtPath(state, path)],
   (definition) => {
-    return definition.editable && definition.directlyEditable;
-  },
-);
-
-export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
-  [(state, path) => getDefinitionAtPath(state, path), getSettings],
-  (definition, settings) => {
-    return definition.collection && definition.editable && !settings.readOnly;
+    return !!definition.edit;
   },
 );
 

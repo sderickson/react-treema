@@ -8,8 +8,7 @@ export const TreemaLongStringSchema = {
 }
 
 export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
-  valueClassName: 'treema-long-string treema-multiline',
-
+  id: 'long-string',
   display: ({ data }) => {
     return <div>{data}</div>;
   },

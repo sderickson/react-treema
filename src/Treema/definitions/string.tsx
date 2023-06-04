@@ -3,8 +3,7 @@ import { TreemaTypeDefinition, EditProps } from './types';
 
 const stringInputTypes = ['color', 'date', 'datetime-local', 'email', 'password', 'tel', 'text', 'time', 'url'];
 export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
-  valueClassName: 'treema-string',
-
+  id: 'string',
   display: ({ data }) => {
     return <span>{data}</span>;
   },

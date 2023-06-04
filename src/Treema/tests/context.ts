@@ -38,6 +38,10 @@ export class TreemaStorybookTestContext {
     this.speed = speed;
   }
 
+  query() {
+    return this.testingLibrary.within(this.root);
+  }
+
   async fireFocus(): Promise<void> {
     await this.testingLibrary.fireEvent.focus(this.root);
     await sleep(this.speed);

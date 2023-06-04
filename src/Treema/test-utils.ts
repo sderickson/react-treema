@@ -3,6 +3,7 @@ import { noopLib } from './utils';
 import { coreDefinitions } from './definitions';
 import { TreemaAction } from './state/actions';
 import { reducer } from './state/reducer';
+import { TreemaRootProps } from './TreemaRoot';
 
 export const getDefaultState = (): TreemaState => {
   return {
@@ -20,3 +21,10 @@ export const dispatchMultiple = (state: TreemaState, actions: TreemaAction[]) =>
     return reducer(s, action);
   }, state);
 };
+
+export const getDefaultProps = (): TreemaRootProps => {
+  return {
+    data: {},
+    schema: {},
+  }
+}

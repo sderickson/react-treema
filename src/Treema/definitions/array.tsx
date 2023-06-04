@@ -2,13 +2,7 @@ import React from 'react';
 import { TreemaTypeDefinition } from './types';
 
 export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
-  directlyEditable: false,
-  editable: true,
-  collection: true,
-  keyed: true,
-  valueClassName: 'treema-array',
-  sort: false,
-
+  id: 'array',
   display: () => {
     return <span></span>;
   },

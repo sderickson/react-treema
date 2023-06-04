@@ -5,49 +5,6 @@ import { wrapAjv, wrapTv4 } from './utils';
 import tv4 from 'tv4';
 import Ajv from 'ajv';
 
-describe('basic types', () => {
-  it('should render strings', () => {
-    render(<TreemaRoot data="testasdf" schema={{ 'type': 'string' }} />);
-    const treema = screen.getByText('testasdf');
-    expect(treema).toBeInTheDocument();
-  });
-
-  it('should render null', () => {
-    render(<TreemaRoot data={null} schema={{ 'type': 'null' }} />);
-    const treema = screen.getByText('null');
-    expect(treema).toBeInTheDocument();
-  });
-
-  it('should render numbers', () => {
-    render(<TreemaRoot data={123} schema={{ 'type': 'number' }} />);
-    const treema = screen.getByText('123');
-    expect(treema).toBeInTheDocument();
-  });
-
-  it('should render boolean', () => {
-    render(<TreemaRoot data={true} schema={{ 'type': 'boolean' }} />);
-    const treema = screen.getByText('true');
-    expect(treema).toBeInTheDocument();
-  });
-
-  it('should render arrays', () => {
-    render(<TreemaRoot data={[1, 234, 3]} schema={{ 'type': 'array', 'items': { 'type': 'number' } }} />);
-    const treema = screen.getByText('234');
-    expect(treema).toBeInTheDocument();
-  });
-
-  it('should render objects', () => {
-    render(
-      <TreemaRoot
-        data={{ 'a': 1, 'b': 234 }}
-        schema={{ 'type': 'object', 'properties': { 'a': { 'type': 'number' }, 'b': { 'type': 'number' } } }}
-      />,
-    );
-    const treema = screen.getByText('234');
-    expect(treema).toBeInTheDocument();
-  });
-});
-
 describe('toggles', () => {
   it('should hide data when clicked to close', () => {
     render(

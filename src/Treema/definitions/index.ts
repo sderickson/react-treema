@@ -25,15 +25,7 @@ const wrapTypeDefinition: (typeDefinition: TreemaTypeDefinition) => TreemaTypeDe
 ) => {
   const wrapped: TreemaTypeDefinitionWrapped = {
     display: typeDefinition.display,
-    usesTextarea: typeDefinition.usesTextarea,
-    editable: typeDefinition.editable ?? true,
-    directlyEditable: typeDefinition.directlyEditable ?? true,
-    collection: typeDefinition.collection ?? false,
-    ordered: typeDefinition.ordered ?? false,
-    keyed: typeDefinition.keyed ?? false,
-    valueClassName: typeDefinition.valueClassName ?? '',
-    removeOnEmptyDelete: typeDefinition.removeOnEmptyDelete ?? false,
-    sort: typeDefinition.sort ?? false,
+    id: typeDefinition.id,
   };
   if (typeDefinition.edit) {
     wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);

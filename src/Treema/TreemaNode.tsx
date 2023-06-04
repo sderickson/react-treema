@@ -12,6 +12,7 @@ import {
   getDefinitionAtPath,
   canAddChildAtPath,
   getPropertiesAvailableAtPath,
+  hasChildrenAtPath,
 } from './state/selectors';
 import './base.scss';
 import { getChildWorkingSchema, getValueForRequiredType, clone } from './utils';
@@ -41,7 +42,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const workingSchema = getWorkingSchema(state, path);
   const name = workingSchema.title || path?.split('/').pop();
   const definition = getDefinitionAtPath(state, path);
-  const canOpen = definition.collection;
+  const canOpen = hasChildrenAtPath(state, path);
   const description = workingSchema.description;
   const childrenKeys = getChildOrderForPath(state, path) || [];
   const isSelected = state.lastSelected === path;
@@ -128,7 +129,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     isDefaultRoot ? 'treema-default-stub' : '',
   ];
 
-  const valueClassNames = ['treema-value', definition.valueClassName, isEditing ? 'treema-edit' : 'treema-display'];
+  const valueClassNames = ['treema-value', 'treema-' + definition.id, isEditing ? 'treema-edit' : 'treema-display'];
 
   // Render
   return (
@@ -153,7 +154,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
         </div>
       </div>
 
-      {definition.collection && childrenKeys.length && canOpen && isOpen ? (
+      {childrenKeys.length && canOpen && isOpen ? (
         <div className="treema-children">
           {childrenKeys.map((childPath: JsonPointer) => {
             return <TreemaNode key={childPath} path={childPath} />;

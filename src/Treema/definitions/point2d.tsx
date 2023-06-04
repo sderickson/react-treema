@@ -21,9 +21,7 @@ export const Point2dSchema = {
 };
 
 export const TreemaPoint2dNodeDefinition: TreemaTypeDefinition = {
-  valueClassName: 'treema-point2d',
-  collection: true,
-
+  id: 'object',
   display: (props) => {
     const { data } = props as { data: Point2d };
     return <span>({data.x}, {data.y})</span>;

@@ -2,8 +2,7 @@ import React from 'react';
 import { TreemaTypeDefinition, EditProps } from './types';
 
 export const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
-  valueClassName: 'treema-number',
-
+  id: 'number',
   display: ({ data }) => {
     return <span>{data}</span>;
   },
