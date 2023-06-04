@@ -28,13 +28,13 @@ And http://codecombat.github.io/treema/demo.html
   - [X] Make arrays and objects able to add children
   - [X] Make able to delete properties and children
 - [X] Callbacks
+- [X] Custom treema nodes
+- [X] Extras (2d point, etc)
 
 #### In Progress
-- [ ] Custom treema nodes
-- [ ] Extras (2d point, etc)
+- [ ] Preventing adding items, props where no more can be added
 
 #### TODO
-- [ ] Preventing adding items, props where no more can be added
 - [ ] Test synchronizing with parent node, react query
 - [ ] Edit working schemas
 - [ ] readOnly
