@@ -24,9 +24,9 @@ const wrapTypeDefinition: (typeDefinition: TreemaTypeDefinition) => TreemaTypeDe
   typeDefinition: TreemaTypeDefinition,
 ) => {
   const wrapped: TreemaTypeDefinitionWrapped = {
-    display: typeDefinition.display,
+    Display: typeDefinition.Display,
     id: typeDefinition.id,
-    edit: typeDefinition.edit,
+    Edit: typeDefinition.Edit,
   };
   // if (typeDefinition.edit) {
   //   wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);

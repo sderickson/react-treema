@@ -22,7 +22,7 @@ export const Point2dSchema = {
 
 export const TreemaPoint2dNodeDefinition: TreemaTypeDefinition = {
   id: 'object',
-  display: (props: DisplayProps) => {
+  Display: (props: DisplayProps) => {
     const { data } = props as { data: Point2d };
 
     return (

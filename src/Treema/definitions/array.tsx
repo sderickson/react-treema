@@ -3,7 +3,7 @@ import { TreemaTypeDefinition } from './types';
 
 export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
   id: 'array',
-  display: () => {
+  Display: () => {
     return <span></span>;
   },
 

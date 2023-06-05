@@ -5,13 +5,13 @@ import { useTreemaInput } from './hooks';
 export const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
   id: 'boolean',
 
-  display: (props: DisplayProps) => {
+  Display: (props: DisplayProps) => {
     const { data } = props;
 
     return <span>{JSON.stringify(data)}</span>;
   },
 
-  edit: (props: EditProps) => {
+  Edit: (props: EditProps) => {
     const { data, onChange } = props;
     const ref = useTreemaInput();
 

@@ -3,7 +3,7 @@ import { TreemaTypeDefinition } from './types';
 
 export const TreemaNullNodeDefinition: TreemaTypeDefinition = {
   id: 'null',
-  display: () => {
+  Display: () => {
     return <span>null</span>;
   },
 };

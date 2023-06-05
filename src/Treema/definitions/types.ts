@@ -15,12 +15,12 @@ export interface EditProps {
 
 export interface TreemaTypeDefinition {
   id: string;
-  display: React.FC<DisplayProps>;
-  edit?: React.FC<EditProps>;
+  Display: React.FC<DisplayProps>;
+  Edit?: React.FC<EditProps>;
 }
 
 export interface TreemaTypeDefinitionWrapped {
   id: string;
-  display: React.FC<DisplayProps>;
-  edit?: React.FC<EditProps>;
+  Display: React.FC<DisplayProps>;
+  Edit?: React.FC<EditProps>;
 }

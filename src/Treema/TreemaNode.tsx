@@ -143,10 +143,10 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
         )}
 
         <div className={valueClassNames.join(' ')}>
-          {isEditing && definition.edit ? (
-            <definition.edit data={state.editingData} schema={workingSchema} onChange={onChangeValue} />
+          {isEditing && definition.Edit ? (
+            <definition.Edit data={state.editingData} schema={workingSchema} onChange={onChangeValue} />
           ) : (
-            definition.display({ data, schema: workingSchema })
+            <definition.Display data={data} schema={workingSchema} />
           )}
         </div>
       </div>

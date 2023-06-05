@@ -9,11 +9,11 @@ export const TreemaLongStringSchema = {
 
 export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
   id: 'long-string',
-  display: ({ data }: DisplayProps) => {
+  Display: ({ data }: DisplayProps) => {
     return <div>{data}</div>;
   },
 
-  edit: ({ data, schema, onChange }: EditProps) => {
+  Edit: ({ data, schema, onChange }: EditProps) => {
     const ref = useTreemaTextArea();
     useTreemaKeyboardEvent(
       useCallback((e: KeyboardEvent) => {

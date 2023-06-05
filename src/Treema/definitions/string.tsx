@@ -5,11 +5,11 @@ import { useTreemaInput } from './hooks';
 const stringInputTypes = ['color', 'date', 'datetime-local', 'email', 'password', 'tel', 'text', 'time', 'url'];
 export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
   id: 'string',
-  display: ({ data }) => {
+  Display: ({ data }) => {
     return <span>{data}</span>;
   },
 
-  edit: ({ data, schema, onChange }) => {
+  Edit: ({ data, schema, onChange }) => {
     const ref = useTreemaInput();
 
     return (
