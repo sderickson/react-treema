@@ -11,6 +11,7 @@ export const TreemaStringNodeDefinition: TreemaTypeDefinition = {
 
   edit: ({ data, schema, onChange }) => {
     const ref = useTreemaInput();
+
     return (
       <input
         value={data}

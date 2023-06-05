@@ -1,4 +1,13 @@
-import { enterKeyTests, args, editRootArrayTest, editRootArrayArgs, noMorePropsTest, noMorePropsArgs, noMoreItemsTest, noMoreItemsArgs } from './enter-key';
+import {
+  enterKeyTests,
+  args,
+  editRootArrayTest,
+  editRootArrayArgs,
+  noMorePropsTest,
+  noMorePropsArgs,
+  noMoreItemsTest,
+  noMoreItemsArgs,
+} from './enter-key';
 import { wrapGenericTestInJest } from './utils-jest';
 
 wrapGenericTestInJest('edit a row', enterKeyTests, args);

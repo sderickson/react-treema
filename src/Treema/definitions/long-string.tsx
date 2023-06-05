@@ -5,7 +5,7 @@ import { useTreemaKeyboardEvent, useTreemaTextArea } from './hooks';
 export const TreemaLongStringSchema = {
   type: 'string',
   format: 'long-string',
-}
+};
 
 export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
   id: 'long-string',
@@ -15,13 +15,16 @@ export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
 
   edit: ({ data, schema, onChange }: EditProps) => {
     const ref = useTreemaTextArea();
-    useTreemaKeyboardEvent(useCallback((e: KeyboardEvent) => {
-      if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) {
-        return false;
-      }
-      return true;
-    }, []));
-    
+    useTreemaKeyboardEvent(
+      useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) {
+          return false;
+        }
+
+        return true;
+      }, []),
+    );
+
     return (
       <textarea
         value={data}

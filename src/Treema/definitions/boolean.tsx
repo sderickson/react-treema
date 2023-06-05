@@ -7,12 +7,14 @@ export const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
 
   display: (props: DisplayProps) => {
     const { data } = props;
+
     return <span>{JSON.stringify(data)}</span>;
   },
 
   edit: (props: EditProps) => {
     const { data, onChange } = props;
     const ref = useTreemaInput();
+
     return (
       <span>
         {JSON.stringify(data)}

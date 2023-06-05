@@ -28,7 +28,7 @@ import { reducer } from './state/reducer';
 import { TreemaNode } from './TreemaNode';
 import { coreDefinitions } from './definitions';
 import { TreemaTypeDefinition } from './definitions/types';
-import { NodeEventCallbackHandler } from './definitions/hooks'
+import { NodeEventCallbackHandler } from './definitions/hooks';
 import { ContextInterface, TreemaContext } from './context';
 import { handleAddChild } from './common';
 
@@ -79,10 +79,10 @@ export interface TreemaRootProps {
    * of certain types. Treema will first see if there's a match for the "format" on the
    * data's schema, then will match its "type". If no match is found, Treema will use the
    * default node definitions, keying off what type the data currently is.
-   * 
+   *
    * See [TreemaTypeDefinition](https://github.com/sderickson/react-treema/blob/main/src/Treema/definitions/types.ts#L16)
    * for documentation on definitions.
-   * 
+   *
    * @default The default definitions, which cover all JSON Schema types and a few advanced examples.
    */
   definitions?: { [key: string]: TreemaTypeDefinition };
@@ -219,6 +219,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           tryToEdit
         ) {
           handleAddChild(state.lastSelected.slice(6), context);
+
           return;
         }
 
@@ -272,7 +273,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   useEffect(() => {
     // Update state data when prop data changes. This keeps Treema data integrated
     // with state managed outside.
-    if(data !== state.data) {
+    if (data !== state.data) {
       // Don't update data unless it's different than what we have... or we might have
       // an infinite loop. Or at least more actions than necessary.
       dispatch(setData('', data));
@@ -304,8 +305,9 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
   /**
    * Render, providing the context for the various nodes.
    */
-  const editRefs: (React.RefObject<HTMLInputElement|HTMLTextAreaElement>)[] = useMemo(() => [], []);
+  const editRefs: React.RefObject<HTMLInputElement | HTMLTextAreaElement>[] = useMemo(() => [], []);
   const context: ContextInterface = { state, dispatch, keyboardCallbackRef, editRefs };
+
   return (
     <TreemaContext.Provider value={context}>
       <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>

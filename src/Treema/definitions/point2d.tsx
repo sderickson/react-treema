@@ -24,6 +24,11 @@ export const TreemaPoint2dNodeDefinition: TreemaTypeDefinition = {
   id: 'object',
   display: (props: DisplayProps) => {
     const { data } = props as { data: Point2d };
-    return <span>({data.x}, {data.y})</span>;
+
+    return (
+      <span>
+        ({data.x}, {data.y})
+      </span>
+    );
   },
 };

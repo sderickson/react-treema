@@ -9,7 +9,7 @@ export const renderStringTest: GenericTest = {
 };
 
 export const renderStringArgs: TreemaRootProps = {
-  data: { "string": "testasdf" },
+  data: { 'string': 'testasdf' },
   schema: { 'type': 'object', properties: { 'string': { type: 'string' } } },
 };
 
@@ -21,7 +21,7 @@ export const renderNullTest: GenericTest = {
 };
 
 export const renderNullArgs: TreemaRootProps = {
-  data: { "null": null },
+  data: { 'null': null },
   schema: { 'type': 'object', properties: { 'null': { type: 'null' } } },
 };
 
@@ -33,7 +33,7 @@ export const renderNumberTest: GenericTest = {
 };
 
 export const renderNumberArgs: TreemaRootProps = {
-  data: { "number": 123 },
+  data: { 'number': 123 },
   schema: { 'type': 'object', properties: { 'number': { type: 'number' } } },
 };
 
@@ -45,7 +45,7 @@ export const renderBooleanTest: GenericTest = {
 };
 
 export const renderBooleanArgs: TreemaRootProps = {
-  data: { "boolean": true },
+  data: { 'boolean': true },
   schema: { 'type': 'object', properties: { 'boolean': { type: 'boolean' } } },
 };
 
@@ -57,8 +57,8 @@ export const renderArrayTest: GenericTest = {
 };
 
 export const renderArrayArgs: TreemaRootProps = {
-  data: { "array": [1, 234, 3] },
-  schema: { 'type': 'object', properties: { 'array': { type: 'array', items: { type: 'number'} } } },
+  data: { 'array': [1, 234, 3] },
+  schema: { 'type': 'object', properties: { 'array': { type: 'array', items: { type: 'number' } } } },
 };
 
 export const renderObjectTest: GenericTest = {

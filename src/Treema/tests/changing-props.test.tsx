@@ -10,7 +10,14 @@ import { ParentComponent, changingPropsArgs, selectStaysOnAddTest } from './chan
 describe('integration with a parent component that holds the data source of truth', () => {
   for (const test of [selectStaysOnAddTest]) {
     it(test.name, async () => {
-      render(<ParentComponent data={changingPropsArgs?.data} schema={changingPropsArgs?.schema || {}} initOpen={changingPropsArgs.initOpen} onEvent={onEvent} />);
+      render(
+        <ParentComponent
+          data={changingPropsArgs?.data}
+          schema={changingPropsArgs?.schema || {}}
+          initOpen={changingPropsArgs.initOpen}
+          onEvent={onEvent}
+        />,
+      );
       const root = screen.getByTestId('integration-test');
       const context = new TreemaStorybookTestContext(root, mainJest, mainTestingLibrary, 0);
       await test.test(context);

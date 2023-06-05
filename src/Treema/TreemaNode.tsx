@@ -35,7 +35,7 @@ interface TreemaNodeProps {
  */
 export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   // Common way to layout treema nodes generally. Should not include any schema specific logic.
-  const context = useContext(TreemaContext)
+  const context = useContext(TreemaContext);
   const { dispatch, state, editRefs } = context;
   const data = getDataAtPath(state, path);
   const isOpen = !getClosed(state)[path];

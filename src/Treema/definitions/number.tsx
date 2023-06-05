@@ -10,6 +10,7 @@ export const TreemaNumberNodeDefinition: TreemaTypeDefinition = {
 
   edit: ({ data, schema, onChange }: EditProps) => {
     const ref = useTreemaInput();
+
     return (
       <input
         value={data}

@@ -161,11 +161,12 @@ export const getPropertiesAvailableAtPath: (state: TreemaState, path: JsonPointe
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
   (path, datasAndSchemas) => {
     const { schema, data } = datasAndSchemas[path];
+
     return _getPropertiesAvailable(data, schema);
   },
 );
 
-const _getPropertiesAvailable = ( data: any, schema: WorkingSchema ): KeyTitlePair[] => {
+const _getPropertiesAvailable = (data: any, schema: WorkingSchema): KeyTitlePair[] => {
   if (!schema.properties) {
     return [];
   }
@@ -180,26 +181,22 @@ const _getPropertiesAvailable = ( data: any, schema: WorkingSchema ): KeyTitlePa
   properties.sort();
 
   return properties;
-}
+};
 
 export const hasChildrenAtPath: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
-  [
-    (state) => getAllDatasAndSchemas(state),
-    (_, path) => path,
-],
+  [(state) => getAllDatasAndSchemas(state), (_, path) => path],
   (datasAndSchemas, path) => {
     const { data } = datasAndSchemas[path];
+
     return ['array', 'object'].includes(getType(data));
   },
 );
 
 export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
-  [
-    (state) => getAllDatasAndSchemas(state),
-    (_, path) => path,
-],
+  [(state) => getAllDatasAndSchemas(state), (_, path) => path],
   (datasAndSchemas, path) => {
     const { data, schema } = datasAndSchemas[path];
+
     return _canAddChild(data, schema);
   },
 );
@@ -213,19 +210,21 @@ const _canAddChild = (data: any, schema: WorkingSchema): boolean => {
     if (schema.maxItems && schema.maxItems <= data.length) {
       return false;
     }
+
     return true;
   }
-  
+
   if (dataType === 'object') {
     const availableProps = _getPropertiesAvailable(data, schema);
     if (availableProps.length === 0 && schema.additionalProperties === false && !schema.patternProperties) {
       return false;
     }
+
     return true;
   }
 
   return false;
-}
+};
 
 // ----------------------------------------------------------------------------
 // Definition, settings based selectors
@@ -233,13 +232,13 @@ const _canAddChild = (data: any, schema: WorkingSchema): boolean => {
 export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => TreemaTypeDefinitionWrapped = createSelector(
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas, getDefinitions],
   (path, datasAndSchemas, definitions) => {
-
     const { schema, data } = datasAndSchemas[path];
     const dataType = getType(data);
     let typeMismatch = dataType !== schema.type;
     if (typeMismatch) {
       return definitions[dataType];
     }
+
     return definitions[schema.format || ''] || definitions[schema.type];
   },
 );

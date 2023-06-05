@@ -4,13 +4,14 @@ import { useTreemaInput } from './hooks';
 
 export const TreemaIntegerNodeDefinition: TreemaTypeDefinition = {
   id: 'integer',
-  
+
   display: ({ data }: DisplayProps) => {
     return <span>{data}</span>;
   },
 
   edit: ({ data, schema, onChange }: EditProps) => {
     const ref = useTreemaInput();
+
     return (
       <input
         value={data}

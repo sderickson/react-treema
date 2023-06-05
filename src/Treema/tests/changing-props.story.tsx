@@ -6,11 +6,11 @@ import { ParentComponent, changingPropsArgs, selectStaysOnAddTest } from './chan
 /**
  * This storybook demonstrates and tests having the parent component be the source of truth for
  * the data.
- * 
+ *
  * In all but the most simple uses of Treema, an ancestor node of Treema will need
  * to mediate between other sources of changes such as other inputs on the page,
  * or I/O streams such as file or network activity.
- * 
+ *
  * If the data value passed in changes, Treema will replace whatever it currently has with
  * the new value and, as much as possible, maintain other state continuity such as selection
  * and opened/closed states. Likewise, when Treema emits that its data has changed, the

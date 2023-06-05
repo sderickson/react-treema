@@ -35,9 +35,9 @@ export class TreemaStorybookTestContext {
   constructor(root: HTMLElement, jest: Jest, testingLibrary: TestingLibrary, speed: number = defaultSpeed) {
     this.root = root;
     if (this.root.getAttribute('data-testid') == 'treema-root') {
-      this.treema = this.root
+      this.treema = this.root;
     } else {
-      this.treema = testingLibrary.within(this.root).getByTestId('treema-root')
+      this.treema = testingLibrary.within(this.root).getByTestId('treema-root');
     }
     this.testingLibrary = testingLibrary;
     this.expect = jest.expect;

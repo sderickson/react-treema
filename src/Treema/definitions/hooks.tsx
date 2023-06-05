@@ -39,11 +39,11 @@ export const useTreemaInput = () => {
       if (refIndex >= 0) {
         editRefs.splice(refIndex, 1);
       }
-    }
+    };
   }, [editRef]);
 
   return editRef;
-}
+};
 
 export const useTreemaTextArea = () => {
   const { editRefs } = useContext(TreemaContext);
@@ -57,8 +57,8 @@ export const useTreemaTextArea = () => {
       if (refIndex >= 0) {
         editRefs.splice(refIndex, 1);
       }
-    }
+    };
   }, [editRef]);
 
   return editRef;
-}
+};

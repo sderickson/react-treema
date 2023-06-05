@@ -26,5 +26,5 @@ export const getDefaultProps = (): TreemaRootProps => {
   return {
     data: {},
     schema: {},
-  }
-}
+  };
+};

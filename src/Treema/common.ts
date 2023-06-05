@@ -1,8 +1,8 @@
-import { ContextInterface } from "./context";
-import { beginAddProperty, beginEdit, selectPath, setData } from "./state/actions";
-import { getDataAtPath, getWorkingSchema } from "./state/selectors";
-import { JsonPointer } from "./types";
-import { clone, getChildWorkingSchema, getValueForRequiredType } from "./utils";
+import { ContextInterface } from './context';
+import { beginAddProperty, beginEdit, selectPath, setData } from './state/actions';
+import { getDataAtPath, getWorkingSchema } from './state/selectors';
+import { JsonPointer } from './types';
+import { clone, getChildWorkingSchema, getValueForRequiredType } from './utils';
 
 export const handleAddChild = (path: JsonPointer, context: ContextInterface) => {
   const schema = getWorkingSchema(context.state, path);
@@ -16,4 +16,4 @@ export const handleAddChild = (path: JsonPointer, context: ContextInterface) => 
     context.dispatch(selectPath(path + '/' + data.length));
     context.dispatch(beginEdit(path + '/' + data.length));
   }
-} 
+};

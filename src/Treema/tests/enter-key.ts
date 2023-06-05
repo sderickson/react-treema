@@ -48,15 +48,15 @@ export const editRootArrayTest: GenericTest = {
     await ctx.type('9002');
     await ctx.fireEnter();
     const data = ctx.getData();
-    ctx.expect(data).toEqual([1,2,3,90010, 90020, 0]); // not sure what's going on with "type" here... should be 9001
+    ctx.expect(data).toEqual([1, 2, 3, 90010, 90020, 0]); // not sure what's going on with "type" here... should be 9001
   },
 };
 
 export const editRootArrayArgs: TreemaRootProps = {
-  data: [1,2,3],
-  schema: { type: 'array', items: { type: 'number' }},
+  data: [1, 2, 3],
+  schema: { type: 'array', items: { type: 'number' } },
   onEvent,
-}
+};
 
 export const noMoreItemsTest: GenericTest = {
   name: 'should not allow adding items once all allowed have been added',
@@ -69,13 +69,13 @@ export const noMoreItemsTest: GenericTest = {
     await ctx.fireEnter();
 
     const data = ctx.getData();
-    ctx.expect(data).toEqual([1,2,0]);
-    ctx.expect(ctx.query().queryByTestId("treema-new-prop-input")).toBeNull();
+    ctx.expect(data).toEqual([1, 2, 0]);
+    ctx.expect(ctx.query().queryByTestId('treema-new-prop-input')).toBeNull();
   },
-}
+};
 
 export const noMoreItemsArgs: TreemaRootProps = {
-  data: [1,2],
+  data: [1, 2],
   schema: {
     type: 'array',
     items: {
@@ -84,7 +84,7 @@ export const noMoreItemsArgs: TreemaRootProps = {
     maxItems: 3,
   },
   onEvent,
-}
+};
 
 export const noMorePropsTest: GenericTest = {
   name: 'should not allow adding properties once all allowed have been added',
@@ -101,12 +101,12 @@ export const noMorePropsTest: GenericTest = {
     await ctx.type('b');
     await ctx.fireEnter();
     const data = ctx.getData();
-    ctx.expect(data).toEqual({a: 'asdf'});
+    ctx.expect(data).toEqual({ a: 'asdf' });
 
     // double check
-    ctx.expect(ctx.query().queryByTestId("treema-new-prop-input")).toBeNull();
-  }
-}
+    ctx.expect(ctx.query().queryByTestId('treema-new-prop-input')).toBeNull();
+  },
+};
 
 export const noMorePropsArgs: TreemaRootProps = {
   data: {},
@@ -118,4 +118,4 @@ export const noMorePropsArgs: TreemaRootProps = {
     additionalProperties: false,
   },
   onEvent,
-}
+};

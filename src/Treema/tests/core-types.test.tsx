@@ -1,4 +1,17 @@
-import { renderArrayArgs, renderArrayTest, renderBooleanArgs, renderBooleanTest, renderNullArgs, renderNullTest, renderNumberArgs, renderNumberTest, renderObjectArgs, renderObjectTest, renderStringArgs, renderStringTest } from './core-types';
+import {
+  renderArrayArgs,
+  renderArrayTest,
+  renderBooleanArgs,
+  renderBooleanTest,
+  renderNullArgs,
+  renderNullTest,
+  renderNumberArgs,
+  renderNumberTest,
+  renderObjectArgs,
+  renderObjectTest,
+  renderStringArgs,
+  renderStringTest,
+} from './core-types';
 import { wrapGenericTestInJest } from './utils-jest';
 
 wrapGenericTestInJest('strings', [renderStringTest], renderStringArgs);
