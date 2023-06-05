@@ -161,22 +161,26 @@ export const getPropertiesAvailableAtPath: (state: TreemaState, path: JsonPointe
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
   (path, datasAndSchemas) => {
     const { schema, data } = datasAndSchemas[path];
-    if (!schema.properties) {
-      return [];
-    }
-    const properties: KeyTitlePair[] = [];
-    for (const key of Object.keys(schema.properties)) {
-      const childSchema = schema.properties[key];
-      if (data[key] !== undefined) continue;
-      if (childSchema.format === 'hidden') continue;
-      if (childSchema.readOnly) continue;
-      properties.push({ key, title: childSchema.title || key });
-    }
-    properties.sort();
-
-    return properties;
+    return _getPropertiesAvailable(data, schema);
   },
 );
+
+const _getPropertiesAvailable = ( data: any, schema: WorkingSchema ): KeyTitlePair[] => {
+  if (!schema.properties) {
+    return [];
+  }
+  const properties: KeyTitlePair[] = [];
+  for (const key of Object.keys(schema.properties)) {
+    const childSchema = schema.properties[key];
+    if (data[key] !== undefined) continue;
+    if (childSchema.format === 'hidden') continue;
+    if (childSchema.readOnly) continue;
+    properties.push({ key, title: childSchema.title || key });
+  }
+  properties.sort();
+
+  return properties;
+}
 
 export const hasChildrenAtPath: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
   [
@@ -196,9 +200,32 @@ export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boole
 ],
   (datasAndSchemas, path) => {
     const { data, schema } = datasAndSchemas[path];
-    return schema.readOnly !== false && ['array', 'object'].includes(getType(data));
+    return _canAddChild(data, schema);
   },
 );
+
+const _canAddChild = (data: any, schema: WorkingSchema): boolean => {
+  if (schema.readOnly) {
+    return false;
+  }
+  const dataType = getType(data);
+  if (dataType === 'array') {
+    if (schema.maxItems && schema.maxItems <= data.length) {
+      return false;
+    }
+    return true;
+  }
+  
+  if (dataType === 'object') {
+    const availableProps = _getPropertiesAvailable(data, schema);
+    if (availableProps.length === 0 && schema.additionalProperties === false && !schema.patternProperties) {
+      return false;
+    }
+    return true;
+  }
+
+  return false;
+}
 
 // ----------------------------------------------------------------------------
 // Definition, settings based selectors
@@ -272,7 +299,9 @@ export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSch
       const childPaths = data.map((_: any, index: number) => {
         return path + '/' + index;
       });
-      stack.unshift('addTo:' + path);
+      if (_canAddChild(data, schema)) {
+        stack.unshift('addTo:' + path);
+      }
       stack = childPaths.concat(stack);
       pathToChildren[path] = childPaths;
     }
@@ -307,7 +336,9 @@ export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSch
           }
         });
       }
-      stack.unshift('addTo:' + path);
+      if (_canAddChild(data, schema)) {
+        stack.unshift('addTo:' + path);
+      }
       stack = keys.concat(stack);
       pathToChildren[path] = keys;
     }

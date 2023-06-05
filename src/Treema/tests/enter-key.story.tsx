@@ -1,6 +1,6 @@
 import { TreemaRoot } from '../TreemaRoot';
 import type { Meta } from '@storybook/react';
-import { args, editRootArrayArgs, editRootArrayTest, editRow } from './enter-key';
+import { args, editRootArrayArgs, editRootArrayTest, editRow, noMoreItemsArgs, noMoreItemsTest, noMorePropsArgs, noMorePropsTest } from './enter-key';
 import { wrapGenericTestInStory, Story } from './utils-storybook';
 
 /**
@@ -14,4 +14,6 @@ const meta: Meta<typeof TreemaRoot> = {
 export default meta;
 
 export const EditRow: Story = wrapGenericTestInStory(editRow, args);
-export const EditRootArray: Story = wrapGenericTestInStory(editRootArrayTest, editRootArrayArgs)
+export const EditRootArray: Story = wrapGenericTestInStory(editRootArrayTest, editRootArrayArgs);
+export const NoMoreProps: Story = wrapGenericTestInStory(noMorePropsTest, noMorePropsArgs);
+export const NoMoreItems: Story = wrapGenericTestInStory(noMoreItemsTest, noMoreItemsArgs);

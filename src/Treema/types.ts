@@ -70,6 +70,7 @@ export interface SupportedJsonSchema {
   minimum?: number;
   maximum?: number;
   readOnly?: boolean;
+  maxItems?: number;
 }
 
 /**

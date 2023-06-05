@@ -1,5 +1,3 @@
-// import { onEvent } from './context';
-// import { noopLib } from '../utils';
 import { TreemaRootProps } from '../TreemaRoot';
 import { GenericTest } from './types';
 

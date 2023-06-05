@@ -57,3 +57,65 @@ export const editRootArrayArgs: TreemaRootProps = {
   schema: { type: 'array', items: { type: 'number' }},
   onEvent,
 }
+
+export const noMoreItemsTest: GenericTest = {
+  name: 'should not allow adding items once all allowed have been added',
+  test: async (ctx) => {
+    await ctx.fireFocus();
+    await ctx.fireTab();
+    await ctx.fireTab();
+    await ctx.fireTab();
+    await ctx.fireEnter();
+    await ctx.fireEnter();
+
+    const data = ctx.getData();
+    ctx.expect(data).toEqual([1,2,0]);
+    ctx.expect(ctx.query().queryByTestId("treema-new-prop-input")).toBeNull();
+  },
+}
+
+export const noMoreItemsArgs: TreemaRootProps = {
+  data: [1,2],
+  schema: {
+    type: 'array',
+    items: {
+      type: 'number',
+    },
+    maxItems: 3,
+  },
+  onEvent,
+}
+
+export const noMorePropsTest: GenericTest = {
+  name: 'should not allow adding properties once all allowed have been added',
+  test: async (ctx) => {
+    await ctx.fireFocus();
+    await ctx.fireTab();
+    await ctx.fireEnter();
+    await ctx.type('a');
+    await ctx.fireEnter();
+    await ctx.type('asdf');
+
+    // if the interface allows the following to work, this is broken
+    await ctx.fireEnter();
+    await ctx.type('b');
+    await ctx.fireEnter();
+    const data = ctx.getData();
+    ctx.expect(data).toEqual({a: 'asdf'});
+
+    // double check
+    ctx.expect(ctx.query().queryByTestId("treema-new-prop-input")).toBeNull();
+  }
+}
+
+export const noMorePropsArgs: TreemaRootProps = {
+  data: {},
+  schema: {
+    type: 'object',
+    properties: {
+      'a': { type: 'string' },
+    },
+    additionalProperties: false,
+  },
+  onEvent,
+}
