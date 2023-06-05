@@ -30,12 +30,12 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Callbacks
 - [X] Custom treema nodes
 - [X] Extras (2d point, etc)
+- [X] Preventing adding items, props where no more can be added
+- [X] Test data prop changing
 
 #### In Progress
-- [ ] Preventing adding items, props where no more can be added
 
 #### TODO
-- [ ] Test synchronizing with parent node, react query
 - [ ] Edit working schemas
 - [ ] readOnly
 - [ ] undo/redo

@@ -11,7 +11,6 @@ import {
   beginEdit,
   setData,
   endEdit,
-  beginAddProperty,
   endAddProperty,
   deleteAction,
 } from './state/actions';
@@ -269,6 +268,16 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       currentRef?.removeEventListener('keydown', onKeyDown);
     };
   }, [onKeyDown]);
+
+  useEffect(() => {
+    // Update state data when prop data changes. This keeps Treema data integrated
+    // with state managed outside.
+    if(data !== state.data) {
+      // Don't update data unless it's different than what we have... or we might have
+      // an infinite loop. Or at least more actions than necessary.
+      dispatch(setData('', data));
+    }
+  }, [data]);
 
   /**
    * In addition to handling the inputs for the base Treema interface, TreemaRoot also handles

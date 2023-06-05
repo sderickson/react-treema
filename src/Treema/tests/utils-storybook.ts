@@ -14,9 +14,7 @@ export const wrapGenericTestInStory = (test: GenericTest, args: TreemaRootProps)
     name: test.name,
     args,
     play: async ({ canvasElement }) => {
-      const canvas = within(canvasElement);
-      const root: HTMLElement = canvas.getByTestId('treema-root');
-      const context = new TreemaStorybookTestContext(root, jest, testLibrary);
+      const context = new TreemaStorybookTestContext(canvasElement, jest, testLibrary);
       await sleep(100);
       await test.test(context);
     },

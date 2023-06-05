@@ -27,12 +27,18 @@ export const onEvent = (event: TreemaEvent) => {
 
 export class TreemaStorybookTestContext {
   root: HTMLElement;
+  treema: HTMLElement;
   testingLibrary: TestingLibrary;
   expect: typeof storybookJest.expect | typeof mainJest.expect;
   speed: number;
 
   constructor(root: HTMLElement, jest: Jest, testingLibrary: TestingLibrary, speed: number = defaultSpeed) {
     this.root = root;
+    if (this.root.getAttribute('data-testid') == 'treema-root') {
+      this.treema = this.root
+    } else {
+      this.treema = testingLibrary.within(this.root).getByTestId('treema-root')
+    }
     this.testingLibrary = testingLibrary;
     this.expect = jest.expect;
     this.speed = speed;
@@ -43,42 +49,42 @@ export class TreemaStorybookTestContext {
   }
 
   async fireFocus(): Promise<void> {
-    await this.testingLibrary.fireEvent.focus(this.root);
+    await this.testingLibrary.fireEvent.focus(this.treema);
     await sleep(this.speed);
   }
 
   async fireArrowDown(): Promise<void> {
-    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'ArrowDown', code: 'ArrowDown' });
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'ArrowDown', code: 'ArrowDown' });
     await sleep(this.speed);
   }
 
   async fireArrowUp(): Promise<void> {
-    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'ArrowUp', code: 'ArrowUp' });
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'ArrowUp', code: 'ArrowUp' });
     await sleep(this.speed);
   }
 
   async fireArrowLeft(): Promise<void> {
-    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'ArrowLeft', code: 'ArrowLeft' });
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'ArrowLeft', code: 'ArrowLeft' });
     await sleep(this.speed);
   }
 
   async fireArrowRight(): Promise<void> {
-    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'ArrowRight', code: 'ArrowRight' });
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'ArrowRight', code: 'ArrowRight' });
     await sleep(this.speed);
   }
 
   async fireEnter(): Promise<void> {
-    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'Enter', code: 'Enter' });
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'Enter', code: 'Enter' });
     await sleep(this.speed);
   }
 
   async fireTab(): Promise<void> {
-    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'Tab', code: 'Tab' });
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'Tab', code: 'Tab' });
     await sleep(this.speed);
   }
 
   async fireBackspace(): Promise<void> {
-    await this.testingLibrary.fireEvent.keyDown(this.root, { key: 'Backspace', code: 'Backspace' });
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'Backspace', code: 'Backspace' });
     await sleep(this.speed);
   }
 
