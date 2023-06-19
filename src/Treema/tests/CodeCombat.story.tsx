@@ -1,13 +1,17 @@
-import { TreemaRoot } from './TreemaRoot';
+import { TreemaRoot } from '../TreemaRoot';
 import tv4 from 'tv4';
-import { wrapTv4 } from './utils';
+import { wrapTv4 } from '../utils';
 // import Ajv from 'ajv';
 // import { wrapAjv } from './utils';
 // import { Point2dSchema } from './definitions/point2d';
 // import { TreemaLongStringSchema } from './definitions/long-string';
 
+/**
+ * This storybook tests complex CodeCombat scenarios. CodeCombat is what Treem was originally built for,
+ * and these are real data/schema sets from the product to verify things work like the old Treema library.
+ */
 export default {
-  title: 'Main/Treema',
+  title: 'IntegrationTests/CodeCombat',
   component: TreemaRoot,
   tags: ['autodocs'],
 };
@@ -572,9 +576,8 @@ const data = {"version":{"major":0,"minor":0,"isLatestMajor":true,"isLatestMinor
 
 
 /**
- * This Treema shows a relatively simple data structure: an array of objects with values that are
- * all primitive data types. You can try creating a new object, editing the values, and deleting
- * entries or values.
+ * This AI Scenario instance doesn't work *quite* right with the old Treema library. This story is to ensure the new one
+ * does work quite right.
  */
 export const AIScenario = {
   args: {
