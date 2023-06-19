@@ -116,6 +116,11 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     }
   });
 
+  // No more hooks allowed below here...
+  if (workingSchema.format === 'hidden') {
+    return null;
+  }
+
   // CSS classes
   const classNames = [
     'treema-node',
