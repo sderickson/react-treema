@@ -11,7 +11,7 @@ import './core.scss';
 import './extra.scss';
 
 // import { forwardRef } from 'react';
-import { TreemaTypeDefinition, TreemaTypeDefinitionWrapped } from './types';
+import { TreemaTypeDefinition } from './types';
 
 /**
  * TreemaNode creates and uses refs to the inputs that these definitions use. Apparently in order
@@ -20,29 +20,14 @@ import { TreemaTypeDefinition, TreemaTypeDefinitionWrapped } from './types';
  *
  * Wrapping also fills in defaults for configuration properties.
  */
-const wrapTypeDefinition: (typeDefinition: TreemaTypeDefinition) => TreemaTypeDefinitionWrapped = (
-  typeDefinition: TreemaTypeDefinition,
-) => {
-  const wrapped: TreemaTypeDefinitionWrapped = {
-    Display: typeDefinition.Display,
-    id: typeDefinition.id,
-    Edit: typeDefinition.Edit,
-  };
-  // if (typeDefinition.edit) {
-  //   wrapped.edit = forwardRef<HTMLInputElement, EditProps>(typeDefinition.edit);
-  // }
-
-  return wrapped;
-};
-
-export const coreDefinitions: { [key: string]: TreemaTypeDefinitionWrapped } = {
-  'object': wrapTypeDefinition(TreemaObjectNodeDefinition),
-  'array': wrapTypeDefinition(TreemaArrayNodeDefinition),
-  'string': wrapTypeDefinition(TreemaStringNodeDefinition),
-  'number': wrapTypeDefinition(TreemaNumberNodeDefinition),
-  'boolean': wrapTypeDefinition(TreemaBooleanNodeDefinition),
-  'null': wrapTypeDefinition(TreemaNullNodeDefinition),
-  'integer': wrapTypeDefinition(TreemaIntegerNodeDefinition),
-  'point2d': wrapTypeDefinition(TreemaPoint2dNodeDefinition),
-  'long-string': wrapTypeDefinition(TreemaLongStringNodeDefinition),
+export const coreDefinitions: { [key: string]: TreemaTypeDefinition } = {
+  'object': TreemaObjectNodeDefinition,
+  'array': TreemaArrayNodeDefinition,
+  'string': TreemaStringNodeDefinition,
+  'number': TreemaNumberNodeDefinition,
+  'boolean': TreemaBooleanNodeDefinition,
+  'null': TreemaNullNodeDefinition,
+  'integer': TreemaIntegerNodeDefinition,
+  'point2d': TreemaPoint2dNodeDefinition,
+  'long-string': TreemaLongStringNodeDefinition,
 };

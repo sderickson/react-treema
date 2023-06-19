@@ -18,10 +18,5 @@ export interface TreemaTypeDefinition {
   id: string;
   Display: React.FC<DisplayProps>;
   Edit?: React.FC<EditProps>;
-}
-
-export interface TreemaTypeDefinitionWrapped {
-  id: string;
-  Display: React.FC<DisplayProps>;
-  Edit?: React.FC<EditProps>;
+  shortened?: boolean;
 }

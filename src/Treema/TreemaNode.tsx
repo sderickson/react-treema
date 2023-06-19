@@ -129,6 +129,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     isSelected ? 'treema-selected' : '',
     errors.length ? 'treema-has-error' : '',
     isDefaultRoot ? 'treema-default-stub' : '',
+    definition.shortened ? 'treema-shortened' : '',
   ];
 
   const valueClassNames = ['treema-value', 'treema-' + definition.id, isEditing ? 'treema-edit' : 'treema-display'];
@@ -183,7 +184,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
           </datalist>
         </>
       )}
-      {canAddChildAtPath(state, path) && (
+      {isOpen && canAddChildAtPath(state, path) && (
         <div className="treema-add-child" onClick={onAddChild} ref={addPropRef} tabIndex={-1}>
           <span>+</span>
         </div>

@@ -9,6 +9,7 @@ export const TreemaLongStringSchema = {
 
 export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
   id: 'long-string',
+  shortened: true,
   Display: ({ data }: DisplayProps) => {
     return <div>{data}</div>;
   },

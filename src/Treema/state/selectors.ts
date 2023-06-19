@@ -2,7 +2,7 @@ import { getParentPath, getType, walk } from '../utils';
 import { JsonPointer, ValidatorError, WorkingSchema } from '../types';
 import { TreemaState, OrderEntry } from './types';
 import { createSelector } from 'reselect';
-import { TreemaTypeDefinitionWrapped } from '../definitions/types';
+import { TreemaTypeDefinition } from '../definitions/types';
 
 // ----------------------------------------------------------------------------
 // Base data selectors
@@ -229,7 +229,7 @@ const _canAddChild = (data: any, schema: WorkingSchema): boolean => {
 // ----------------------------------------------------------------------------
 // Definition, settings based selectors
 
-export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => TreemaTypeDefinitionWrapped = createSelector(
+export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => TreemaTypeDefinition = createSelector(
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas, getDefinitions],
   (path, datasAndSchemas, definitions) => {
     const { schema, data } = datasAndSchemas[path];
