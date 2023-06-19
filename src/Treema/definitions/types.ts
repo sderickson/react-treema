@@ -1,10 +1,11 @@
 import React from 'react';
-import { WorkingSchema } from '../types';
+import { JsonPointer, WorkingSchema } from '../types';
 import './base.scss';
 
 export interface DisplayProps {
   data: any;
   schema: WorkingSchema;
+  path: JsonPointer;
 }
 
 export interface EditProps {
