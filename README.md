@@ -34,9 +34,12 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Test data prop changing
 
 #### In Progress
+- [ ] Hidden format
+- [ ] Object and array displays
+- [ ] Edit working schemas
+- [ ] Ace Editor integration
 
 #### TODO
-- [ ] Edit working schemas
 - [ ] readOnly
 - [ ] undo/redo
 - [ ] export getters/setters
