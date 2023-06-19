@@ -292,6 +292,10 @@ export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSch
       continue;
     }
     const { data, schema } = datasAndSchemas[path];
+    if (schema.format === 'hidden') {
+      continue;
+    }
+
     const dataType = getType(data);
 
     if (dataType === 'array') {
