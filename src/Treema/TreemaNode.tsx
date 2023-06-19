@@ -16,6 +16,7 @@ import {
 } from './state/selectors';
 import './base.scss';
 import { handleAddChild } from './common';
+import { getParentPath } from './utils';
 
 interface TreemaNodeProps {
   path: JsonPointer;
@@ -52,6 +53,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const isDefaultRoot = getIsDefaultRoot(state, path);
   const isAddingProperty = 'addTo:' + path === state.lastSelected && state.addingProperty;
   const isFocusedOnAddProperty = 'addTo:' + path === state.lastSelected && !state.addingProperty;
+  const parentIsArray = path && getWorkingSchema(state, getParentPath(path)).type === 'array';
 
   // Event handlers
   const onSelect = useCallback(
@@ -142,11 +144,11 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
 
       <div ref={displayRef} tabIndex={-1} className="treema-row">
-        {name !== undefined && (
+        {name !== undefined && !parentIsArray ? (
           <span className="treema-key" title={description}>
-            {name === '' ? '(empty string)' : name}:{' '}
+            {name === '' ? '(empty string)' : name}:{' '}{workingSchema.type}
           </span>
-        )}
+        ) : null}
 
         <div className={valueClassNames.join(' ')}>
           {isEditing && definition.Edit ? (
