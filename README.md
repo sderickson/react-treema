@@ -33,9 +33,9 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Preventing adding items, props where no more can be added
 - [X] Test data prop changing
 - [X] Hidden format
+- [X] Object and array displays
 
 #### In Progress
-- [ ] Object and array displays
 - [ ] Edit working schemas
 - [ ] Ace Editor integration
 
