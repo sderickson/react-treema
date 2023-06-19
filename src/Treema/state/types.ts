@@ -3,8 +3,8 @@ import { SchemaLib, SupportedJsonSchema, JsonPointer } from '../types';
 
 export interface TreemaSettings {
   readOnly?: boolean;
-  noSortable?: boolean;
-  skipValidation?: boolean;
+  noSortable?: boolean; // TODO
+  skipValidation?: boolean; // TODO
 }
 
 export type InsertPropertyPlaceholder = string;

@@ -41,7 +41,7 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] Ace Editor integration
 
 #### TODO
-- [ ] readOnly
+- [ ] readOnly, skipValidation
 - [ ] undo/redo
 - [ ] export getters/setters
 - [ ] export utility functions
@@ -52,7 +52,7 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] Prevent editing into other bad schema states
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
-- [ ] drag and drop (that other jquery ui thing)
+- [ ] drag and drop (that other jquery ui thing), noSortable
 - [ ] README
 - [ ] Github pages
 - [ ] Publish
