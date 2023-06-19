@@ -146,7 +146,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       <div ref={displayRef} tabIndex={-1} className="treema-row">
         {name !== undefined && !parentIsArray ? (
           <span className="treema-key" title={description}>
-            {name === '' ? '(empty string)' : name}:{' '}{workingSchema.type}
+            {name === '' ? '(empty string)' : name}:{' '}
           </span>
         ) : null}
 

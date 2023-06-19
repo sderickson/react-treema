@@ -34,7 +34,7 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
       const childSchema = getWorkingSchema(state, childPath);
       const name = childSchema.title || key;
       if (['object', 'array'].includes(getType(value))) {
-        return <span>{name}</span>;
+        return <span key={'key:'+key}>{name}</span>;
       }
       let valueStringish = getType(value) === 'string' ? value : JSON.stringify(value);
       if (getType(value) === 'undefined') {
@@ -44,13 +44,13 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
       if (valueString.length > 20) {
         valueString = valueString.slice(0, 20) + ' ...' ;
       }
-      return <span>{name}={valueString}</span>;
+      return <span key={'key:'+key}>{name}={valueString}</span>;
     }).filter((v) => v);
 
     // If there are more than three properties, truncate the list.
     if (children.length > 3) {
       children = children.slice(0, 3);
-      children.push(<span>...</span>);
+      children.push(<span key='...'>...</span>);
     }
 
     // Join the children with commas.
@@ -58,7 +58,7 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
     children.forEach((child, index) => {
       joinedChildren.push(child as JSX.Element);
       if (index < children.length - 1) {
-        joinedChildren.push(<span>, </span>);
+        joinedChildren.push(<span key={'index:'+index}>, </span>);
       }
     });
 

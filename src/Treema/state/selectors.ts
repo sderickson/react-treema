@@ -377,7 +377,7 @@ export const getNextRow: (state: TreemaState, skipAddProperties?: boolean) => Or
     index = Math.min(currentIndex + 1, paths.length - 1);
     while (
       index < paths.length &&
-      (getAnyAncestorsClosed(state, normalizeToPath(paths[index])) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))
+      (getAnyAncestorsClosed(state, paths[index]) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))
     ) {
       index++;
     }
@@ -405,7 +405,7 @@ export const getPreviousRow: (state: TreemaState, skipAddProperties?: boolean) =
   }
   while (
     index > 0 &&
-    (getAnyAncestorsClosed(state, normalizeToPath(paths[index])) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))
+    (getAnyAncestorsClosed(state, paths[index]) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))
   ) {
     index--;
   }
@@ -450,6 +450,9 @@ export const getCanOpen = createSelector(
 
 export const getAnyAncestorsClosed = createSelector([getClosed, (_, path: JsonPointer) => path], (closed, path) => {
   let currentPath = getParentPath(path);
+  if (isInsertPropertyPlaceholder(path)) {
+    currentPath = normalizeToPath(path);
+  }
   while (currentPath !== '') {
     if (closed[currentPath]) {
       return true;

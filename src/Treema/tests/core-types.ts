@@ -52,7 +52,7 @@ export const renderBooleanArgs: TreemaRootProps = {
 export const renderArrayTest: GenericTest = {
   name: 'should render arrays',
   test: async (ctx) => {
-    ctx.query().getByText('234');
+    ctx.expect(ctx.query().getAllByText('234').length).toBe(2);
   },
 };
 

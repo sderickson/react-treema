@@ -24,7 +24,7 @@ export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
       const childPath = path + '/' + index;
       const childWorkingSchema = getWorkingSchema(state, childPath);
       const definition = getDefinitionAtPath(state, childPath);
-      return definition.Display({ data: child, schema: childWorkingSchema, path: childPath });
+      return <definition.Display data={child} schema={childWorkingSchema} path={childPath} key={childPath} />;
     });
 
     // Join the children with pipes.
@@ -32,7 +32,7 @@ export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
     children.forEach((child, index) => {
       joinedChildren.push(child as JSX.Element);
       if (index < children.length - 1) {
-        joinedChildren.push(<span> | </span>);
+        joinedChildren.push(<span key={index}> | </span>);
       }
     });
 

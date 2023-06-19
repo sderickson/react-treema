@@ -37,6 +37,7 @@ And http://codecombat.github.io/treema/demo.html
 
 #### In Progress
 - [ ] Edit working schemas
+- [ ] Optionally show root elem
 - [ ] Ace Editor integration
 
 #### TODO
