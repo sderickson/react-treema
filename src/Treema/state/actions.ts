@@ -1,6 +1,8 @@
 import { JsonPointer } from '../types';
 import { OrderEntry } from './types';
 
+// Select Action
+
 type SelectPathAction = {
   type: 'select_path_action';
   path: JsonPointer | undefined;
@@ -12,6 +14,9 @@ export const selectPath = (path: JsonPointer | undefined): SelectPathAction => {
     path,
   };
 };
+
+
+// Navigation Actions
 
 type NavigateUpAction = {
   type: 'navigate_up_action';
@@ -41,6 +46,9 @@ export const navigateOut = (): NavigateOutAction => {
   return { type: 'navigate_out_action' };
 };
 
+
+// Open/Close Action
+
 type SetPathClosedAction = {
   type: 'set_path_closed_action';
   path: JsonPointer;
@@ -54,6 +62,9 @@ export const setPathClosed = (path: JsonPointer, closed: boolean): SetPathClosed
     closed,
   };
 };
+
+
+// Edit Actions
 
 type BeginEditAction = {
   type: 'begin_edit_action';
@@ -103,6 +114,9 @@ export const setData = (path: JsonPointer, data: any): SetDataAction => {
   };
 };
 
+
+// Add Property Actions
+
 type BeginAddPropertyAction = {
   type: 'begin_add_property_action';
   path: OrderEntry;
@@ -139,6 +153,9 @@ export const endAddProperty = (cancel?: boolean): EndAddPropertyAction => {
   };
 };
 
+
+// Delete Action
+
 type DeleteAction = {
   type: 'delete_action';
   path: JsonPointer;
@@ -150,6 +167,24 @@ export const deleteAction = (path: JsonPointer): DeleteAction => {
     path,
   };
 };
+
+
+// Working Schema Action
+
+type SetWorkingSchemaAction = {
+  type: 'set_working_schema_action';
+  path: JsonPointer;
+  index: number;
+};
+
+export const setWorkingSchema = (path: JsonPointer, index: number): SetWorkingSchemaAction => {
+  return {
+    type: 'set_working_schema_action',
+    path,
+    index,
+  };
+};
+
 
 export type TreemaAction =
   | SelectPathAction
@@ -165,4 +200,5 @@ export type TreemaAction =
   | BeginAddPropertyAction
   | EditAddPropertyAction
   | EndAddPropertyAction
-  | DeleteAction;
+  | DeleteAction
+  | SetWorkingSchemaAction;

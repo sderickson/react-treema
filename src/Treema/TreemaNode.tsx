@@ -6,6 +6,7 @@ import {
   getClosed,
   getSchemaErrorsByPath,
   getWorkingSchema,
+  getWorkingSchemas,
   getDataAtPath,
   getIsDefaultRoot,
   getChildOrderForPath,
@@ -42,6 +43,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const isOpen = !getClosed(state)[path];
   const isEditing = state.editing === path;
   const workingSchema = getWorkingSchema(state, path);
+  const workingSchemas = getWorkingSchemas(state, path);
   const name = workingSchema.title || path?.split('/').pop();
   const definition = getDefinitionAtPath(state, path);
   const canOpen = hasChildrenAtPath(state, path);
@@ -144,6 +146,14 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
 
       <div ref={displayRef} tabIndex={-1} className="treema-row">
+        {workingSchemas.length > 1 ? (
+          <select>
+            {workingSchemas.map((schema, index) => (
+              <option key={index}>{schema.title || schema.type || '???'}</option>
+            ))}
+          </select>
+        ) : null}
+
         {name !== undefined && !parentIsArray ? (
           <span className="treema-key" title={description}>
             {name === '' ? '(empty string)' : name}:{' '}

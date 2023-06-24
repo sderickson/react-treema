@@ -155,6 +155,10 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
 
       return s;
 
+    case 'set_working_schema_action':
+      const workingSchemaChoices = { ...state.workingSchemaChoices, [action.path]: action.index };
+      return { ...state, workingSchemaChoices };
+
     default:
       console.error('Unknown action', action);
   }

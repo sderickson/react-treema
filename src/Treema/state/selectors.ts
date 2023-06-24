@@ -12,6 +12,7 @@ export const getSchemaLib = (state: TreemaState) => state.schemaLib;
 export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';
 export const getDefinitions = (state: TreemaState) => state.definitions;
 export const getSettings = (state: TreemaState) => state.settings;
+export const getWorkingSchemaChoices = (state: TreemaState) => state.workingSchemaChoices;
 
 // ----------------------------------------------------------------------------
 // Error selectors
@@ -53,8 +54,8 @@ type DataSchemaMap = {
  * once until the data or the schema changes.
  */
 export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = createSelector(
-  [getData, getRootSchema, getSchemaLib],
-  (data, rootSchema, schemaLib) => {
+  [getData, getRootSchema, getSchemaLib, getWorkingSchemaChoices],
+  (data, rootSchema, schemaLib, workingSchemaChoices) => {
     const datasAndSchemas: DataSchemaMap = {};
     const defaultsToWalk: JsonPointer[] = [];
 
@@ -62,7 +63,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
     walk(data, rootSchema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
       datasAndSchemas[path] = {
         data,
-        schema,
+        schema: workingSchemaChoices[path] ? possibleSchemas[workingSchemaChoices[path]] : schema,
         possibleSchemas: possibleSchemas || [],
         defaultRoot: false,
       };

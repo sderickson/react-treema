@@ -13,6 +13,7 @@ export const getDefaultState = (): TreemaState => {
     closed: {},
     definitions: coreDefinitions,
     settings: {},
+    workingSchemaChoices: {},
   };
 };
 

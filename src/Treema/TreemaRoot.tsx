@@ -126,6 +126,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     closed,
     definitions: coreDefinitions,
     settings: {},
+    workingSchemaChoices: {},
   });
 
   /**

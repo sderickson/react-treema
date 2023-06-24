@@ -1,4 +1,4 @@
-import { SchemaValidator, SupportedJsonSchema, SchemaLib, TreemaNodeContext, WorkingSchema, BaseType } from './types';
+import { SchemaValidator, SupportedJsonSchema, SchemaLib, TreemaNodeWalkContext, WorkingSchema, BaseType } from './types';
 import { JsonPointer } from './types';
 
 export const noopValidator: SchemaValidator = () => {
@@ -8,6 +8,7 @@ export const noopValidator: SchemaValidator = () => {
 export const noopLib: SchemaLib = {
   validateMultiple: noopValidator,
   getSchemaRef: () => ({}),
+  addSchema: () => {},
 };
 
 type Tv4 = any;
@@ -33,6 +34,9 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
     },
     getSchemaRef: (ref) => {
       return tv4.getSchema(ref);
+    },
+    addSchema: (schema, id) => {
+      id ? tv4.addSchema(id, schema) : tv4.addSchema(schema);
     },
   };
 };
@@ -62,6 +66,9 @@ export const wrapAjv = (ajv: any): SchemaLib => {
     getSchemaRef: (ref) => {
       return ajv.getSchema(ref);
     },
+    addSchema: (schema, id) => {
+      ajv.addSchema(schema, id);
+    },
   };
 };
 
@@ -69,7 +76,7 @@ export const walk: (
   data: any,
   schema: SupportedJsonSchema,
   lib: SchemaLib,
-  callback: (context: TreemaNodeContext) => void,
+  callback: (context: TreemaNodeWalkContext) => void,
   path?: string,
 ) => any = (data, schema, lib, callback, path) => {
   const workingSchemas = buildWorkingSchemas(schema, lib);
@@ -272,7 +279,6 @@ const resolveReference = (schema: SupportedJsonSchema, lib: SchemaLib): Supporte
 
       return {};
     }
-
     return resolved;
   } else {
     return schema;

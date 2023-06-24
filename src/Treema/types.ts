@@ -40,6 +40,7 @@ export type SchemaValidator = (data: any, schema: SupportedJsonSchema) => Valida
 export interface SchemaLib {
   validateMultiple: SchemaValidator;
   getSchemaRef: (ref: string) => SupportedJsonSchema;
+  addSchema: (schema: object, id: string) => void;
 }
 
 /**
@@ -95,9 +96,9 @@ export interface SupportedJsonSchema {
  */
 export type WorkingSchema = Omit<SupportedJsonSchema, '$ref' | 'allOf' | 'anyOf' | 'oneOf'> & { type: BaseType };
 
-export interface TreemaNodeContext {
+export interface TreemaNodeWalkContext {
   data: any;
   schema: WorkingSchema;
   path: string;
-  possibleSchemas?: WorkingSchema[];
+  possibleSchemas: WorkingSchema[];
 }
