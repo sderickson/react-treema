@@ -37,6 +37,9 @@ And http://codecombat.github.io/treema/demo.html
 
 #### In Progress
 - [ ] Edit working schemas
+- [ ] Debug mode? Show errors for chosen working schema?
+- [ ] Support for enum
+- [ ] Consolidate json pointer logic
 - [ ] Optionally show root elem
 - [ ] Ace Editor integration
 
