@@ -236,14 +236,21 @@ export const chooseWorkingSchema = (data: any, workingSchemas: WorkingSchema[], 
   if (workingSchemas.length === 1) {
     return workingSchemas[0];
   }
+  let bestNumErrors = Infinity;
+  let bestSchema = workingSchemas[0];
   for (const schema of workingSchemas) {
     const result = lib.validateMultiple(data, schema);
     if (result.valid && getJsonType(data) === schema.type) {
       return schema;
     }
+    // simple heuristic to try and find the "best" schema if none are valid: least errors
+    if (bestNumErrors > result.errors.length) {
+      bestSchema = schema;
+      bestNumErrors = result.errors.length;
+    }
   }
 
-  return workingSchemas[0];
+  return bestSchema;
 };
 
 export const getChildSchema = (key: string | number, schema: SupportedJsonSchema): SupportedJsonSchema => {

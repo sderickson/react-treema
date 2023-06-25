@@ -93,6 +93,10 @@ export class TreemaStorybookTestContext {
     await sleep(this.speed);
   }
 
+  async clear(): Promise<void> {
+    await user.clear(this.testingLibrary.within(this.treema).getByRole('textbox'));
+  }
+
   async selectOptions(select: Element, values: string | HTMLElement | string[] | HTMLElement[]): Promise<void> {
     await user.selectOptions(select, values);
     await sleep(this.speed);

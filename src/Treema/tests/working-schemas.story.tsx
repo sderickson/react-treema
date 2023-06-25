@@ -1,6 +1,6 @@
 import { TreemaRoot } from '../TreemaRoot';
 import type { Meta } from '@storybook/react';
-import { args, switchWorkingSchema } from './working-schemas';
+import { args, switchWorkingSchema, breakCurrentWorkingSchema } from './working-schemas';
 import { wrapGenericTestInStory, Story } from './utils-storybook';
 
 /**
@@ -13,4 +13,5 @@ const meta: Meta<typeof TreemaRoot> = {
 
 export default meta;
 
-export const SwitchWorkingSchema: Story = wrapGenericTestInStory(switchWorkingSchema, args);
+export const Switch: Story = wrapGenericTestInStory(switchWorkingSchema, args);
+export const Break: Story = wrapGenericTestInStory(breakCurrentWorkingSchema, args);

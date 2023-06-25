@@ -13,7 +13,26 @@ export const switchWorkingSchema: GenericTest = {
   },
 };
 
-export const workingSchemaTests: GenericTest[] = [switchWorkingSchema];
+export const breakCurrentWorkingSchema: GenericTest = {
+  name: 'changing value to break the current working schema retains the currently selected working schema',
+  test: async (ctx) => {
+    // initial value starts with data that matches the "type b" schema
+    await ctx.fireFocus();
+    await ctx.fireTab();
+    await ctx.fireTab();
+    // await ctx.fireBackspace();
+
+    await ctx.fireEnter();
+    await ctx.clear();
+    await ctx.type('a');
+    await ctx.fireTab();
+    // now make the value no longer fit "type b"
+    // but we should still see the "type b" schema title of the adjacent property...
+    await ctx.testingLibrary.within(ctx.treema).getByText('Stringed Foo:');
+  }
+};
+
+export const workingSchemaTests: GenericTest[] = [switchWorkingSchema, breakCurrentWorkingSchema];
 
 export const args: TreemaRootProps = {
   schemaLib: wrapAjv(new Ajv({ allErrors: true })),
@@ -33,7 +52,7 @@ export const args: TreemaRootProps = {
               foo: { type: 'number', title: 'Numbered Foo' },
             },
             default: { type: 'a', foo: 1 },
-            required: ['foo'],
+            required: ['foo', 'type'],
           },
           {
             title: 'type b',
@@ -42,7 +61,7 @@ export const args: TreemaRootProps = {
               foo: { type: 'string', title: 'Stringed Foo' },
             },
             default: { type: 'b', foo: 'bar' },
-            required: ['foo'],
+            required: ['foo', 'type'],
           },
         ],
       },

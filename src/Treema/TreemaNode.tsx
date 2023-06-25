@@ -172,7 +172,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
 
         {name !== undefined && !parentIsArray ? (
           <span className="treema-key" title={description}>
-            {name === '' ? '(empty string)' : name}:{' '}
+            {`${name === '' ? '(empty string)' : name}: `}
           </span>
         ) : null}
 

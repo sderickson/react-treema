@@ -19,6 +19,7 @@ import {
   canEditPathDirectly,
   normalizeToPath,
   isInsertPropertyPlaceholder,
+  getEffectiveWorkingSchemaChoices,
 } from './selectors';
 
 export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
@@ -78,10 +79,20 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
 
     case 'set_data_action':
       if (action.path === '') {
-        return { ...state, data: action.data };
+        // Since the data has changed externally, it's anybody's guess how this will affect
+        // the working schema choices. So just reset them all.
+        return { ...state, data: action.data, workingSchemaChoices: {} };
       }
 
-      return { ...state, data: setDataAtPath(state, action.path, action.data) };
+      return {
+        ...state,
+        data: setDataAtPath(state, action.path, action.data),
+        // Retain the working schema choices derived from the old data, for the new data
+        // otherwise "breaking" data for a working schema will cause the working schema to
+        // become whatever is the first one if none of them work. Users should explicitly
+        // change the working schema after initial load.
+        workingSchemaChoices: getEffectiveWorkingSchemaChoices(state)
+      };
 
     case 'begin_edit_action':
       const path = action.path || normalizeToPath(state.lastSelected || '');
@@ -156,8 +167,14 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       return s;
 
     case 'set_working_schema_action':
-      const workingSchemaChoices = { ...state.workingSchemaChoices, [action.path]: action.index };
-
+      const workingSchemaChoices = getEffectiveWorkingSchemaChoices(state);
+      workingSchemaChoices[action.path] = action.index;
+      // delete children choices, otherwise might get some weird behavior
+      for (let key of Object.keys(workingSchemaChoices)) {
+        if (key !== action.path && key.indexOf(action.path) === 0) {
+          delete workingSchemaChoices[key];
+        }
+      }
       return { ...state, workingSchemaChoices };
 
     default:

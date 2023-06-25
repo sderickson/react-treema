@@ -194,6 +194,32 @@ describe('chooseWorkingSchema', () => {
     const workingSchema = chooseWorkingSchema({ type: 'b', foo: 'bar' }, workingSchemas, schemaLib);
     expect(workingSchema.title).toBe('type b');
   });
+
+  it('picks the working schema with the least errors', () => {
+    const schema: SupportedJsonSchema = {
+      type: 'object',
+      oneOf: [
+        {
+          title: 'type a',
+          properties: {
+            type: { const: 'a', type: 'string' },
+            foo: { type: 'number', title: 'Numbered Foo' },
+          },
+        },
+        {
+          title: 'type b',
+          properties: {
+            type: { const: 'b', type: 'string' },
+            foo: { type: 'string', title: 'Stringed Foo' },
+          },
+        },
+      ],
+    };
+    const schemaLib = wrapAjv(new Ajv({ allErrors: true }));
+    const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+    const workingSchema = chooseWorkingSchema({ type: 'c', foo: 'type by stringed foo' }, workingSchemas, schemaLib);
+    expect(workingSchema.title).toBe('type b');
+  });
 });
 
 describe('getParentPath', () => {

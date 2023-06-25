@@ -1,8 +1,9 @@
 import { getParentPath, getType, walk, joinJsonPointers } from '../utils';
 import { JsonPointer, ValidatorError, WorkingSchema } from '../types';
-import { TreemaState, OrderEntry } from './types';
+import { TreemaState, OrderEntry, WorkingSchemaChoices } from './types';
 import { createSelector } from 'reselect';
 import { TreemaTypeDefinition } from '../definitions/types';
+import { get } from 'http';
 
 // ----------------------------------------------------------------------------
 // Base data selectors
@@ -116,6 +117,27 @@ export const getWorkingSchemas: (state: TreemaState, path: JsonPointer) => Worki
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
   (path, datasAndSchemas) => {
     return datasAndSchemas[path].possibleSchemas;
+  },
+);
+
+/**
+ * Returns an extended workingSchemaChoices, including ones that have been explicitly set and ones
+ * that are inferred by which working schema validates against the data.
+ */
+export const getEffectiveWorkingSchemaChoices: (state: TreemaState) => WorkingSchemaChoices = createSelector(
+  [getAllDatasAndSchemas, getWorkingSchemaChoices],
+  (datasAndSchemas, workingSchemaChoices) => {
+    const effectiveWorkingSchemaChoices: WorkingSchemaChoices = {};
+    Object.keys(datasAndSchemas).forEach((path) => {
+      const { schema, possibleSchemas } = datasAndSchemas[path];
+      if (possibleSchemas.length === 1) {
+        // don't need to fill for paths with no choice
+        return;
+      }
+      const index = possibleSchemas.indexOf(schema);
+      effectiveWorkingSchemaChoices[path] = index;
+    });
+    return Object.assign({}, effectiveWorkingSchemaChoices, workingSchemaChoices);
   },
 );
 
