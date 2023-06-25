@@ -44,6 +44,7 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] Ace Editor integration
 
 #### TODO
+- [ ] Mouse click to edit
 - [ ] readOnly, skipValidation
 - [ ] undo/redo
 - [ ] export getters/setters
