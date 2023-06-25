@@ -41,7 +41,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
     walk(data, rootSchema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
       datasAndSchemas[path] = {
         data,
-        schema: workingSchemaChoices[path] ? possibleSchemas[workingSchemaChoices[path]] : schema,
+        schema: workingSchemaChoices[path] !== undefined ? possibleSchemas[workingSchemaChoices[path]] : schema,
         possibleSchemas: possibleSchemas || [],
         defaultRoot: false,
       };

@@ -31,3 +31,16 @@ I got away with having a simple function for display for each type of node, but 
 Then the layout node just renders the edit node, focuses the ref, and all's good.
 
 Also, should just have one ref, most likely? Don't need one ref for each node in the tree; that might be unnecessarily slow.
+
+# Switching b/w Working Schemas & Data
+One of the ways the old Treema doesn't work so well is with various working schemas. I've set up this new version to show errors based on the selected working schema, which allows the user to see better what's going on and bring the data to match the intended schema. One kind of interesting case is where you switch from one working schema for an object to another. You could:
+
+1. wipe the old data completely, replacing with a new empty object or clone of the default
+2. keep the old data completely, with a bunch of errors showing, or
+3. some fancy merging of old data and any given default data, maybe giving precedence to the default data.
+
+I tried #2, but there's a problem. In order to get show errors based on working schema, I rerun the validator on the data with the working schema wherever there's a global error. This way the global "no matching oneOf" error is replaced with "here's why the data doesn't match this particular oneOf". But, if you switch working schemas without changing the data at all, there's no global error because the data still matches a oneOf, but not the one you care about. The alternative here is to run the validator on all working schemas for all paths... but that's going to get expensive. Every other heuristic I could think of feels brittle.
+
+So I tried going down #3 a bit, but it feels unintuitive. It's hard to guess accurately what everyone is going to want in this case, and it's complex.
+
+So I'm going with #1. If the user wants to take some data of the old data and apply it to the new, they'll have to do that manually. Unless a solution that's more like #2 or #3 can be found.

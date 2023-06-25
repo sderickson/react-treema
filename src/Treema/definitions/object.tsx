@@ -33,7 +33,7 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
         const childSchema = getWorkingSchema(state, childPath);
         const name = childSchema.title || key;
         if (['object', 'array'].includes(getType(value))) {
-          return <span key={'key:' + key}>{name}</span>;
+          return name;
         }
         let valueStringish = getType(value) === 'string' ? value : JSON.stringify(value);
         if (getType(value) === 'undefined') {
@@ -44,29 +44,25 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
           valueString = valueString.slice(0, 20) + ' ...';
         }
 
-        return (
-          <span key={'key:' + key}>
-            {name}={valueString}
-          </span>
-        );
+        return `${name}=${valueString}`;
       })
       .filter((v) => v);
 
     // If there are more than three properties, truncate the list.
     if (children.length > 3) {
       children = children.slice(0, 3);
-      children.push(<span key="...">...</span>);
+      children.push('...');
     }
 
     // Join the children with commas.
-    const joinedChildren: JSX.Element[] = [];
+    const joinedChildren: string[] = [];
     children.forEach((child, index) => {
-      joinedChildren.push(child as JSX.Element);
+      joinedChildren.push(child as string);
       if (index < children.length - 1) {
-        joinedChildren.push(<span key={'index:' + index}>, </span>);
+        joinedChildren.push(', ');
       }
     });
 
-    return <span>{joinedChildren}</span>;
+    return <span>{joinedChildren.join('')}</span>;
   },
 };

@@ -107,13 +107,11 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     (val: any) => {
       const newIndex = parseInt(val.target.value);
       const newSchema = workingSchemas[newIndex];
-      if (newSchema.type !== workingSchema.type) {
-        let newData = clone(newSchema.default);
-        if (!newData || getType(newData) !== newSchema.type) {
-          newData = getValueForRequiredType(newSchema.type);
-        }
-        dispatch(setData(path, newData));
+      let newData = clone(newSchema.default);
+      if (newData === undefined) {
+        newData = getValueForRequiredType(newSchema.type);
       }
+      dispatch(setData(path, newData));
       dispatch(setWorkingSchema(path, newIndex));
     },
     [dispatch, path, workingSchema, workingSchemas],

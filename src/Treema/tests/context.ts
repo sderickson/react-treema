@@ -93,6 +93,11 @@ export class TreemaStorybookTestContext {
     await sleep(this.speed);
   }
 
+  async selectOptions(select: Element, values: string | HTMLElement | string[] | HTMLElement[]): Promise<void> {
+    await user.selectOptions(select, values);
+    await sleep(this.speed);
+  }
+
   getLastPath(): JsonPointer | undefined {
     return lastPath;
   }
