@@ -24,13 +24,11 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
     }
 
     // Find the first three properties that have a value, create a truncated string for each of them.
-    let i = 0;
     let children = Object.entries(data)
       .map(([key, value]) => {
         if (value === undefined) {
           return null;
         }
-        i += 1;
         const childPath = path + '/' + key;
         const childSchema = getWorkingSchema(state, childPath);
         const name = childSchema.title || key;

@@ -24,7 +24,7 @@ export const useTreemaKeyboardEvent = (callback: NodeEventCallbackHandler): Node
         keyboardCallbackRef.current = undefined;
       }
     };
-  }, [keyboardCallbackRef]);
+  }, [keyboardCallbackRef, callback]);
 };
 
 export const useTreemaInput = () => {
@@ -40,7 +40,7 @@ export const useTreemaInput = () => {
         editRefs.splice(refIndex, 1);
       }
     };
-  }, [editRef]);
+  }, [editRef, editRefs]);
 
   return editRef;
 };
@@ -58,7 +58,7 @@ export const useTreemaTextArea = () => {
         editRefs.splice(refIndex, 1);
       }
     };
-  }, [editRef]);
+  }, [editRef, editRefs]);
 
   return editRef;
 };

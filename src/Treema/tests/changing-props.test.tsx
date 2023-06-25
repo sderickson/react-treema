@@ -9,7 +9,7 @@ import { ParentComponent, changingPropsArgs, selectStaysOnAddTest } from './chan
 // TODO: make the generic test interfaces better so that we don't need this manual stitching together
 describe('integration with a parent component that holds the data source of truth', () => {
   for (const test of [selectStaysOnAddTest]) {
-    it(test.name, async () => {
+    it(test.name + '', async () => {
       render(
         <ParentComponent
           data={changingPropsArgs?.data}

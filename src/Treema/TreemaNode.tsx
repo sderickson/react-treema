@@ -93,9 +93,9 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const onAddChild = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      handleAddChild(path, context);
+      handleAddChild(path, context.state, context.dispatch);
     },
-    [dispatch, path, data, state.schemaLib, workingSchema],
+    [path, context.state, context.dispatch],
   );
   const onChangeAddProperty = useCallback(
     (val: any) => {
@@ -116,7 +116,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       }
       dispatch(setWorkingSchema(path, newIndex));
     },
-    [dispatch, path],
+    [dispatch, path, workingSchema, workingSchemas],
   );
 
   // Handle focus

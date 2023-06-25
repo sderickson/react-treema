@@ -219,7 +219,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           isInsertPropertyPlaceholder(state.lastSelected) &&
           tryToEdit
         ) {
-          handleAddChild(state.lastSelected.slice(6), context);
+          handleAddChild(state.lastSelected.slice(6), state, dispatch);
 
           return;
         }
@@ -237,7 +237,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         if (tryToEdit) {
           // If can edit, or add a property, do so.
           if (isInsertPropertyPlaceholder(nextSelection)) {
-            handleAddChild(nextSelection.slice(6), context);
+            handleAddChild(nextSelection.slice(6), state, dispatch);
           } else if (nextSelection !== state.lastSelected && canEditPathDirectly(state, normalizeToPath(nextSelection))) {
             dispatch(beginEdit());
           }
@@ -271,15 +271,17 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     };
   }, [onKeyDown]);
 
+  const dataRef = useRef(data);
   useEffect(() => {
     // Update state data when prop data changes. This keeps Treema data integrated
     // with state managed outside.
-    if (data !== state.data) {
+    if (data !== dataRef.current) {
       // Don't update data unless it's different than what we have... or we might have
       // an infinite loop. Or at least more actions than necessary.
       dispatch(setData('', data));
+      dataRef.current = data;
     }
-  }, [data]);
+  }, [data, dataRef]);
 
   /**
    * In addition to handling the inputs for the base Treema interface, TreemaRoot also handles
