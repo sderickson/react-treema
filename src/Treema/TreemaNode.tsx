@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useContext, useEffect } from 'react';
 import { JsonPointer } from './types';
 import { TreemaContext } from './context';
-import { selectPath, setPathClosed, setData, endEdit, editValue, editAddProperty } from './state/actions';
+import { selectPath, setPathClosed, setData, endEdit, editValue, editAddProperty, setWorkingSchema } from './state/actions';
 import {
   getClosed,
   getSchemaErrorsByPath,
@@ -17,7 +17,7 @@ import {
 } from './state/selectors';
 import './base.scss';
 import { handleAddChild } from './common';
-import { getParentPath } from './utils';
+import { clone, getParentPath, getType, getValueForRequiredType } from './utils';
 
 interface TreemaNodeProps {
   path: JsonPointer;
@@ -44,6 +44,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const isEditing = state.editing === path;
   const workingSchema = getWorkingSchema(state, path);
   const workingSchemas = getWorkingSchemas(state, path);
+  const workingSchemaIndex = workingSchemas.indexOf(workingSchema);
   const name = workingSchema.title || path?.split('/').pop();
   const definition = getDefinitionAtPath(state, path);
   const canOpen = hasChildrenAtPath(state, path);
@@ -102,6 +103,21 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     },
     [dispatch],
   );
+  const onSetWorkingModel = useCallback(
+    (val: any) => {
+      const newIndex = parseInt(val.target.value);
+      const newSchema = workingSchemas[newIndex];
+      if (newSchema.type !== workingSchema.type) {
+        let newData = clone(newSchema.default);
+        if (!newData || getType(newData) !== newSchema.type) {
+          newData = getValueForRequiredType(newSchema.type);
+        }
+        dispatch(setData(path, newData));
+      }
+      dispatch(setWorkingSchema(path, newIndex));
+    },
+    [dispatch, path]
+  );
 
   // Handle focus
   const displayRef = React.useRef<HTMLDivElement>(null);
@@ -147,9 +163,9 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
 
       <div ref={displayRef} tabIndex={-1} className="treema-row">
         {workingSchemas.length > 1 ? (
-          <select>
+          <select onChange={onSetWorkingModel} value={workingSchemaIndex}>
             {workingSchemas.map((schema, index) => (
-              <option key={index}>{schema.title || schema.type || '???'}</option>
+                <option key={index} value={index}>{schema.title || schema.type || '???'}</option>
             ))}
           </select>
         ) : null}

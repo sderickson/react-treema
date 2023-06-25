@@ -27,7 +27,6 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
             id: error.code,
             message: error.message,
             dataPath: error.dataPath,
-            schemaPath: error.schemaPath,
           };
         }),
       };
@@ -58,7 +57,6 @@ export const wrapAjv = (ajv: any): SchemaLib => {
             id: error.keyword,
             message: error.message,
             dataPath: error.instancePath,
-            schemaPath: error.schemaPath,
           };
         }),
       };
@@ -72,19 +70,42 @@ export const wrapAjv = (ajv: any): SchemaLib => {
   };
 };
 
+/**
+ * Walks the provided JSON data and, for each path within the data, calls the provided callback with schema info.
+ * The callback for each path in the data with an object that includes:
+ * * path: the JSON pointer of the data
+ * * data: the data at that path
+ * * schema: the default working schema for that path (see docs on Working Schemas)
+ * * possibleSchemas: an array of all possible working schemas for that path
+ * 
+ * The callback may return one of the possibleSchemas to override the provided default. If the callback does this,
+ * that will affect further steps in the walking process. For example if an object could be `oneOf` an array of
+ * schemas, with different properties and names for them, callbacks for those properties will provide different
+ * schema and possibleSchemas values.
+ * 
+ * @param data The JSON data to walk.
+ * @param schema The schema for the whole data.
+ * @param lib Validator which can be used to dereference $ref.
+ * @param callback A function which will be called for each path in the data.
+ * @param path Optional. The JSON pointer "to" the data provided. All callbacked paths will be prepended with this.
+ */
 export const walk: (
   data: any,
   schema: SupportedJsonSchema,
   lib: SchemaLib,
-  callback: (context: TreemaNodeWalkContext) => void,
+  callback: (context: TreemaNodeWalkContext) => void | WorkingSchema,
   path?: string,
 ) => any = (data, schema, lib, callback, path) => {
   const workingSchemas = buildWorkingSchemas(schema, lib);
-  const workingSchema = chooseWorkingSchema(data, workingSchemas, lib);
+  let workingSchema = chooseWorkingSchema(data, workingSchemas, lib);
 
-  callback({ path: path || '', data, schema: workingSchema, possibleSchemas: workingSchemas });
+  // If the caller knows more than we do about which working schema to use, they can override it.
+  const schemaOverride = callback({ path: path || '', data, schema: workingSchema, possibleSchemas: workingSchemas });
+  if (schemaOverride) {
+    workingSchema = schemaOverride;
+  }
 
-  // this actually works for both arrays and objects...
+  // This actually works for both arrays and objects...
   const dataType = getType(data);
 
   if (['array', 'object'].includes(dataType)) {
@@ -148,7 +169,7 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
   if (!givenSchema.allOf && !givenSchema.anyOf && !givenSchema.oneOf) {
     return spreadTypes(givenSchema);
   }
-  const baseSchema = cloneSchema(givenSchema);
+  let baseSchema = cloneSchema(givenSchema);
   const allOf = baseSchema.allOf;
   const anyOf = baseSchema.anyOf;
   const oneOf = baseSchema.oneOf;
@@ -158,7 +179,7 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
 
   if (allOf) {
     for (const schema of allOf) {
-      combineSchemas(baseSchema, resolveReference(schema, lib));
+      baseSchema = combineSchemas(baseSchema, resolveReference(schema, lib));
     }
   }
 
@@ -173,8 +194,8 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
   let workingSchemas: WorkingSchema[] = [];
   for (let singularSchema of singularSchemas) {
     singularSchema = resolveReference(singularSchema, lib);
-    const newBase = cloneSchema(baseSchema);
-    combineSchemas(newBase, singularSchema);
+    let newBase = cloneSchema(baseSchema);
+    newBase = combineSchemas(newBase, singularSchema);
     workingSchemas = workingSchemas.concat(spreadTypes(newBase));
   }
 
@@ -289,8 +310,17 @@ const cloneSchema = (schema: SupportedJsonSchema): SupportedJsonSchema => {
   return Object.assign({}, schema);
 };
 
-const combineSchemas = (baseSchema: SupportedJsonSchema, schema: SupportedJsonSchema): SupportedJsonSchema => {
-  return Object.assign(baseSchema, schema);
+/**
+ * Combines two schemas, with the second schema overriding the first.
+ * 
+ * TODO: Smartly combine all schema options
+ */
+export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: SupportedJsonSchema): SupportedJsonSchema => {
+  const result = Object.assign({}, baseSchema, schema);
+  if (schema.properties && baseSchema.properties) {
+    result.properties = Object.assign({}, baseSchema.properties, schema.properties);
+  }
+  return result;
 };
 
 export const getParentPath = (path: JsonPointer): JsonPointer => {
@@ -395,3 +425,7 @@ export const splitJsonPointer = (path: JsonPointer): string[] => {
   // Not actually following the whole spec, but this'll do for now.
   return path.split('/').slice(1);
 };
+
+export const joinJsonPointers = (paths: string[]): JsonPointer => {
+  return paths.join('');
+}

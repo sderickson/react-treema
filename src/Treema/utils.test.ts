@@ -1,6 +1,7 @@
 import { SupportedJsonSchema } from './types';
-import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath, clone, populateRequireds } from './utils';
+import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath, clone, populateRequireds, combineSchemas, wrapAjv, chooseWorkingSchema } from './utils';
 import tv4 from 'tv4';
+import Ajv from 'ajv';
 
 const schemaLib = wrapTv4(tv4);
 
@@ -56,108 +57,165 @@ describe('walk', () => {
   });
 });
 
-describe('utils', () => {
-  describe('getChildSchema', () => {
-    it('returns child schemas from properties', () => {
-      const schema: SupportedJsonSchema = { properties: { key1: { title: 'some title' } } };
-      const childSchema = getChildSchema('key1', schema);
-      expect(childSchema.title).toBe('some title');
-    });
-
-    it('returns child schemas from additionalProperties', () => {
-      const schema: SupportedJsonSchema = { additionalProperties: { title: 'some title' } };
-      const childSchema = getChildSchema('key1', schema);
-      expect(childSchema.title).toBe('some title');
-    });
-
-    it('returns child schemas from patternProperties', () => {
-      const schema: SupportedJsonSchema = { patternProperties: { '^[a-z]+$': { title: 'some title' } } };
-      const childSchema = getChildSchema('key', schema);
-      expect(childSchema.title).toBe('some title');
-      const childSchema2 = getChildSchema('123', schema);
-      expect(childSchema2.title).toBeUndefined();
-    });
-
-    it('returns child schemas from an items schema', () => {
-      const schema: SupportedJsonSchema = { items: { title: 'some title' } };
-      const childSchema = getChildSchema(0, schema);
-      expect(childSchema.title).toBe('some title');
-    });
-
-    it('returns child schemas from an items array of schemas', () => {
-      const schema: SupportedJsonSchema = { items: [{ title: 'some title' }] };
-      const childSchema = getChildSchema(0, schema);
-      expect(childSchema.title).toBe('some title');
-      const childSchema2 = getChildSchema(1, schema);
-      expect(childSchema2.title).toBeUndefined();
-    });
-
-    it('returns child schemas from additionalItems', () => {
-      const schema: SupportedJsonSchema = { items: [{ title: 'some title' }], additionalItems: { title: 'another title' } };
-      const childSchema = getChildSchema(1, schema);
-      expect(childSchema.title).toBe('another title');
-    });
+describe('getChildSchema', () => {
+  it('returns child schemas from properties', () => {
+    const schema: SupportedJsonSchema = { properties: { key1: { title: 'some title' } } };
+    const childSchema = getChildSchema('key1', schema);
+    expect(childSchema.title).toBe('some title');
   });
 
-  describe('buildWorkingSchemas', () => {
-    it('returns the same single schema if there are no combinatorials or references', () => {
-      const schema: SupportedJsonSchema = { type: 'string' };
-      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
-      expect(workingSchemas[0] === schema).toBeTruthy();
-    });
-
-    it('combines allOf into a single schema', () => {
-      const schema: SupportedJsonSchema = { title: 'title', allOf: [{ description: 'description' }, { type: 'number' }] };
-      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
-      expect(workingSchemas.length).toBe(1);
-      const workingSchema = workingSchemas[0];
-      expect(workingSchema.title).toBe('title');
-      expect(workingSchema.description).toBe('description');
-      expect(workingSchema.type).toBe('number');
-    });
-
-    it('creates a separate working schema for each anyOf', () => {
-      const schema: SupportedJsonSchema = { title: 'title', anyOf: [{ type: 'string' }, { type: 'number' }] };
-      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
-      expect(workingSchemas.length).toBe(2);
-      const types = workingSchemas.map((schema) => schema.type);
-      expect(types.includes('string')).toBeTruthy();
-      expect(types.includes('number')).toBeTruthy();
-    });
-
-    it('creates a separate working schema for each oneOf', () => {
-      const schema: SupportedJsonSchema = { title: 'title', oneOf: [{ type: 'string' }, { type: 'number' }] };
-      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
-      expect(workingSchemas.length).toBe(2);
-      const types = workingSchemas.map((schema) => schema.type);
-      expect(types.includes('string')).toBeTruthy();
-      expect(types.includes('number')).toBeTruthy();
-    });
-
-    it('creates one working schema for every type if no type is specified', () => {
-      const schema: SupportedJsonSchema = {};
-      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
-      expect(workingSchemas.length).toBe(6);
-      const types = workingSchemas.map((schema) => schema.type);
-      types.sort();
-      expect(types).toEqual(['array', 'boolean', 'null', 'number', 'object', 'string']);
-    });
-
-    it('creates one working schema for every type if type is an array', () => {
-      const schema: SupportedJsonSchema = { type: ['boolean', 'number'] };
-      const workingSchemas = buildWorkingSchemas(schema, schemaLib);
-      expect(workingSchemas.length).toBe(2);
-      const types = workingSchemas.map((schema) => schema.type);
-      types.sort();
-      expect(types).toEqual(['boolean', 'number']);
-    });
+  it('returns child schemas from additionalProperties', () => {
+    const schema: SupportedJsonSchema = { additionalProperties: { title: 'some title' } };
+    const childSchema = getChildSchema('key1', schema);
+    expect(childSchema.title).toBe('some title');
   });
 
-  describe('getParentPath', () => {
-    it('returns the parent path of a path', () => {
-      expect(getParentPath('/')).toBe('');
-      expect(getParentPath('/a')).toBe('');
-      expect(getParentPath('/a/b')).toBe('/a');
+  it('returns child schemas from patternProperties', () => {
+    const schema: SupportedJsonSchema = { patternProperties: { '^[a-z]+$': { title: 'some title' } } };
+    const childSchema = getChildSchema('key', schema);
+    expect(childSchema.title).toBe('some title');
+    const childSchema2 = getChildSchema('123', schema);
+    expect(childSchema2.title).toBeUndefined();
+  });
+
+  it('returns child schemas from an items schema', () => {
+    const schema: SupportedJsonSchema = { items: { title: 'some title' } };
+    const childSchema = getChildSchema(0, schema);
+    expect(childSchema.title).toBe('some title');
+  });
+
+  it('returns child schemas from an items array of schemas', () => {
+    const schema: SupportedJsonSchema = { items: [{ title: 'some title' }] };
+    const childSchema = getChildSchema(0, schema);
+    expect(childSchema.title).toBe('some title');
+    const childSchema2 = getChildSchema(1, schema);
+    expect(childSchema2.title).toBeUndefined();
+  });
+
+  it('returns child schemas from additionalItems', () => {
+    const schema: SupportedJsonSchema = { items: [{ title: 'some title' }], additionalItems: { title: 'another title' } };
+    const childSchema = getChildSchema(1, schema);
+    expect(childSchema.title).toBe('another title');
+  });
+});
+
+describe('buildWorkingSchemas', () => {
+  it('returns the same single schema if there are no combinatorials or references', () => {
+    const schema: SupportedJsonSchema = { type: 'string' };
+    const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+    expect(workingSchemas[0] === schema).toBeTruthy();
+  });
+
+  it('combines allOf into a single schema', () => {
+    const schema: SupportedJsonSchema = { title: 'title', allOf: [{ description: 'description' }, { type: 'number' }] };
+    const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+    expect(workingSchemas.length).toBe(1);
+    const workingSchema = workingSchemas[0];
+    expect(workingSchema.title).toBe('title');
+    expect(workingSchema.description).toBe('description');
+    expect(workingSchema.type).toBe('number');
+  });
+
+  it('creates a separate working schema for each anyOf', () => {
+    const schema: SupportedJsonSchema = { title: 'title', anyOf: [{ type: 'string' }, { type: 'number' }] };
+    const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+    expect(workingSchemas.length).toBe(2);
+    const types = workingSchemas.map((schema) => schema.type);
+    expect(types.includes('string')).toBeTruthy();
+    expect(types.includes('number')).toBeTruthy();
+  });
+
+  it('creates a separate working schema for each oneOf', () => {
+    const schema: SupportedJsonSchema = { title: 'title', oneOf: [{ type: 'string' }, { type: 'number' }] };
+    const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+    expect(workingSchemas.length).toBe(2);
+    const types = workingSchemas.map((schema) => schema.type);
+    expect(types.includes('string')).toBeTruthy();
+    expect(types.includes('number')).toBeTruthy();
+  });
+
+  it('creates one working schema for every type if no type is specified', () => {
+    const schema: SupportedJsonSchema = {};
+    const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+    expect(workingSchemas.length).toBe(6);
+    const types = workingSchemas.map((schema) => schema.type);
+    types.sort();
+    expect(types).toEqual(['array', 'boolean', 'null', 'number', 'object', 'string']);
+  });
+
+  it('creates one working schema for every type if type is an array', () => {
+    const schema: SupportedJsonSchema = { type: ['boolean', 'number'] };
+    const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+    expect(workingSchemas.length).toBe(2);
+    const types = workingSchemas.map((schema) => schema.type);
+    types.sort();
+    expect(types).toEqual(['boolean', 'number']);
+  });
+});
+
+describe('chooseWorkingSchema', () => {
+  it('can use pattern (for tv4) or const (for ajv) to disambiguate which oneOf the data is using', () => {
+    const schema: SupportedJsonSchema = {
+      type: 'object',
+      oneOf: [
+        {
+          title: 'type a',
+          properties: {
+            type: { const: 'a', type: 'string', },
+            foo: { type: 'number', title: "Numbered Foo" },
+          },
+          default: { type: 'a', foo: 1 },
+          required: ['foo']
+        },
+        {
+          title: 'type b',
+          properties: {
+            type: { const: 'b', type: 'string' },
+            foo: { type: 'string', title: "Stringed Foo" },
+          },
+          default: { type: 'b', foo: 'bar' },
+          required: ['foo']
+        }
+      ],
+    };
+    const schemaLib = wrapAjv(new Ajv({ allErrors: true }));
+    const workingSchemas = buildWorkingSchemas(schema, schemaLib);
+    const workingSchema = chooseWorkingSchema({ type: 'b', foo: 'bar' }, workingSchemas, schemaLib);
+    expect(workingSchema.title).toBe('type b');
+  });
+});
+
+describe('getParentPath', () => {
+  it('returns the parent path of a path', () => {
+    expect(getParentPath('/')).toBe('');
+    expect(getParentPath('/a')).toBe('');
+    expect(getParentPath('/a/b')).toBe('/a');
+  });
+});
+
+describe('combineSchemas', () => {
+  it('merges properties', () => {
+    const result = combineSchemas({
+      properties: {
+        key1: { title: 'key1' },
+      },
+    }, {
+      properties: {
+        key2: { title: 'key2' },
+      },
+    });
+    expect(result.properties).toEqual({
+      key1: { title: 'key1' },
+      key2: { title: 'key2' },
+    });
+
+    const result2 = combineSchemas({
+      properties: {
+        key1: { title: 'key1' },
+      },
+    }, {});
+    expect(result2.properties).toEqual({
+      key1: { title: 'key1' },
     });
   });
 });

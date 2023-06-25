@@ -1,4 +1,4 @@
-import { getParentPath, getType, walk } from '../utils';
+import { getParentPath, getType, walk, joinJsonPointers } from '../utils';
 import { JsonPointer, ValidatorError, WorkingSchema } from '../types';
 import { TreemaState, OrderEntry } from './types';
 import { createSelector } from 'reselect';
@@ -13,28 +13,6 @@ export const getLastSelectedPath = (state: TreemaState) => state.lastSelected ||
 export const getDefinitions = (state: TreemaState) => state.definitions;
 export const getSettings = (state: TreemaState) => state.settings;
 export const getWorkingSchemaChoices = (state: TreemaState) => state.workingSchemaChoices;
-
-// ----------------------------------------------------------------------------
-// Error selectors
-interface SchemaErrorsByPath {
-  [key: JsonPointer]: ValidatorError[];
-}
-
-export const getSchemaErrors = createSelector([getData, getRootSchema, getSchemaLib], (data, rootSchema, schemaLib) => {
-  return schemaLib.validateMultiple(data, rootSchema).errors;
-});
-
-export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath = createSelector([getSchemaErrors], (errors) => {
-  const errorsByPath: SchemaErrorsByPath = {};
-  errors.forEach((error) => {
-    if (!errorsByPath[error.dataPath]) {
-      errorsByPath[error.dataPath] = [];
-    }
-    errorsByPath[error.dataPath].push(error);
-  });
-
-  return errorsByPath;
-});
 
 // ----------------------------------------------------------------------------
 // Data and schema selectors
@@ -71,6 +49,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
       if (schema.type === 'object' && getType(schema.default) === 'object') {
         defaultsToWalk.push(path);
       }
+      return datasAndSchemas[path].schema; // override working schema for further walking
     });
     const extantKeys = new Set(Object.keys(datasAndSchemas));
 
@@ -90,7 +69,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
 
       walk(pathInfos.schema.default, pathInfos.schema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
         // we're walking relative to the where the default object is, so we need to prepend the default's location
-        const fullPath = defaultRootPath ? defaultRootPath + '/' + path : path;
+        const fullPath = defaultRootPath ? joinJsonPointers([defaultRootPath, path]) : path;
 
         // Where the default object is situated already has itself in its schema.default, so nothing to do.
         // Also since a default object would only ever be used where some object exists, no need to set data.
@@ -226,6 +205,57 @@ const _canAddChild = (data: any, schema: WorkingSchema): boolean => {
 
   return false;
 };
+
+// ----------------------------------------------------------------------------
+// Error selectors
+interface SchemaErrorsByPath {
+  [key: JsonPointer]: ValidatorError[];
+}
+
+export const getSchemaErrors = createSelector([getData, getRootSchema, getSchemaLib], (data, rootSchema, schemaLib) => {
+  return schemaLib.validateMultiple(data, rootSchema).errors;
+});
+
+export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath = createSelector([getSchemaErrors, getAllDatasAndSchemas, getSchemaLib], (errors, datasAndSchemas, schemaLib) => {
+  const errorsByPath: SchemaErrorsByPath = {};
+
+  /*
+    We could just return the raw, top-level errors but that doesn't take into account working schemas.
+    So instead for each "global" error, get the working errors for that path given the current working schema. 
+    That way users only see errors for the schemas they are trying to use (but are currently invalid).
+  */
+  errors.forEach((error) => {
+    const data = datasAndSchemas[error.dataPath].data;
+    const workingSchema = datasAndSchemas[error.dataPath].schema;
+    const validationResult = schemaLib.validateMultiple(data, workingSchema);
+    const workingErrors = validationResult.errors || [];
+    for (let workingError of workingErrors) {
+      const absPath = error.dataPath + workingError.dataPath;
+      if (!errorsByPath[absPath]) {
+        errorsByPath[absPath] = [];
+      }
+      const newError = {
+        ...workingError,
+        dataPath: absPath,
+      };
+      let exists = false;
+      for (let existingError of errorsByPath[absPath]) {
+        if (JSON.stringify(newError) === JSON.stringify(existingError)) {
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        errorsByPath[absPath].push(newError);
+      }
+    }
+    // Silently ignore the original, global error. At least with ajv, validators can sometimes return
+    // errors for *all* oneOf/anyOf schemas, where we only need the one the user has chosen as the
+    // target working schema.
+  });
+
+  return errorsByPath;
+});
 
 // ----------------------------------------------------------------------------
 // Definition, settings based selectors

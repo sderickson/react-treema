@@ -348,7 +348,7 @@ const schema = {
 			"description": "An inline interaction",
 			"definitions": {
 				"teacherDialogue": {
-					"type": "object",
+					"type": ["object", "string"], // modification
 					"additionalProperties": false,
 					"properties": {
 						"text": {
@@ -379,11 +379,13 @@ const schema = {
 					"properties": {
 						"type": {
 							"type": "string",
-							"const": "model-response"
+							"const": "model-response",
+							"pattern": "^model-response$" // modification
 						},
 						"actor": {
 							"type": "string",
-							"const": "model"
+							"const": "model",
+							"pattern": "^model$" // modification
 						},
 						"interaction": {
 							"type": [
@@ -411,11 +413,13 @@ const schema = {
 					"properties": {
 						"type": {
 							"type": "string",
-							"const": "prompt-quiz"
+							"const": "prompt-quiz",
+							"pattern": "^prompt-quiz$" // modification
 						},
 						"actor": {
 							"type": "string",
-							"const": "user"
+							"const": "user",
+							"pattern": "^user$" // modification
 						},
 						"content": {
 							"type": "object",
@@ -479,11 +483,13 @@ const schema = {
 					"properties": {
 						"type": {
 							"type": "string",
-							"const": "free-chat"
+							"const": "free-chat",
+							"pattern": "^free-chat$" // modification
 						},
 						"actor": {
 							"type": "string",
-							"const": "user"
+							"const": "user",
+							"pattern": "^user$" // modification
 						},
 						"content": {
 							"type": "object",
@@ -507,11 +513,12 @@ const schema = {
 				},
 				{
 					"type": "object",
-					"additionalProperties": false,
+					// "additionalProperties": false, // modification
 					"properties": {
 						"type": {
 							"type": "string",
-							"const": "chat-message"
+							"const": "chat-message",
+							"pattern": "^chat\-message$" // modification
 						},
 						"content": {
 							"type": "object",
@@ -539,7 +546,8 @@ const schema = {
 					"properties": {
 						"type": {
 							"type": "string",
-							"const": "load-document"
+							"const": "load-document",
+							"pattern": "^load-document$" // modification
 						},
 						"content": {
 							"type": "object",
@@ -572,7 +580,217 @@ const schema = {
 	}
 };
 
-const data = {"version":{"major":0,"minor":0,"isLatestMajor":true,"isLatestMinor":true},"_id":"645ea606f3e13cfb80028fd6","permissions":[{"access":"owner","target":"512ef4805a67a8c507000001"}],"created":"2023-05-12T20:48:06.504Z","watchers":["512ef4805a67a8c507000001"],"original":"645ea606f3e13cfb80028fd6","creator":"512ef4805a67a8c507000001","name":"kid - learn to use - gpt4 - make - a browser game","releasePhase":"released","interactions":{"start":[{"type":"chat-message","actor":"teacher","content":{"text":"let's learn prompting for making games"}},{"content":{"choices":[{"text":"Make a ","teacherDialogue":"be more specific: about what?"},{"text":"Make a webpage about Minecraft","teacherDialogue":"pretty good, but for more complicated games let's use Phaserlet's specify "},{"text":"Write the HTML5 game code for an Among Us typing game using Phaser. Respond only in code in a single HTML file.","isCorrect":true,"teacherDialogue":"good! let's see what it says"},{"text":"Write an Among Us MMORPG","teacherDialogue":"huge games are too hard for an AI to do... for now"}]},"type":"prompt-quiz","actor":"user"},{"type":"chat-message","actor":"teacher","content":{"text":"the AI wrote that! now check out your web game"}},{"type":"chat-message","actor":"teacher","content":{"text":"i see some bugs: broken image, it's too small, plus it's too fast and there's no score. let's fix!"}},{"actor":"user","type":"prompt-quiz","content":{"choices":[{"text":"Add pictures","teacherDialogue":"be more specific: what bugs?"},{"text":"Fix the image","teacherDialogue":"it doesn't know what you want for the image"},{"text":"Add a hero image of Minecraft Steve fighting off a horde of endermen while a creeper explodes","teacherDialogue":"that would work, but we can fix more than one thing at a time"},{"text":"Make the game size responsive to fill the whole browser window, start the typing speed very slow and adjust the typing speed up and down based whether the player typed the word in time, show the current typing speed in accurate WPM, center the text and make it bigger, and use this image scaled to cover the page with full width or height: https://static.wikia.nocookie.net/among-us-wiki/images/f/f5/Among_Us_space_key_art_redesign.png","teacherDialogue":"ChatGPT is a text AI, not an image AI like DALL-E. this prompt will make the AI hallucinate image URLs."}]}},{"type":"chat-message","actor":"teacher","content":{"text":"nice. let's make it more fun by adding more words at a time"}},{"type":"prompt-quiz","actor":"user","content":{"choices":[{"text":"Make multiple words at once, moving around the screen","teacherDialogue":"let's add more detail and make multiple changes together"},{"text":"Let's have words for all the crewmate colors on the screen at a time. When one word is typed, respawn it in another location. Delete the letters typed in all matching words as they are typed, restoring the partial words' letters when a non-matching character is typed. Each word is worth 1 point per letter in the word when finished. Let's also have the words drift around randomly on the screen at a slow speed with flocking behavior.","teacherDialogue":"nice","isCorrect":true},{"text":"Add a hero image of Minecraft Steve fighting off a horde of endermen while a creeper explodes","teacherDialogue":"this is too many things at once, it will confuse the AI"},{"text":"Add an impostor that is worth double points","teacherDialogue":"let's add multiple words before we add an impostor, so the impostor can interact with the other words"}]}},{"type":"chat-message","actor":"teacher","content":{"text":"now we can add the impostor!"}},{"type":"prompt-quiz","actor":"user","content":{"choices":[{"text":"Make multiple words at once, moving around the screen","teacherDialogue":"it will try to add a random imgur image! let's make one of the words an impostor instead."},{"text":"Make one of the words into an impostor, changing its color to red and making it chase the other words instead of flocking with them. Impostors are worth double points. If an impostor catches a word, that word dies and respawns and costs you a point.","teacherDialogue":"nice","isCorrect":true},{"text":"Add a hero image of Minecraft Steve fighting off a horde of endermen while a creeper explodes","teacherDialogue":"a good start, but being more specific will work better"},{"text":"Make the game size responsive to fill the whole browser window, start the typing speed very slow and adjust the typing speed up and down based whether the player typed the word in time, show the current typing speed in accurate WPM, center the text and make it bigger, and use this image scaled to cover the page with full width or height: https://static.wikia.nocookie.net/among-us-wiki/images/f/f5/Among_Us_space_key_art_redesign.png","teacherDialogue":"multiple impostors may be a bit hard for the AI. plus, the game design will be more fun if it's more of an Among-Us-themed typing game than a typing-themed Among Us game"}]}},{"type":"chat-message","actor":"teacher","content":{"text":"it's getting there! let's add a couple more things."}},{"type":"prompt-quiz","actor":"user","content":{"choices":[{"text":"Let's add the accurate WPM counter back in. Let's also make the game resize when the window is resized.","teacherDialogue":"it will try to add a random imgur image! let's make one of the words an impostor instead.","isCorrect":true},{"text":"Add Among Us crewmate images and animations to the words","teacherDialogue":"nice"},{"text":"Add an Among Us theme song background music track","teacherDialogue":"a good start, but being more specific will work better"},{"text":"Let's make it multiplayer so I can play with my friends","teacherDialogue":"the AI can do this in a more complicated project, but you'll need to have a multi-file project setup with a server"}]}},{"type":"chat-message","actor":"teacher","content":{"text":"there you have it. now go ahead and add whatever else you like!"}},{"type":"free-chat","actor":"user","content":{"text":""}}]},"slug":"kid-learn-to-use-gpt4-make-a-browser-game","index":"512ef4805a67a8c507000001","__v":1,"description":"Let's learn how to prompt **ChatGPT 4** to make our own HTML5 browser game."};
+const data = {
+	"version": {
+		"major": 0,
+		"minor": 0,
+		"isLatestMajor": true,
+		"isLatestMinor": true
+	},
+	"_id": "645ea606f3e13cfb80028fd6",
+	"permissions": [
+		{
+			"access": "owner",
+			"target": "512ef4805a67a8c507000001"
+		}
+	],
+	"created": "2023-05-12T20:48:06.504Z",
+	"watchers": [
+		"512ef4805a67a8c507000001"
+	],
+	"original": "645ea606f3e13cfb80028fd6",
+	"creator": "512ef4805a67a8c507000001",
+	"name": "kid - learn to use - gpt4 - make - a browser game",
+	"releasePhase": "released",
+	"interactions": {
+		"start": [
+			{
+				"type": "chat-message",
+				"actor": "teacher",
+				"content": {
+					"text": "let's learn prompting for making games"
+				}
+			},
+			{
+				"content": {
+					"choices": [
+						{
+							"text": "Make a ",
+							// "teacherDialogue": "be more specific: about what?"
+						},
+						{
+							"text": "Make a webpage about Minecraft",
+							// "teacherDialogue": "pretty good, but for more complicated games let's use Phaserlet's specify "
+						},
+						{
+							"text": "Write the HTML5 game code for an Among Us typing game using Phaser. Respond only in code in a single HTML file.",
+							"isCorrect": true,
+							// "teacherDialogue": "good! let's see what it says"
+						},
+						{
+							"text": "Write an Among Us MMORPG",
+							// "teacherDialogue": "huge games are too hard for an AI to do... for now"
+						}
+					]
+				},
+				"type": "prompt-quiz",
+				"actor": "user"
+			},
+			{
+				"type": "chat-message",
+				"actor": "teacher",
+				"content": {
+					"text": "the AI wrote that! now check out your web game"
+				}
+			},
+			{
+				"type": "chat-message",
+				"actor": "teacher",
+				"content": {
+					"text": "i see some bugs: broken image, it's too small, plus it's too fast and there's no score. let's fix!"
+				}
+			},
+			{
+				"actor": "user",
+				"type": "prompt-quiz",
+				"content": {
+					"choices": [
+						{
+							"text": "Add pictures",
+							// "teacherDialogue": "be more specific: what bugs?"
+						},
+						{
+							"text": "Fix the image",
+							// "teacherDialogue": "it doesn't know what you want for the image"
+						},
+						{
+							"text": "Add a hero image of Minecraft Steve fighting off a horde of endermen while a creeper explodes",
+							"teacherDialogue": "that would work, but we can fix more than one thing at a time"
+						},
+						{
+							"text": "Make the game size responsive to fill the whole browser window, start the typing speed very slow and adjust the typing speed up and down based whether the player typed the word in time, show the current typing speed in accurate WPM, center the text and make it bigger, and use this image scaled to cover the page with full width or height: https://static.wikia.nocookie.net/among-us-wiki/images/f/f5/Among_Us_space_key_art_redesign.png",
+							"teacherDialogue": "ChatGPT is a text AI, not an image AI like DALL-E. this prompt will make the AI hallucinate image URLs."
+						}
+					]
+				}
+			},
+			{
+				"type": "chat-message",
+				"actor": "teacher",
+				"content": {
+					"text": "nice. let's make it more fun by adding more words at a time"
+				}
+			},
+			{
+				"type": "prompt-quiz",
+				"actor": "user",
+				"content": {
+					"choices": [
+						{
+							"text": "Make multiple words at once, moving around the screen",
+							"teacherDialogue": "let's add more detail and make multiple changes together"
+						},
+						{
+							"text": "Let's have words for all the crewmate colors on the screen at a time. When one word is typed, respawn it in another location. Delete the letters typed in all matching words as they are typed, restoring the partial words' letters when a non-matching character is typed. Each word is worth 1 point per letter in the word when finished. Let's also have the words drift around randomly on the screen at a slow speed with flocking behavior.",
+							"teacherDialogue": "nice",
+							"isCorrect": true
+						},
+						{
+							"text": "Add a hero image of Minecraft Steve fighting off a horde of endermen while a creeper explodes",
+							"teacherDialogue": "this is too many things at once, it will confuse the AI"
+						},
+						{
+							"text": "Add an impostor that is worth double points",
+							"teacherDialogue": "let's add multiple words before we add an impostor, so the impostor can interact with the other words"
+						}
+					]
+				}
+			},
+			{
+				"type": "chat-message",
+				"actor": "teacher",
+				"content": {
+					"text": "now we can add the impostor!"
+				}
+			},
+			{
+				"type": "prompt-quiz",
+				"actor": "user",
+				"content": {
+					"choices": [
+						{
+							"text": "Make multiple words at once, moving around the screen",
+							"teacherDialogue": "it will try to add a random imgur image! let's make one of the words an impostor instead."
+						},
+						{
+							"text": "Make one of the words into an impostor, changing its color to red and making it chase the other words instead of flocking with them. Impostors are worth double points. If an impostor catches a word, that word dies and respawns and costs you a point.",
+							"teacherDialogue": "nice",
+							"isCorrect": true
+						},
+						{
+							"text": "Add a hero image of Minecraft Steve fighting off a horde of endermen while a creeper explodes",
+							"teacherDialogue": "a good start, but being more specific will work better"
+						},
+						{
+							"text": "Make the game size responsive to fill the whole browser window, start the typing speed very slow and adjust the typing speed up and down based whether the player typed the word in time, show the current typing speed in accurate WPM, center the text and make it bigger, and use this image scaled to cover the page with full width or height: https://static.wikia.nocookie.net/among-us-wiki/images/f/f5/Among_Us_space_key_art_redesign.png",
+							"teacherDialogue": "multiple impostors may be a bit hard for the AI. plus, the game design will be more fun if it's more of an Among-Us-themed typing game than a typing-themed Among Us game"
+						}
+					]
+				}
+			},
+			{
+				"type": "chat-message",
+				"actor": "teacher",
+				"content": {
+					"text": "it's getting there! let's add a couple more things."
+				}
+			},
+			{
+				"type": "prompt-quiz",
+				"actor": "user",
+				"content": {
+					"choices": [
+						{
+							"text": "Let's add the accurate WPM counter back in. Let's also make the game resize when the window is resized.",
+							"teacherDialogue": "it will try to add a random imgur image! let's make one of the words an impostor instead.",
+							"isCorrect": true
+						},
+						{
+							"text": "Add Among Us crewmate images and animations to the words",
+							"teacherDialogue": "nice"
+						},
+						{
+							"text": "Add an Among Us theme song background music track",
+							"teacherDialogue": "a good start, but being more specific will work better"
+						},
+						{
+							"text": "Let's make it multiplayer so I can play with my friends",
+							"teacherDialogue": "the AI can do this in a more complicated project, but you'll need to have a multi-file project setup with a server"
+						}
+					]
+				}
+			},
+			{
+				"type": "chat-message",
+				"actor": "teacher",
+				"content": {
+					"text": "there you have it. now go ahead and add whatever else you like!"
+				}
+			},
+			{
+				"type": "free-chat",
+				"actor": "user",
+				"content": {
+					"text": ""
+				}
+			}
+		]
+	},
+	"slug": "kid-learn-to-use-gpt4-make-a-browser-game",
+	"index": "512ef4805a67a8c507000001",
+	"__v": 1,
+	"description": "Let's learn how to prompt **ChatGPT 4** to make our own HTML5 browser game."
+};
 
 const tv4Instance = wrapTv4(tv4);
 tv4Instance.addSchema(schema.definitions.inlineInteraction, '#/definitions/inlineInteraction');

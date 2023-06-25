@@ -32,7 +32,6 @@ export interface ValidatorError {
   id: string | number;
   message: string;
   dataPath: string;
-  schemaPath: string;
 }
 
 export type SchemaValidator = (data: any, schema: SupportedJsonSchema) => ValidatorResponse;
@@ -72,6 +71,8 @@ export interface SupportedJsonSchema {
   maximum?: number;
   readOnly?: boolean;
   maxItems?: number;
+  pattern?: string;
+  const?: string;
 }
 
 /**

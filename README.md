@@ -37,6 +37,12 @@ And http://codecombat.github.io/treema/demo.html
 
 #### In Progress
 - [ ] Edit working schemas
+  - [X] Show errors by working schema
+  - [ ] Retain initial working schema settings
+  - [ ] advanced combineSchemas
+  - [ ] better applying of defaults for working schemas
+  - [ ] better applying of requireds for working schemas
+- [ ] Migrate to json pointer utils
 - [ ] Debug mode? Show errors for chosen working schema?
 - [ ] Support for enum
 - [ ] Consolidate json pointer logic
