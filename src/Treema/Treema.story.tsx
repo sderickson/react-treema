@@ -535,6 +535,13 @@ export const ManyPropertyAdditions = {
  *
  * In this example, an object can either be of "type a" or "type b", but the data fits neither schema. The user can switch between
  * the two and see how the data doesn't fit with either and then fix the data in whichever direction.
+ * 
+ * Treema will also attempt to smartly merge schemas together, for example the schema with its oneOf, or every allOf together.
+ * It will tend to simply override one property with another, except for properties which it will recursively merge. You can
+ * see the recursive merging here where the title for "type" is provided in the base schema but shows up for each working
+ * schema.
+ * 
+ * You should each `oneOf` and `anyOf` schema a distinct `title` to make it easier for the user to understand what they are choosing between.
  */
 export const WorkingSchemas = {
   args: {
@@ -551,10 +558,9 @@ export const WorkingSchemas = {
         example: {
           type: 'object',
 
-          // TODO: Make this work
-          // properties: {
-          //   type: { title: "Inherited Type Title" },
-          // },
+          properties: {
+            type: { title: "Inherited Type Title" },
+          },
 
           oneOf: [
             {

@@ -231,7 +231,7 @@ describe('getParentPath', () => {
 });
 
 describe('combineSchemas', () => {
-  it('merges properties', () => {
+  it('merges properties recursively', () => {
     const result = combineSchemas(
       {
         properties: {
@@ -259,6 +259,22 @@ describe('combineSchemas', () => {
     );
     expect(result2.properties).toEqual({
       key1: { title: 'key1' },
+    });
+
+    const result3 = combineSchemas(
+      {
+        properties: {
+          key1: { title: 'key1' },
+        },
+      },
+      {
+        properties: {
+          key1: { const: 'some-const' },
+        },
+      },
+    );
+    expect(result3.properties).toEqual({
+      key1: { title: 'key1', const: 'some-const' },
     });
   });
 });

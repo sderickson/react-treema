@@ -321,12 +321,18 @@ const cloneSchema = (schema: SupportedJsonSchema): SupportedJsonSchema => {
 /**
  * Combines two schemas, with the second schema overriding the first.
  *
- * TODO: Smartly combine all schema options
+ * There's opportunity to combine schemas more here, but... should probably have good use cases.
  */
 export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: SupportedJsonSchema): SupportedJsonSchema => {
   const result = Object.assign({}, baseSchema, schema);
   if (schema.properties && baseSchema.properties) {
+    // combine recursively
     result.properties = Object.assign({}, baseSchema.properties, schema.properties);
+    for (const [key] of Object.entries(schema.properties)) {
+      if (key in baseSchema.properties) {
+        result.properties[key] = combineSchemas(baseSchema.properties[key], schema.properties[key]);
+      }
+    }
   }
 
   return result;

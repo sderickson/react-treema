@@ -17,7 +17,7 @@ import {
 } from './state/selectors';
 import './base.scss';
 import { handleAddChild } from './common';
-import { clone, getParentPath, getType, getValueForRequiredType } from './utils';
+import { clone, getParentPath, getValueForRequiredType } from './utils';
 
 interface TreemaNodeProps {
   path: JsonPointer;
