@@ -532,7 +532,7 @@ export const ManyPropertyAdditions = {
  * Treema has an internal concept of "Working Schemas". Basically if you have a complex schema (uses combinatorial applicators like
  * `oneOf` or `anyOf`, or has more than one possible `type`), Treema will generate a set of "working schemas" for the user to
  * choose from, and based on the selection will show the correct errors (ignoring errors from other options).
- * 
+ *
  * In this example, an object can either be of "type a" or "type b", but the data fits neither schema. The user can switch between
  * the two and see how the data doesn't fit with either and then fix the data in whichever direction.
  */
@@ -541,8 +541,8 @@ export const WorkingSchemas = {
     data: {
       example: {
         type: 'a',
-        foo: 'bar',  
-      }
+        foo: 'bar',
+      },
     },
     schema: {
       title: 'One of example',
@@ -560,25 +560,25 @@ export const WorkingSchemas = {
             {
               title: 'type a',
               properties: {
-                type: { const: 'a', type: 'string', },
-                foo: { type: 'number', title: "Numbered Foo" },
+                type: { const: 'a', type: 'string' },
+                foo: { type: 'number', title: 'Numbered Foo' },
               },
               default: { type: 'a', foo: 1 },
-              required: ['foo']
+              required: ['foo'],
             },
             {
               title: 'type b',
               properties: {
                 type: { const: 'b', type: 'string' },
-                foo: { type: 'string', title: "Stringed Foo" },
+                foo: { type: 'string', title: 'Stringed Foo' },
               },
               default: { type: 'b', foo: 'bar' },
-              required: ['foo']
-            }
+              required: ['foo'],
+            },
           ],
-        }
-      }
+        },
+      },
     },
     schemaLib: wrapAjv(new Ajv({ allErrors: true })),
   },
-}
+};

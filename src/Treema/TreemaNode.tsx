@@ -116,7 +116,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       }
       dispatch(setWorkingSchema(path, newIndex));
     },
-    [dispatch, path]
+    [dispatch, path],
   );
 
   // Handle focus
@@ -165,7 +165,9 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
         {workingSchemas.length > 1 ? (
           <select onChange={onSetWorkingModel} value={workingSchemaIndex}>
             {workingSchemas.map((schema, index) => (
-                <option key={index} value={index}>{schema.title || schema.type || '???'}</option>
+              <option key={index} value={index}>
+                {schema.title || schema.type || '???'}
+              </option>
             ))}
           </select>
         ) : null}

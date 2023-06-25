@@ -1,9 +1,6 @@
 import { TreemaRoot } from '../TreemaRoot';
 import type { Meta } from '@storybook/react';
-import {
-  args,
-  tabHiddenAndClosedRowTest,
-} from './tab-key';
+import { args, tabHiddenAndClosedRowTest } from './tab-key';
 import { wrapGenericTestInStory, Story } from './utils-storybook';
 
 /**

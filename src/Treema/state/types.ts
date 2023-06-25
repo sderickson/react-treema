@@ -22,5 +22,5 @@ export interface TreemaState {
   addingPropertyKey?: string;
   definitions: { [key: string]: TreemaTypeDefinition };
   settings: TreemaSettings;
-  workingSchemaChoices: {[path: JsonPointer]: number};
+  workingSchemaChoices: { [path: JsonPointer]: number };
 }

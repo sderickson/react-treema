@@ -77,12 +77,12 @@ export const wrapAjv = (ajv: any): SchemaLib => {
  * * data: the data at that path
  * * schema: the default working schema for that path (see docs on Working Schemas)
  * * possibleSchemas: an array of all possible working schemas for that path
- * 
+ *
  * The callback may return one of the possibleSchemas to override the provided default. If the callback does this,
  * that will affect further steps in the walking process. For example if an object could be `oneOf` an array of
  * schemas, with different properties and names for them, callbacks for those properties will provide different
  * schema and possibleSchemas values.
- * 
+ *
  * @param data The JSON data to walk.
  * @param schema The schema for the whole data.
  * @param lib Validator which can be used to dereference $ref.
@@ -300,6 +300,7 @@ const resolveReference = (schema: SupportedJsonSchema, lib: SchemaLib): Supporte
 
       return {};
     }
+
     return resolved;
   } else {
     return schema;
@@ -312,7 +313,7 @@ const cloneSchema = (schema: SupportedJsonSchema): SupportedJsonSchema => {
 
 /**
  * Combines two schemas, with the second schema overriding the first.
- * 
+ *
  * TODO: Smartly combine all schema options
  */
 export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: SupportedJsonSchema): SupportedJsonSchema => {
@@ -320,6 +321,7 @@ export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: Supporte
   if (schema.properties && baseSchema.properties) {
     result.properties = Object.assign({}, baseSchema.properties, schema.properties);
   }
+
   return result;
 };
 
@@ -428,4 +430,4 @@ export const splitJsonPointer = (path: JsonPointer): string[] => {
 
 export const joinJsonPointers = (paths: string[]): JsonPointer => {
   return paths.join('');
-}
+};

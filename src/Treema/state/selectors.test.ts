@@ -149,7 +149,7 @@ describe('getSchemaErrorsByPath', () => {
                   foo: { type: 'number' },
                 },
                 default: { type: 'a', foo: 1 },
-                required: ['foo']
+                required: ['foo'],
               },
               {
                 title: 'type b',
@@ -158,80 +158,80 @@ describe('getSchemaErrorsByPath', () => {
                   foo: { type: 'string' },
                 },
                 default: { type: 'b', foo: 'bar' },
-                required: ['foo']
-              }
+                required: ['foo'],
+              },
             ],
-          }
-        }
+          },
+        },
       },
     };
 
     // Ajv, set to "Type A" test
-    expect(getSchemaErrorsByPath({
-      ...state,
-      data: {
-        example: {
-          type: 'a',
-          foo: 'bar',  
-        }
-      },
-      workingSchemaChoices: { '/example': 0 },
-      schemaLib: wrapAjv(new Ajv({ allErrors: true })),
-    })).toEqual({
-      '/example/foo': [
-        { id: 'type', message: 'must be number', dataPath: '/example/foo' }
-      ]
+    expect(
+      getSchemaErrorsByPath({
+        ...state,
+        data: {
+          example: {
+            type: 'a',
+            foo: 'bar',
+          },
+        },
+        workingSchemaChoices: { '/example': 0 },
+        schemaLib: wrapAjv(new Ajv({ allErrors: true })),
+      }),
+    ).toEqual({
+      '/example/foo': [{ id: 'type', message: 'must be number', dataPath: '/example/foo' }],
     });
 
     // Ajv, set to "Type B" test
-    expect(getSchemaErrorsByPath({
-      ...state,
-      data: {
-        example: {
-          type: 'b',
-          foo: 1,
-        }
-      },
-      workingSchemaChoices: { '/example': 1 },
-      schemaLib: wrapAjv(new Ajv({ allErrors: true })),
-    })).toEqual(      {
-      '/example/foo': [
-        { id: 'type', message: 'must be string', dataPath: '/example/foo' }
-      ]
+    expect(
+      getSchemaErrorsByPath({
+        ...state,
+        data: {
+          example: {
+            type: 'b',
+            foo: 1,
+          },
+        },
+        workingSchemaChoices: { '/example': 1 },
+        schemaLib: wrapAjv(new Ajv({ allErrors: true })),
+      }),
+    ).toEqual({
+      '/example/foo': [{ id: 'type', message: 'must be string', dataPath: '/example/foo' }],
     });
 
     // Tv4, set to "Type A" test
-    expect(getSchemaErrorsByPath({
-      ...state,
-      data: {
-        example: {
-          type: 'a',
-          foo: 'bar',  
-        }
-      },
-      workingSchemaChoices: { '/example': 0 },
-      schemaLib: wrapTv4(tv4),
-    })).toEqual({
-      '/example/foo': [
-        { id: 0, message: 'Invalid type: string (expected number)', dataPath: '/example/foo' }
-      ]
+    expect(
+      getSchemaErrorsByPath({
+        ...state,
+        data: {
+          example: {
+            type: 'a',
+            foo: 'bar',
+          },
+        },
+        workingSchemaChoices: { '/example': 0 },
+        schemaLib: wrapTv4(tv4),
+      }),
+    ).toEqual({
+      '/example/foo': [{ id: 0, message: 'Invalid type: string (expected number)', dataPath: '/example/foo' }],
     });
 
     // Tv4, set to "Type B" test
-    expect(getSchemaErrorsByPath({
-      ...state,
-      data: {
-        example: {
-          type: 'b',
-          foo: 1,
-        }
-      },
-      workingSchemaChoices: { '/example': 1 },
-      schemaLib: wrapTv4(tv4),
-    })).toEqual(      {
-      '/example/foo': [
-        { id: 0, message: 'Invalid type: number (expected string)', dataPath: '/example/foo' }
-      ]
+    expect(
+      getSchemaErrorsByPath({
+        ...state,
+        data: {
+          example: {
+            type: 'b',
+            foo: 1,
+          },
+        },
+        workingSchemaChoices: { '/example': 1 },
+        schemaLib: wrapTv4(tv4),
+      }),
+    ).toEqual({
+      '/example/foo': [{ id: 0, message: 'Invalid type: number (expected string)', dataPath: '/example/foo' }],
     });
   });
 });

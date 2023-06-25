@@ -15,7 +15,6 @@ export const selectPath = (path: JsonPointer | undefined): SelectPathAction => {
   };
 };
 
-
 // Navigation Actions
 
 type NavigateUpAction = {
@@ -46,7 +45,6 @@ export const navigateOut = (): NavigateOutAction => {
   return { type: 'navigate_out_action' };
 };
 
-
 // Open/Close Action
 
 type SetPathClosedAction = {
@@ -62,7 +60,6 @@ export const setPathClosed = (path: JsonPointer, closed: boolean): SetPathClosed
     closed,
   };
 };
-
 
 // Edit Actions
 
@@ -114,7 +111,6 @@ export const setData = (path: JsonPointer, data: any): SetDataAction => {
   };
 };
 
-
 // Add Property Actions
 
 type BeginAddPropertyAction = {
@@ -153,7 +149,6 @@ export const endAddProperty = (cancel?: boolean): EndAddPropertyAction => {
   };
 };
 
-
 // Delete Action
 
 type DeleteAction = {
@@ -167,7 +162,6 @@ export const deleteAction = (path: JsonPointer): DeleteAction => {
     path,
   };
 };
-
 
 // Working Schema Action
 
@@ -184,7 +178,6 @@ export const setWorkingSchema = (path: JsonPointer, index: number): SetWorkingSc
     index,
   };
 };
-
 
 export type TreemaAction =
   | SelectPathAction

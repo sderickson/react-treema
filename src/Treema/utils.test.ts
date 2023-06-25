@@ -1,5 +1,16 @@
 import { SupportedJsonSchema } from './types';
-import { buildWorkingSchemas, wrapTv4, getChildSchema, walk, getParentPath, clone, populateRequireds, combineSchemas, wrapAjv, chooseWorkingSchema } from './utils';
+import {
+  buildWorkingSchemas,
+  wrapTv4,
+  getChildSchema,
+  walk,
+  getParentPath,
+  clone,
+  populateRequireds,
+  combineSchemas,
+  wrapAjv,
+  chooseWorkingSchema,
+} from './utils';
 import tv4 from 'tv4';
 import Ajv from 'ajv';
 
@@ -161,21 +172,21 @@ describe('chooseWorkingSchema', () => {
         {
           title: 'type a',
           properties: {
-            type: { const: 'a', type: 'string', },
-            foo: { type: 'number', title: "Numbered Foo" },
+            type: { const: 'a', type: 'string' },
+            foo: { type: 'number', title: 'Numbered Foo' },
           },
           default: { type: 'a', foo: 1 },
-          required: ['foo']
+          required: ['foo'],
         },
         {
           title: 'type b',
           properties: {
             type: { const: 'b', type: 'string' },
-            foo: { type: 'string', title: "Stringed Foo" },
+            foo: { type: 'string', title: 'Stringed Foo' },
           },
           default: { type: 'b', foo: 'bar' },
-          required: ['foo']
-        }
+          required: ['foo'],
+        },
       ],
     };
     const schemaLib = wrapAjv(new Ajv({ allErrors: true }));
@@ -195,25 +206,31 @@ describe('getParentPath', () => {
 
 describe('combineSchemas', () => {
   it('merges properties', () => {
-    const result = combineSchemas({
-      properties: {
-        key1: { title: 'key1' },
+    const result = combineSchemas(
+      {
+        properties: {
+          key1: { title: 'key1' },
+        },
       },
-    }, {
-      properties: {
-        key2: { title: 'key2' },
+      {
+        properties: {
+          key2: { title: 'key2' },
+        },
       },
-    });
+    );
     expect(result.properties).toEqual({
       key1: { title: 'key1' },
       key2: { title: 'key2' },
     });
 
-    const result2 = combineSchemas({
-      properties: {
-        key1: { title: 'key1' },
+    const result2 = combineSchemas(
+      {
+        properties: {
+          key1: { title: 'key1' },
+        },
       },
-    }, {});
+      {},
+    );
     expect(result2.properties).toEqual({
       key1: { title: 'key1' },
     });

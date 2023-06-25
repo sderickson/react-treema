@@ -17,6 +17,7 @@ export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
       if (schema.title) {
         return <span>(empty {schema.title})</span>;
       }
+
       return <span>(empty)</span>;
     }
 
@@ -24,6 +25,7 @@ export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
       const childPath = path + '/' + index;
       const childWorkingSchema = getWorkingSchema(state, childPath);
       const definition = getDefinitionAtPath(state, childPath);
+
       return <definition.Display data={child} schema={childWorkingSchema} path={childPath} key={childPath} />;
     });
 

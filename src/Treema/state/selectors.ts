@@ -49,6 +49,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
       if (schema.type === 'object' && getType(schema.default) === 'object') {
         defaultsToWalk.push(path);
       }
+
       return datasAndSchemas[path].schema; // override working schema for further walking
     });
     const extantKeys = new Set(Object.keys(datasAndSchemas));
@@ -216,46 +217,49 @@ export const getSchemaErrors = createSelector([getData, getRootSchema, getSchema
   return schemaLib.validateMultiple(data, rootSchema).errors;
 });
 
-export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath = createSelector([getSchemaErrors, getAllDatasAndSchemas, getSchemaLib], (errors, datasAndSchemas, schemaLib) => {
-  const errorsByPath: SchemaErrorsByPath = {};
+export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath = createSelector(
+  [getSchemaErrors, getAllDatasAndSchemas, getSchemaLib],
+  (errors, datasAndSchemas, schemaLib) => {
+    const errorsByPath: SchemaErrorsByPath = {};
 
-  /*
+    /*
     We could just return the raw, top-level errors but that doesn't take into account working schemas.
     So instead for each "global" error, get the working errors for that path given the current working schema. 
     That way users only see errors for the schemas they are trying to use (but are currently invalid).
   */
-  errors.forEach((error) => {
-    const data = datasAndSchemas[error.dataPath].data;
-    const workingSchema = datasAndSchemas[error.dataPath].schema;
-    const validationResult = schemaLib.validateMultiple(data, workingSchema);
-    const workingErrors = validationResult.errors || [];
-    for (let workingError of workingErrors) {
-      const absPath = error.dataPath + workingError.dataPath;
-      if (!errorsByPath[absPath]) {
-        errorsByPath[absPath] = [];
-      }
-      const newError = {
-        ...workingError,
-        dataPath: absPath,
-      };
-      let exists = false;
-      for (let existingError of errorsByPath[absPath]) {
-        if (JSON.stringify(newError) === JSON.stringify(existingError)) {
-          exists = true;
-          break;
+    errors.forEach((error) => {
+      const data = datasAndSchemas[error.dataPath].data;
+      const workingSchema = datasAndSchemas[error.dataPath].schema;
+      const validationResult = schemaLib.validateMultiple(data, workingSchema);
+      const workingErrors = validationResult.errors || [];
+      for (let workingError of workingErrors) {
+        const absPath = error.dataPath + workingError.dataPath;
+        if (!errorsByPath[absPath]) {
+          errorsByPath[absPath] = [];
+        }
+        const newError = {
+          ...workingError,
+          dataPath: absPath,
+        };
+        let exists = false;
+        for (let existingError of errorsByPath[absPath]) {
+          if (JSON.stringify(newError) === JSON.stringify(existingError)) {
+            exists = true;
+            break;
+          }
+        }
+        if (!exists) {
+          errorsByPath[absPath].push(newError);
         }
       }
-      if (!exists) {
-        errorsByPath[absPath].push(newError);
-      }
-    }
-    // Silently ignore the original, global error. At least with ajv, validators can sometimes return
-    // errors for *all* oneOf/anyOf schemas, where we only need the one the user has chosen as the
-    // target working schema.
-  });
+      // Silently ignore the original, global error. At least with ajv, validators can sometimes return
+      // errors for *all* oneOf/anyOf schemas, where we only need the one the user has chosen as the
+      // target working schema.
+    });
 
-  return errorsByPath;
-});
+    return errorsByPath;
+  },
+);
 
 // ----------------------------------------------------------------------------
 // Definition, settings based selectors
@@ -434,10 +438,7 @@ export const getPreviousRow: (state: TreemaState, skipAddProperties?: boolean) =
   } else {
     index = paths.indexOf(state.lastSelected) - 1;
   }
-  while (
-    index > 0 &&
-    (getAnyAncestorsClosed(state, paths[index]) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))
-  ) {
+  while (index > 0 && (getAnyAncestorsClosed(state, paths[index]) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))) {
     index--;
   }
   nextPath = paths[index];

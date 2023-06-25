@@ -25,32 +25,39 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
 
     // Find the first three properties that have a value, create a truncated string for each of them.
     let i = 0;
-    let children = Object.entries(data).map(([key, value]) => {
-      if (value === undefined) {
-        return null;
-      }
-      i += 1;
-      const childPath = path + '/' + key;
-      const childSchema = getWorkingSchema(state, childPath);
-      const name = childSchema.title || key;
-      if (['object', 'array'].includes(getType(value))) {
-        return <span key={'key:'+key}>{name}</span>;
-      }
-      let valueStringish = getType(value) === 'string' ? value : JSON.stringify(value);
-      if (getType(value) === 'undefined') {
-        valueStringish = 'undefined' ;
-      }
-      let valueString = valueStringish as string;
-      if (valueString.length > 20) {
-        valueString = valueString.slice(0, 20) + ' ...' ;
-      }
-      return <span key={'key:'+key}>{name}={valueString}</span>;
-    }).filter((v) => v);
+    let children = Object.entries(data)
+      .map(([key, value]) => {
+        if (value === undefined) {
+          return null;
+        }
+        i += 1;
+        const childPath = path + '/' + key;
+        const childSchema = getWorkingSchema(state, childPath);
+        const name = childSchema.title || key;
+        if (['object', 'array'].includes(getType(value))) {
+          return <span key={'key:' + key}>{name}</span>;
+        }
+        let valueStringish = getType(value) === 'string' ? value : JSON.stringify(value);
+        if (getType(value) === 'undefined') {
+          valueStringish = 'undefined';
+        }
+        let valueString = valueStringish as string;
+        if (valueString.length > 20) {
+          valueString = valueString.slice(0, 20) + ' ...';
+        }
+
+        return (
+          <span key={'key:' + key}>
+            {name}={valueString}
+          </span>
+        );
+      })
+      .filter((v) => v);
 
     // If there are more than three properties, truncate the list.
     if (children.length > 3) {
       children = children.slice(0, 3);
-      children.push(<span key='...'>...</span>);
+      children.push(<span key="...">...</span>);
     }
 
     // Join the children with commas.
@@ -58,7 +65,7 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
     children.forEach((child, index) => {
       joinedChildren.push(child as JSX.Element);
       if (index < children.length - 1) {
-        joinedChildren.push(<span key={'index:'+index}>, </span>);
+        joinedChildren.push(<span key={'index:' + index}>, </span>);
       }
     });
 
