@@ -3,7 +3,7 @@ import tv4 from 'tv4';
 import { wrapTv4 } from '../utils';
 
 /**
- * This storybook tests complex CodeCombat scenarios. CodeCombat is what Treem was originally built for,
+ * This storybook tests complex CodeCombat scenarios. CodeCombat is what Treema was originally built for,
  * and these are real data/schema sets from the product to verify things work like the old Treema library.
  */
 export default {
@@ -715,6 +715,7 @@ const data = {
   'index': '512ef4805a67a8c507000001',
   '__v': 1,
   'description': "Let's learn how to prompt **ChatGPT 4** to make our own HTML5 browser game.",
+  'mode': 'learn to use',
 };
 
 const tv4Instance = wrapTv4(tv4);

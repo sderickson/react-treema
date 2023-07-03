@@ -295,6 +295,9 @@ export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => Tre
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas, getDefinitions],
   (path, datasAndSchemas, definitions) => {
     const { schema, data } = datasAndSchemas[path];
+    if (schema.enum && definitions.enum) {
+      return definitions.enum;
+    }
     const dataType = getType(data);
     let typeMismatch = dataType !== schema.type;
     if (typeMismatch) {

@@ -119,3 +119,27 @@ export const noMorePropsArgs: TreemaRootProps = {
   },
   onEvent,
 };
+
+export const enumTest: GenericTest = {
+  name: 'should show a select box for enums',
+  test: async (ctx) => {
+    await ctx.fireFocus();
+    await ctx.fireTab(); // select the enum field
+    await ctx.fireEnter(); // edit it
+    const result = await ctx.testingLibrary.within(ctx.treema).getByRole('combobox');
+    await ctx.selectOptions(result, 'c');
+    await ctx.fireEnter(); // commit changes
+    ctx.expect(ctx.getData()).toEqual({ a: 'c' });
+  },
+}
+
+export const enumArgs: TreemaRootProps = {
+  data: { a: 'b' },
+  schema: {
+    type: 'object',
+    properties: {
+      a: { enum: ['a', 'b', 'c'], type: 'string' },
+    }
+  },
+  onEvent,
+};

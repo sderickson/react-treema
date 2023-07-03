@@ -73,6 +73,7 @@ export interface SupportedJsonSchema {
   maxItems?: number;
   pattern?: string;
   const?: string;
+  enum?: any[];
 }
 
 /**

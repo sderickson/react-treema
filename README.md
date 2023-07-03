@@ -44,7 +44,7 @@ And http://codecombat.github.io/treema/demo.html
     - [X] combine required
   - [X] Deleting prompt quiz content breaks treema
 - [X] Migrate to json pointer utils
-- [ ] Support for enum
+- [X] Support for enum
 - [ ] Optionally show root elem
 - [ ] Ace Editor integration
 

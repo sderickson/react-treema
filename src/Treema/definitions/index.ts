@@ -7,6 +7,7 @@ import { TreemaStringNodeDefinition } from './string';
 import { TreemaIntegerNodeDefinition } from './integer';
 import { TreemaPoint2dNodeDefinition } from './point2d';
 import { TreemaLongStringNodeDefinition } from './long-string';
+import { TreemaEnumNodeDefinition } from './enum';
 import './core.scss';
 import './extra.scss';
 
@@ -30,4 +31,5 @@ export const coreDefinitions: { [key: string]: TreemaTypeDefinition } = {
   'integer': TreemaIntegerNodeDefinition,
   'point2d': TreemaPoint2dNodeDefinition,
   'long-string': TreemaLongStringNodeDefinition,
+  'enum': TreemaEnumNodeDefinition,
 };

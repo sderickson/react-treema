@@ -62,3 +62,21 @@ export const useTreemaTextArea = () => {
 
   return editRef;
 };
+
+export const useTreemaSelect = () => {
+  const { editRefs } = useContext(TreemaContext);
+  const editRef = React.useRef<HTMLSelectElement>(null);
+
+  useEffect(() => {
+    editRefs.push(editRef);
+
+    return () => {
+      const refIndex = editRefs.indexOf(editRef);
+      if (refIndex >= 0) {
+        editRefs.splice(refIndex, 1);
+      }
+    };
+  }, [editRef, editRefs]);
+
+  return editRef;
+};

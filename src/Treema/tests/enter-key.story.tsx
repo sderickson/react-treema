@@ -5,6 +5,8 @@ import {
   editRootArrayArgs,
   editRootArrayTest,
   editRow,
+  enumArgs,
+  enumTest,
   noMoreItemsArgs,
   noMoreItemsTest,
   noMorePropsArgs,
@@ -26,3 +28,4 @@ export const EditRow: Story = wrapGenericTestInStory(editRow, args);
 export const EditRootArray: Story = wrapGenericTestInStory(editRootArrayTest, editRootArrayArgs);
 export const NoMoreProps: Story = wrapGenericTestInStory(noMorePropsTest, noMorePropsArgs);
 export const NoMoreItems: Story = wrapGenericTestInStory(noMoreItemsTest, noMoreItemsArgs);
+export const EditEnum: Story = wrapGenericTestInStory(enumTest, enumArgs);
