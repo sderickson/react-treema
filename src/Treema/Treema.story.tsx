@@ -16,6 +16,10 @@ export default {
  * This Treema shows a relatively simple data structure: an array of objects with values that are
  * all primitive data types. You can try creating a new object, editing the values, and deleting
  * entries or values.
+ * 
+ * Navigate quickly and easily by keyboard. Try using arrow keys, enter,
+ * tab, and escape. Use shift to reverse direction. When entering a new property, press arrow-down
+ * to use the native browser autocomplete for available properties.
  */
 export const BasicExample = {
   args: {
@@ -40,7 +44,6 @@ export const BasicExample = {
         'region': 'NY',
         'locality': 'New York',
         'name': 'Rockefeller Center',
-        'null': null,
       },
     ],
     schema: {
@@ -53,10 +56,6 @@ export const BasicExample = {
           'number': {
             'type': 'number',
             'title': 'Number',
-          },
-          'null': {
-            'type': 'null',
-            'title': 'Null',
           },
           'name': {
             'type': 'string',
@@ -96,9 +95,11 @@ export const BasicExample = {
 };
 
 /**
- * In this example, values in the "numbers" array can either be strings or arrays of strings.
+ * Schemas are highly flexible, including allowing properties to be of various types. In this example, the "numbers"
+ * property can either by an array or string. Treema provides a `select` box in this case, allowing switching between
+ * those two types. 
  */
-export const NestedArrays = {
+export const TypeSelector = {
   args: {
     data: { name: 'Bob', numbers: ['401-401-1337', ['123-456-7890']], address: 'Mars' },
     schema: {
@@ -141,7 +142,8 @@ const badSchema = {
 
 /**
  * Tv4 is a JSON Schema validator that supports draft-4 of the spec. It is fairly old and no longer
- * maintained, but it is an example of how Treema can support a wide variety of validators.
+ * maintained, but it is an example of how Treema can support a wide variety of validators. The original
+ * Treema library was tightly coupled to tv4, but not this one!
  */
 export const Tv4Validator = {
   args: {
@@ -152,99 +154,16 @@ export const Tv4Validator = {
 };
 
 /**
- * Ajv is a JSON Schema validator that supports draft-7 of the spec. It is a popular validator,
- * and shows how different validators might cause Treema to act differently. For example, Ajv
- * when reporting an "additionalProperties" error, will target the object with the offending
- * property, while Tv4 will target the property itself. They also clearly have different error
- * messages.
+ * Ajv is a JSON Schema validator that supports various drafs of the spec, including the most recent (2020-12).
+ * It is a popular validator (as of 2023), and shows how different validators might cause Treema to act differently.
+ * For example, Ajv when reporting an "additionalProperties" error, will target the object with the offending
+ * property, while Tv4 will target the property itself. They also clearly have different error messages.
  */
 export const AjvValidator = {
   args: {
     data: badData,
     schema: badSchema,
     schemaLib: wrapAjv(new Ajv({ allErrors: true })),
-  },
-};
-
-/**
- * JSON Schema supports the `oneOf` keyword, which allows you to specify that a value can be
- * one of several different types. Treema will check which of these schemas the data matches,
- * and uses that schema as a "working schema". For example, in this array each item is "one of"
- * either an array or an object, and Treema will use the appropriate `title` depending on which
- * of the schemas the value matches.
- */
-export const OneOf = {
-  args: {
-    data: [{ string: 'string' }, [1, 2, 3], { string: 'another' }],
-    schema: {
-      type: 'array',
-      items: {
-        oneOf: [
-          {
-            type: 'object',
-            title: 'Object Type',
-            properties: 'string',
-          },
-          {
-            type: 'array',
-            title: 'Array Type',
-            items: 'number',
-          },
-        ],
-      },
-    },
-  },
-};
-
-/**
- * JSON Schema also supports the `anyOf` keyword. Although it behaves differently than `oneOf` as part
- * of the spec, it is treated equivalently by Treema, since how it should handle permutations is
- * unclear.
- */
-export const AnyOf = {
-  args: {
-    data: [{ string: 'string' }, [1, 2, 3], { string: 'another' }],
-    schema: {
-      type: 'array',
-      items: {
-        anyOf: [
-          {
-            type: 'object',
-            title: 'Object Type',
-            properties: 'string',
-          },
-          {
-            type: 'array',
-            title: 'Array Type',
-            items: 'number',
-          },
-        ],
-      },
-    },
-  },
-};
-
-/**
- * JSON Schema supports the `allOf` keyword, but fairly simply. It just combines the schemas
- * into one, not attempting to do anything fancy to really make sure they become a single
- * schema that truly combines them all. This behavior may change if there is a valid use case.
- */
-export const AllOf = {
-  args: {
-    data: { 'foo': 'bar' },
-    schema: {
-      type: 'object',
-      properties: {
-        foo: {
-          type: 'string',
-          allOf: [
-            {
-              title: 'Combined Title',
-            },
-          ],
-        },
-      },
-    },
   },
 };
 
@@ -352,6 +271,70 @@ export const Refs = {
   },
 };
 
+
+/**
+ * Treema has an internal concept of "Working Schemas". Basically if you have a complex schema (uses combinatorial applicators like
+ * `oneOf` or `anyOf`, or has more than one possible `type`), Treema will generate a set of "working schemas" for the user to
+ * choose from, and based on the selection will show the correct errors (ignoring errors from other options).
+ *
+ * In this example, an object can either be of "type a" or "type b", but the data fits neither schema. The user can switch between
+ * the two and see how the data doesn't fit with either and then fix the data in whichever direction.
+ * 
+ * Treema will also attempt to smartly merge schemas together, for example the schema with its oneOf, or every allOf together.
+ * It will tend to simply override one property with another, except for properties which it will recursively merge. You can
+ * see the recursive merging here where the title for "type" is provided in the base schema but shows up for each working
+ * schema. It will also concat `required` lists together, which you can see by trying to delete any of the defined properties.
+ * 
+ * You should each `oneOf` and `anyOf` schema a distinct `title` to make it easier for the user to understand what they are choosing between.
+ */
+export const WorkingSchemas = {
+  args: {
+    data: {
+      example: {
+        type: 'a',
+        foo: 'bar',
+      },
+    },
+    schema: {
+      title: 'One of example',
+      type: 'object',
+      properties: {
+        example: {
+          type: 'object',
+
+          properties: {
+            type: { title: "Inherited Type Title" },
+          },
+          required: ['type'],
+
+          oneOf: [
+            {
+              title: 'type a',
+              properties: {
+                type: { const: 'a', type: 'string' },
+                foo: { type: 'number', title: 'Numbered Foo' },
+              },
+              default: { type: 'a', foo: 1 },
+              required: ['foo'],
+            },
+            {
+              title: 'type b',
+              properties: {
+                type: { const: 'b', type: 'string' },
+                foo: { type: 'string', title: 'Stringed Foo' },
+              },
+              default: { type: 'b', foo: 'bar' },
+              required: ['foo'],
+            },
+          ],
+        },
+      },
+    },
+    schemaLib: wrapAjv(new Ajv({ allErrors: true })),
+  },
+};
+
+
 /**
  * Treema supports `properties`, `patternProperties`, and `additionalProperties`, taking into
  * account precedence.
@@ -454,10 +437,12 @@ export const RequiredValues = {
 };
 
 /**
- * String format types are supported, and will use the appropriate browser input type.
- * Support may vary based on browser.
+ * Schema `format` values will often use the equivalent browser input type. The following example includes
+ * all supported string input types. Support may vary based on browser.
+ * 
+ * See the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types) for more information.
  */
-export const StringFormats = {
+export const StringInputTypes = {
   args: {
     data: {
       'color': '#ff0000',
@@ -487,14 +472,22 @@ export const StringFormats = {
   },
 };
 
-export const StringInputRestrictions = {
+/**
+ * In some cases, Treema will fill `<input>` attribute fields. Currently the following are supported:
+ * * For strings, schema values for `maxLength` and `minLength` are set as `maxlength` and `minlength` input attributes.
+ * * For numbers, schema values for `minimum` and `maximum` are set to `min` and `max` input attributes.
+ * 
+ * See the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attributes) for more information.
+ * 
+ * TODO: Add support for more input attributes.
+ */
+export const InputAttributes = {
   args: {
     data: {
       max10: 9,
       maxLength10: '1234567890',
       min10: 11,
       minLength10: '12345678901',
-      patternAllCaps: 'ABC',
     },
     schema: {
       'type': 'object',
@@ -503,12 +496,16 @@ export const StringInputRestrictions = {
         'maxLength10': { 'type': 'string', 'maxLength': 10 },
         'min10': { 'type': 'number', 'minimum': 10 },
         'minLength10': { 'type': 'string', 'minLength': 10 },
-        'patternAllCaps': { 'type': 'string', 'pattern': '^[A-Z]+$' },
       },
     },
   },
 };
 
+/**
+ * Custom type definitions need some work...
+ * 
+ * TODO: Fully spec out custom type definitions.
+ */
 export const CustomNodes = {
   args: {
     data: {
@@ -526,7 +523,12 @@ export const CustomNodes = {
   },
 };
 
-export const ManyPropertyAdditions = {
+/**
+ * If no schema is provided, essentially Treema acts as a free-form JSON data editor.
+ * 
+ * TODO: combine this with a view of the raw JSON.
+ */
+export const UnspecifiedJson = {
   args: {
     data: {
       'a': {
@@ -534,67 +536,5 @@ export const ManyPropertyAdditions = {
       },
     },
     schema: {},
-  },
-};
-
-/**
- * Treema has an internal concept of "Working Schemas". Basically if you have a complex schema (uses combinatorial applicators like
- * `oneOf` or `anyOf`, or has more than one possible `type`), Treema will generate a set of "working schemas" for the user to
- * choose from, and based on the selection will show the correct errors (ignoring errors from other options).
- *
- * In this example, an object can either be of "type a" or "type b", but the data fits neither schema. The user can switch between
- * the two and see how the data doesn't fit with either and then fix the data in whichever direction.
- * 
- * Treema will also attempt to smartly merge schemas together, for example the schema with its oneOf, or every allOf together.
- * It will tend to simply override one property with another, except for properties which it will recursively merge. You can
- * see the recursive merging here where the title for "type" is provided in the base schema but shows up for each working
- * schema. It will also concat `required` lists together, which you can see by trying to delete any of the defined properties.
- * 
- * You should each `oneOf` and `anyOf` schema a distinct `title` to make it easier for the user to understand what they are choosing between.
- */
-export const WorkingSchemas = {
-  args: {
-    data: {
-      example: {
-        type: 'a',
-        foo: 'bar',
-      },
-    },
-    schema: {
-      title: 'One of example',
-      type: 'object',
-      properties: {
-        example: {
-          type: 'object',
-
-          properties: {
-            type: { title: "Inherited Type Title" },
-          },
-          required: ['type'],
-
-          oneOf: [
-            {
-              title: 'type a',
-              properties: {
-                type: { const: 'a', type: 'string' },
-                foo: { type: 'number', title: 'Numbered Foo' },
-              },
-              default: { type: 'a', foo: 1 },
-              required: ['foo'],
-            },
-            {
-              title: 'type b',
-              properties: {
-                type: { const: 'b', type: 'string' },
-                foo: { type: 'string', title: 'Stringed Foo' },
-              },
-              default: { type: 'b', foo: 'bar' },
-              required: ['foo'],
-            },
-          ],
-        },
-      },
-    },
-    schemaLib: wrapAjv(new Ajv({ allErrors: true })),
   },
 };

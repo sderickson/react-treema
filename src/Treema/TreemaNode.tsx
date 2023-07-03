@@ -45,7 +45,9 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const workingSchema = getWorkingSchema(state, path);
   const workingSchemas = getWorkingSchemas(state, path);
   const workingSchemaIndex = workingSchemas.indexOf(workingSchema);
-  const name = workingSchema.title || getJsonPointerLastChild(path || '');
+  const parentIsArray = path && getWorkingSchema(state, getParentJsonPointer(path)).type === 'array';
+  // ternary is so array children w/out schema titles don't show their indices
+  const name = workingSchema.title || (parentIsArray ? undefined : getJsonPointerLastChild(path || ''));
   const definition = getDefinitionAtPath(state, path);
   const canOpen = hasChildrenAtPath(state, path);
   const description = workingSchema.description;
@@ -56,7 +58,6 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const isDefaultRoot = getIsDefaultRoot(state, path);
   const isAddingProperty = 'addTo:' + path === state.lastSelected && state.addingProperty;
   const isFocusedOnAddProperty = 'addTo:' + path === state.lastSelected && !state.addingProperty;
-  const parentIsArray = path && getWorkingSchema(state, getParentJsonPointer(path)).type === 'array';
 
   // Event handlers
   const onSelect = useCallback(
@@ -170,7 +171,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
           </select>
         ) : null}
 
-        {name !== undefined && !parentIsArray ? (
+        {name !== undefined ? (
           <span className="treema-key" title={description}>
             {`${name === '' ? '(empty string)' : name}: `}
           </span>

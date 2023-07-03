@@ -44,9 +44,7 @@ And http://codecombat.github.io/treema/demo.html
     - [X] combine required
   - [X] Deleting prompt quiz content breaks treema
 - [X] Migrate to json pointer utils
-- [ ] Debug mode? Show errors for chosen working schema?
 - [ ] Support for enum
-- [ ] Consolidate json pointer logic
 - [ ] Optionally show root elem
 - [ ] Ace Editor integration
 
@@ -64,6 +62,10 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
 - [ ] drag and drop (that other jquery ui thing), noSortable
+- [ ] comprehensive input attribute support
+- [ ] Full custom type definition interface
+  - [ ] Write documentation on making them
+  - [ ] Export all tools necessary
 - [ ] README
 - [ ] Github pages
 - [ ] Publish
