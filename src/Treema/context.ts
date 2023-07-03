@@ -12,6 +12,7 @@ const defaultContextData: ContextInterface = {
     closed: {},
     definitions: {},
     settings: {},
+    workingSchemaChoices: {},
   },
   dispatch: () => {},
   editRefs: [],

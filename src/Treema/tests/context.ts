@@ -44,7 +44,7 @@ export class TreemaStorybookTestContext {
     this.speed = speed;
   }
 
-  query() {
+  query(): any {
     return this.testingLibrary.within(this.root);
   }
 

@@ -3,7 +3,6 @@ import { JsonPointer, ValidatorError, WorkingSchema } from '../types';
 import { TreemaState, OrderEntry, WorkingSchemaChoices } from './types';
 import { createSelector } from 'reselect';
 import { TreemaTypeDefinition } from '../definitions/types';
-import { get } from 'http';
 
 // ----------------------------------------------------------------------------
 // Base data selectors
