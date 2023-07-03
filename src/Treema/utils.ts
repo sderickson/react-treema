@@ -321,10 +321,14 @@ const cloneSchema = (schema: SupportedJsonSchema): SupportedJsonSchema => {
 /**
  * Combines two schemas, with the second schema overriding the first.
  *
- * There's opportunity to combine schemas more here, but... should probably have good use cases.
+ * Currently only "properties" and "required" are combined, rather than overriding. There are use cases for
+ * these (see `inlineInteraction` in `CodeCombat.story.tsx`). If there are other use cases for other keywords,
+ * the logic can be extended here.
  */
 export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: SupportedJsonSchema): SupportedJsonSchema => {
   const result = Object.assign({}, baseSchema, schema);
+
+  // combine properties
   if (schema.properties && baseSchema.properties) {
     // combine recursively
     result.properties = Object.assign({}, baseSchema.properties, schema.properties);
@@ -334,10 +338,20 @@ export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: Supporte
       }
     }
   }
+
+  // combine required
   if (schema.required && baseSchema.required) {
     result.required = baseSchema.required.concat(schema.required);
   }
 
+  /*
+  More special combine use cases could be added here, such as:
+  * Recursive combination of `default` objects
+  * Max of "min" keywords (and vice versa)
+  * Intersection of `type` arrays
+  etc...
+  */
+  
   return result;
 };
 

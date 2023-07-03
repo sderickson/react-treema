@@ -36,15 +36,13 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Object and array displays
 
 #### In Progress
-- [ ] Edit working schemas
+- [X] Edit working schemas
   - [X] Show errors by working schema
   - [X] Retain initial working schema settings
   - [X] advanced combineSchemas
     - [X] combine properties
-    - [X] combine required?
-  - [ ] Deleting prompt quiz content breaks treema
-  - [ ] better applying of defaults for working schemas
-  - [ ] better applying of requireds for working schemas
+    - [X] combine required
+  - [X] Deleting prompt quiz content breaks treema
 - [ ] Migrate to json pointer utils
 - [ ] Debug mode? Show errors for chosen working schema?
 - [ ] Support for enum

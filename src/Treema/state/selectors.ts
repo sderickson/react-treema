@@ -65,7 +65,8 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
      * We walk the default objects so that even deeply complex default objects get neatly applied
      * to the full map of data to provide a full picture of what the user should see, defaults and all.
      */
-    defaultsToWalk.forEach((defaultRootPath) => {
+    while (defaultsToWalk.length) {
+      const defaultRootPath = defaultsToWalk.shift() as JsonPointer;
       const pathInfos = datasAndSchemas[defaultRootPath];
 
       walk(pathInfos.schema.default, pathInfos.schema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
@@ -76,6 +77,11 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
         // Also since a default object would only ever be used where some object exists, no need to set data.
         if (path === '') {
           return;
+        }
+
+        // Recursively fill out defaults
+        if (schema.default) {
+          defaultsToWalk.push(fullPath);
         }
 
         // This is where there exists real data in the map, but there may be some default data which can
@@ -99,7 +105,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
           defaultRoot,
         };
       });
-    });
+    };
 
     return datasAndSchemas;
   },

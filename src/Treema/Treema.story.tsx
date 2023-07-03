@@ -415,6 +415,15 @@ export const DefaultValues = {
           'setNumber': 123,
           'setArray': [1, 2, 3],
         },
+        'recurseDefault': {},
+      },
+      'properties': {
+        'recurseDefault': {
+          'type': 'object',
+          default: {
+            'deepRecurse': 'recursive default value',
+          }
+        },
       },
     },
   },

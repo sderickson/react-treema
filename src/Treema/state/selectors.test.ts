@@ -57,34 +57,6 @@ describe('getAllDatasAndSchemas', () => {
     expect(result['/key'].data).toEqual('value');
     expect(result['/key'].defaultRoot).toEqual(true);
   });
-
-  // it 'does not put default data into the containing data object', ->
-  //   data = { }
-  //   schema = { default: { key: 'value' } }
-  //   treema = TreemaNode.make(null, {data: data, schema: schema})
-  //   treema.build()
-  //   expect(treema.data.key).toBeUndefined()
-
-  // it 'puts data into the containing data object when its value is changed', ->
-  //   data = { }
-  //   schema = { default: { key: 'value' } }
-  //   treema = TreemaNode.make(null, {data: data, schema: schema})
-  //   treema.build()
-  //   treema.set('key', 'testValue')
-  //   expect(treema.data.key).toBe('testValue')
-  //   expect(treema.childrenTreemas.key.integrated).toBe(true)
-  //   expect(treema.$el.find('.treema-node').length).toBe(1)
-
-  // it 'keeps a default node around when you delete one with backup default data', ->
-  //   data = { key: 'setValue' }
-  //   schema = { default: { key: 'value' } }
-  //   treema = TreemaNode.make(null, {data: data, schema: schema})
-  //   treema.build()
-  //   treema.delete('key')
-  //   expect(treema.data.key).toBeUndefined()
-  //   expect(treema.childrenTreemas.key).toBeDefined()
-  //   expect(treema.childrenTreemas.key.integrated).toBe(false)
-  //   expect(Object.keys(treema.data).length).toBe(0)
 });
 
 describe('getListOfPaths', () => {
@@ -125,6 +97,26 @@ describe('getListOfPaths', () => {
       '/default',
       'addTo:',
     ]);
+  });
+
+  it('includes recursive default paths', () => {
+    const state: TreemaState = {
+      ...getDefaultState(),
+      rootSchema: {
+        type: 'object',
+        default: { a: {} }, // the default of the root object doe not include a default value for `b` in `a`
+        properties: {
+          a: {
+            type: 'object',
+            default: { b: {} }, // but the default for `a` does
+          },
+        },
+      },
+      data: {},
+    };
+    const result = getListOfPaths(state);
+    // both /a and /a/b and their addTo: paths should be included
+    expect(result).toEqual([ '', '/a', '/a/b', 'addTo:/a/b', 'addTo:/a', 'addTo:' ]);
   });
 });
 

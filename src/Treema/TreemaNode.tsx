@@ -161,10 +161,10 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
 
       <div ref={displayRef} tabIndex={-1} className="treema-row">
         {workingSchemas.length > 1 ? (
-          <select onChange={onSetWorkingModel} value={workingSchemaIndex}>
+          <select onChange={onSetWorkingModel} value={workingSchemaIndex} className="treema-schema-select">
             {workingSchemas.map((schema, index) => (
               <option key={index} value={index}>
-                {schema.title || schema.type || '???'}
+                {schema.title || schema.type || '(untitled schema)'}
               </option>
             ))}
           </select>
