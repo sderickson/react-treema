@@ -43,7 +43,7 @@ And http://codecombat.github.io/treema/demo.html
     - [X] combine properties
     - [X] combine required
   - [X] Deleting prompt quiz content breaks treema
-- [ ] Migrate to json pointer utils
+- [X] Migrate to json pointer utils
 - [ ] Debug mode? Show errors for chosen working schema?
 - [ ] Support for enum
 - [ ] Consolidate json pointer logic

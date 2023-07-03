@@ -4,12 +4,13 @@ import {
   wrapTv4,
   getChildSchema,
   walk,
-  getParentPath,
+  getParentJsonPointer,
   clone,
   populateRequireds,
   combineSchemas,
   wrapAjv,
   chooseWorkingSchema,
+  getJsonPointerDepth,
 } from './utils';
 import tv4 from 'tv4';
 import Ajv from 'ajv';
@@ -222,11 +223,11 @@ describe('chooseWorkingSchema', () => {
   });
 });
 
-describe('getParentPath', () => {
+describe('getParentJsonPointer', () => {
   it('returns the parent path of a path', () => {
-    expect(getParentPath('/')).toBe('');
-    expect(getParentPath('/a')).toBe('');
-    expect(getParentPath('/a/b')).toBe('/a');
+    expect(getParentJsonPointer('/')).toBe('');
+    expect(getParentJsonPointer('/a')).toBe('');
+    expect(getParentJsonPointer('/a/b')).toBe('/a');
   });
 });
 
@@ -388,3 +389,14 @@ describe('populateRequireds', () => {
 //   expect(treema.get('/def')).toBe(1337)
 //   treema.childrenTreemas['array'].addNewChild()
 //   expect(treema.$el.find('input').val()).toBe('42')
+
+describe('json pointer util functions', () => {
+  describe('getJsonPointerDepth', () => {
+    it('returns 0 for root', () => {
+      expect(getJsonPointerDepth('')).toBe(0);
+    });
+    it('returns 2 for /a/b', () => {
+      expect(getJsonPointerDepth('/a/b')).toBe(2);
+    });
+  });
+});

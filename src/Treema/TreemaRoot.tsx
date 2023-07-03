@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useReducer, useMemo, useRef } from 'react';
 import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaEventHandler } from './types';
-import { noopLib, populateRequireds, walk, joinJsonPointers } from './utils';
+import { noopLib, populateRequireds, walk, joinJsonPointers, getJsonPointerDepth } from './utils';
 import {
   selectPath,
   navigateUp,
@@ -106,8 +106,8 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     }
     const closed: { [key: JsonPointer]: boolean } = {};
     walk(data, schema, lib, ({ path }) => {
-      const depth = path.split('/').length;
-      if (depth === initOpen + 1) {
+      const depth = getJsonPointerDepth(path);
+      if (depth === initOpen) {
         closed[path] = true;
       }
     });

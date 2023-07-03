@@ -1,4 +1,4 @@
-import { getParentPath, getType, walk, joinJsonPointers } from '../utils';
+import { getParentJsonPointer, getType, walk, joinJsonPointers } from '../utils';
 import { JsonPointer, ValidatorError, WorkingSchema } from '../types';
 import { TreemaState, OrderEntry, WorkingSchemaChoices } from './types';
 import { createSelector } from 'reselect';
@@ -97,7 +97,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
 
         // This is where there is no data in the map, so create a new entry for it just for the
         // default data.
-        const defaultRoot = extantKeys.has(getParentPath(fullPath));
+        const defaultRoot = extantKeys.has(getParentJsonPointer(fullPath));
         datasAndSchemas[fullPath] = {
           data,
           schema,
@@ -469,7 +469,7 @@ export const getPreviousRow: (state: TreemaState, skipAddProperties?: boolean) =
     index--;
   }
   nextPath = paths[index];
-  nextPathParent = getParentPath(normalizeToPath(nextPath));
+  nextPathParent = getParentJsonPointer(normalizeToPath(nextPath));
 
   return getClosed(state)[nextPathParent] ? nextPathParent : nextPath;
 };
@@ -508,7 +508,7 @@ export const getCanOpen = createSelector(
 );
 
 export const getAnyAncestorsClosed = createSelector([getClosed, (_, path: JsonPointer) => path], (closed, path) => {
-  let currentPath = getParentPath(path);
+  let currentPath = getParentJsonPointer(path);
   if (isInsertPropertyPlaceholder(path)) {
     currentPath = normalizeToPath(path);
   }
@@ -516,7 +516,7 @@ export const getAnyAncestorsClosed = createSelector([getClosed, (_, path: JsonPo
     if (closed[currentPath]) {
       return true;
     }
-    currentPath = getParentPath(currentPath);
+    currentPath = getParentJsonPointer(currentPath);
   }
 
   return false;

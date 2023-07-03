@@ -1,5 +1,5 @@
 import {
-  getParentPath,
+  getParentJsonPointer,
   getType,
   splitJsonPointer,
   clone,
@@ -68,7 +68,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       return state;
 
     case 'navigate_out_action':
-      let parentPath = getParentPath(state.lastSelected || '');
+      let parentPath = getParentJsonPointer(state.lastSelected || '');
       if (parentPath) {
         return { ...state, lastSelected: parentPath };
       }
@@ -143,7 +143,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       };
 
     case 'delete_action':
-      const parent = getParentPath(action.path);
+      const parent = getParentJsonPointer(action.path);
       const parentData = getAllDatasAndSchemas(state)[parent].data;
       const newData = clone(parentData, { shallow: true });
       const segments = splitJsonPointer(action.path);

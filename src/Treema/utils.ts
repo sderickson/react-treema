@@ -355,32 +355,6 @@ export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: Supporte
   return result;
 };
 
-export const getParentPath = (path: JsonPointer): JsonPointer => {
-  const parts = path.split('/');
-  parts.pop();
-
-  return parts.join('/');
-};
-
-export const getDataByPath = (data: any, path: JsonPointer): any => {
-  if (path === '') {
-    return data;
-  }
-  let returnData = data;
-  path
-    .slice(1)
-    .split('/')
-    .forEach((key) => {
-      if (getType(returnData) === 'array') {
-        returnData = returnData[parseInt(key)];
-      } else {
-        returnData = returnData[key];
-      }
-    });
-
-  return returnData;
-};
-
 interface CloneOptions {
   shallow?: boolean;
 }
@@ -453,9 +427,17 @@ export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, l
   return returnData;
 };
 
+
+// JsonPointer utils. Probably should just use a standard lib...
+
 export const splitJsonPointer = (path: JsonPointer): string[] => {
   // Not actually following the whole spec, but this'll do for now.
   return path.split('/').slice(1);
+};
+
+export const getJsonPointerLastChild = (path: JsonPointer): string => {
+  const parts = splitJsonPointer(path);
+  return parts[parts.length-1];
 };
 
 export const joinJsonPointers = (...paths: string[]): JsonPointer => {
@@ -464,4 +446,33 @@ export const joinJsonPointers = (...paths: string[]): JsonPointer => {
     paths[paths.length-1] = '/' + paths[paths.length-1];
   }
   return paths.join('');
+};
+
+export const getParentJsonPointer = (path: JsonPointer): JsonPointer => {
+  const parts = path.split('/');
+  parts.pop();
+
+  return parts.join('/');
+};
+
+export const getJsonPointerDepth = (path: JsonPointer): number => {
+  return splitJsonPointer(path).length;
+};
+
+// Not actually used or tested anywhere... but should probably be exported as part of a set of utils.
+export const getDataAtJsonPointer = (data: any, path: JsonPointer): any => {
+  if (path === '') {
+    return data;
+  }
+  let returnData = data;
+  splitJsonPointer(path)
+    .forEach((key) => {
+      if (getType(returnData) === 'array') {
+        returnData = returnData[parseInt(key)];
+      } else {
+        returnData = returnData[key];
+      }
+    });
+
+  return returnData;
 };

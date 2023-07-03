@@ -17,7 +17,7 @@ import {
 } from './state/selectors';
 import './base.scss';
 import { handleAddChild } from './common';
-import { clone, getParentPath, getValueForRequiredType } from './utils';
+import { clone, getJsonPointerLastChild, getParentJsonPointer, getValueForRequiredType } from './utils';
 
 interface TreemaNodeProps {
   path: JsonPointer;
@@ -45,7 +45,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const workingSchema = getWorkingSchema(state, path);
   const workingSchemas = getWorkingSchemas(state, path);
   const workingSchemaIndex = workingSchemas.indexOf(workingSchema);
-  const name = workingSchema.title || path?.split('/').pop();
+  const name = workingSchema.title || getJsonPointerLastChild(path || '');
   const definition = getDefinitionAtPath(state, path);
   const canOpen = hasChildrenAtPath(state, path);
   const description = workingSchema.description;
@@ -56,7 +56,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const isDefaultRoot = getIsDefaultRoot(state, path);
   const isAddingProperty = 'addTo:' + path === state.lastSelected && state.addingProperty;
   const isFocusedOnAddProperty = 'addTo:' + path === state.lastSelected && !state.addingProperty;
-  const parentIsArray = path && getWorkingSchema(state, getParentPath(path)).type === 'array';
+  const parentIsArray = path && getWorkingSchema(state, getParentJsonPointer(path)).type === 'array';
 
   // Event handlers
   const onSelect = useCallback(
