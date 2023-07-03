@@ -7,6 +7,7 @@ import {
   chooseWorkingSchema,
   buildWorkingSchemas,
   getValueForRequiredType,
+  joinJsonPointers,
 } from '../utils';
 import { TreemaState, OrderEntry } from './types';
 import { JsonPointer } from '../types';
@@ -136,7 +137,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         addingProperty: false,
         data: setDataAtPath(
           state,
-          normalizeToPath(state.lastSelected) + '/' + state.addingPropertyKey,
+          joinJsonPointers(normalizeToPath(state.lastSelected), state.addingPropertyKey),
           getValueForRequiredType(workingSchema.type),
         ),
       };
@@ -197,7 +198,7 @@ const setDataAtPath = (state: TreemaState, path: JsonPointer, data: any): any =>
   let currentPath = '';
   const datasAndSchemas = getAllDatasAndSchemas(state);
   segments.forEach((pathSegment: string) => {
-    currentPath += '/' + pathSegment;
+    currentPath = joinJsonPointers(currentPath, pathSegment);
     const parsedSegment = getType(currentChildData) === 'array' ? parseInt(pathSegment) : pathSegment;
     currentChildData = datasAndSchemas[currentPath].data;
     newChildData[parsedSegment] = clone(currentChildData, { shallow: true });

@@ -71,7 +71,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
 
       walk(pathInfos.schema.default, pathInfos.schema, schemaLib, ({ path, data, schema, possibleSchemas }) => {
         // we're walking relative to the where the default object is, so we need to prepend the default's location
-        const fullPath = defaultRootPath ? joinJsonPointers([defaultRootPath, path]) : path;
+        const fullPath = defaultRootPath ? joinJsonPointers(defaultRootPath, path) : path;
 
         // Where the default object is situated already has itself in its schema.default, so nothing to do.
         // Also since a default object would only ever be used where some object exists, no need to set data.

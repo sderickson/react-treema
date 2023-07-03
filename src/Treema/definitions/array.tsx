@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { TreemaTypeDefinition } from './types';
 import { getWorkingSchema, getDefinitionAtPath } from '../state/selectors';
 import { TreemaContext } from '../context';
+import { joinJsonPointers } from '../utils';
 
 export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
   id: 'array',
@@ -22,7 +23,7 @@ export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
     }
 
     const children: JSX.Element[] = data.slice(0, 3).map((child: any, index: number) => {
-      const childPath = path + '/' + index;
+      const childPath = joinJsonPointers(path, index.toString());
       const childWorkingSchema = getWorkingSchema(state, childPath);
       const definition = getDefinitionAtPath(state, childPath);
 

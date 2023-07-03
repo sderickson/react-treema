@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useReducer, useMemo, useRef } from 'react';
 import { JsonPointer, SchemaLib, SupportedJsonSchema, TreemaEventHandler } from './types';
-import { noopLib, populateRequireds, walk } from './utils';
+import { noopLib, populateRequireds, walk, joinJsonPointers } from './utils';
 import {
   selectPath,
   navigateUp,
@@ -188,10 +188,10 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         const tryToEdit = event.key === 'Enter';
 
         // Are currently adding a property. Commit changes, and unless we're shift-entering, begin editing the new property.
-        if (state.addingProperty && state.lastSelected) {
+        if (state.addingProperty && state.lastSelected && state.addingPropertyKey) {
           dispatch(endAddProperty());
           if (tryToEdit && !event.shiftKey) {
-            dispatch(beginEdit(normalizeToPath(state.lastSelected) + '/' + state.addingPropertyKey));
+            dispatch(beginEdit(joinJsonPointers(normalizeToPath(state.lastSelected), state.addingPropertyKey)));
 
             return;
           }

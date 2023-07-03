@@ -111,7 +111,7 @@ export const walk: (
   if (['array', 'object'].includes(dataType)) {
     const f = (key: string | number, value: any) => {
       value = data[key];
-      const childPath = (path || '') + '/' + key;
+      const childPath = joinJsonPointers((path || ''), key.toString());
       let childSchema = getChildSchema(key, workingSchema);
       walk(value, childSchema, lib, callback, childPath);
     };
@@ -458,6 +458,10 @@ export const splitJsonPointer = (path: JsonPointer): string[] => {
   return path.split('/').slice(1);
 };
 
-export const joinJsonPointers = (paths: string[]): JsonPointer => {
+export const joinJsonPointers = (...paths: string[]): JsonPointer => {
+  // if the last one is just a property name, turn it into a path
+  if (paths[paths.length-1][0] !== '/') {
+    paths[paths.length-1] = '/' + paths[paths.length-1];
+  }
   return paths.join('');
 };

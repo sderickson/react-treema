@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { getWorkingSchema } from '../state/selectors';
 import { TreemaContext } from '../context';
 import { DisplayProps, TreemaTypeDefinition } from './types';
-import { getType } from '../utils';
+import { getType, joinJsonPointers } from '../utils';
 
 export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
   id: 'object',
@@ -29,7 +29,7 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
         if (value === undefined) {
           return null;
         }
-        const childPath = path + '/' + key;
+        const childPath = joinJsonPointers(path, key);
         const childSchema = getWorkingSchema(state, childPath);
         const name = childSchema.title || key;
         if (['object', 'array'].includes(getType(value))) {
