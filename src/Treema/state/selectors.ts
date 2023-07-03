@@ -431,7 +431,7 @@ export const getChildOrderForPath = createSelector([getOrderInfo, (_, path: Json
 
 export const getNextRow: (state: TreemaState, skipAddProperties?: boolean) => OrderEntry = (state, skipAddProperties) => {
   let index = 0;
-  const paths = getListOfPaths(state).slice(1);
+  const paths = getListOfPaths(state);
   if (paths.length === 0) {
     return '';
   }
@@ -456,13 +456,10 @@ export const getNextRow: (state: TreemaState, skipAddProperties?: boolean) => Or
 };
 
 export const getPreviousRow: (state: TreemaState, skipAddProperties?: boolean) => OrderEntry = (state, skipAddProperties) => {
-  if (state.lastSelected === '') {
-    return '';
-  }
   let index: number;
   let nextPath: OrderEntry;
   let nextPathParent: OrderEntry;
-  const paths = getListOfPaths(state).slice(1);
+  const paths = getListOfPaths(state);
   if (state.lastSelected === undefined || paths.indexOf(state.lastSelected) === 0) {
     index = paths.length - 1;
   } else {

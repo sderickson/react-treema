@@ -39,6 +39,7 @@ export interface TreemaRootProps {
    * @default An "empty" or "falsy" value of whatever type is given in the schema.
    */
   data: any;
+
   /**
    * The schema to use to validate the data. Treema will use this to determine
    * how to construct the UI, and how the data may be edited
@@ -47,6 +48,7 @@ export interface TreemaRootProps {
    * @default {} (any JSON object allowed)
    */
   schema: SupportedJsonSchema;
+
   /**
    * A schema library instance to use to validate the data.
    * There are [many JavaScript libraries](https://json-schema.org/implementations.html#validators)
@@ -61,12 +63,7 @@ export interface TreemaRootProps {
    * @default A noop version - no validation, no error messages
    */
   schemaLib?: SchemaLib;
-  /**
-   * The number of levels deep to open the tree by default.
-   *
-   * @default All levels are open by default
-   */
-  initOpen?: number;
+
   /**
    * A callback for when the user interacts with the treema.
    *
@@ -74,6 +71,7 @@ export interface TreemaRootProps {
    * - `change_select_event`: when the user selects a node. Includes `path` in the event.
    */
   onEvent?: TreemaEventHandler;
+
   /**
    * Custom Treema node definitions. Use these to customize how Treema renders data
    * of certain types. Treema will first see if there's a match for the "format" on the
@@ -86,6 +84,13 @@ export interface TreemaRootProps {
    * @default The default definitions, which cover all JSON Schema types and a few advanced examples.
    */
   definitions?: { [key: string]: TreemaTypeDefinition };
+
+  /**
+   * The number of levels deep to open the tree by default.
+   *
+   * @default All levels are open by default
+   */
+  initOpen?: number;
 }
 
 /**

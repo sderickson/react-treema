@@ -4,17 +4,19 @@ import { TreemaRootProps } from 'Treema/TreemaRoot';
 import { GenericTest } from './types';
 
 export const downStartTest: GenericTest = {
-  name: 'down arrow starts at the top row, if nothing is selected',
+  name: 'down arrow starts at the document root, if nothing is selected',
   test: async (ctx) => {
     await ctx.fireFocus();
     await ctx.fireArrowDown();
-    ctx.expect(ctx.getLastPath()).toEqual('/name');
+    ctx.expect(ctx.getLastPath()).toEqual('');
   },
 };
 
 export const skipClosed: GenericTest = {
   name: 'up and down arrows skip closed collections',
   test: async (ctx) => {
+    await ctx.fireArrowDown();
+    ctx.expect(ctx.getLastPath()).toEqual('');
     await ctx.fireArrowDown();
     await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/numbers');
@@ -29,6 +31,8 @@ export const rightOpens: GenericTest = {
   name: 'right arrow opens a collection',
   test: async (ctx) => {
     await ctx.fireArrowDown();
+    ctx.expect(ctx.getLastPath()).toEqual('');
+    await ctx.fireArrowDown();
     await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/numbers');
     await ctx.fireArrowRight();
@@ -40,6 +44,8 @@ export const rightOpens: GenericTest = {
 export const traverseOpenCollections: GenericTest = {
   name: 'up and down traverses open collections',
   test: async (ctx) => {
+    await ctx.fireArrowDown();
+    ctx.expect(ctx.getLastPath()).toEqual('');
     await ctx.fireArrowDown();
     await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/numbers');
@@ -65,6 +71,8 @@ export const closeCollections: GenericTest = {
   name: 'left arrow closes a collection',
   test: async (ctx) => {
     await ctx.fireArrowDown();
+    ctx.expect(ctx.getLastPath()).toEqual('');
+    await ctx.fireArrowDown();
     await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/numbers');
     await ctx.fireArrowRight();
@@ -83,7 +91,10 @@ export const eitherEnd: GenericTest = {
   name: 'up arrow wraps at the top of the collection, down arrow stays at the bottom',
   test: async (ctx) => {
     await ctx.fireArrowDown();
+    ctx.expect(ctx.getLastPath()).toEqual('');
+    await ctx.fireArrowDown();
     ctx.expect(ctx.getLastPath()).toEqual('/name');
+    await ctx.fireArrowUp();
     await ctx.fireArrowUp();
     ctx.expect(ctx.getLastPath()).toEqual('/address');
     await ctx.fireArrowDown();

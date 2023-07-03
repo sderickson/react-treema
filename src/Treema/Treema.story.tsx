@@ -47,6 +47,7 @@ export const BasicExample = {
       },
     ],
     schema: {
+      'title': 'Address Book',
       'type': 'array',
       'items': {
         'additionalProperties': false,
@@ -127,6 +128,7 @@ const badData = {
 };
 const badSchema = {
   'type': 'object',
+  'title': 'Data w/Lots of Errors',
   'properties': {
     'string': { 'type': 'string' },
     'number': { 'type': 'number' },
@@ -262,6 +264,7 @@ export const Refs = {
       },
     ],
     schema: {
+      'title': 'Calendar Events with Locations',
       'type': 'array',
       'items': {
         '$ref': 'https://example.com/calendar.schema.json',
@@ -296,7 +299,7 @@ export const WorkingSchemas = {
       },
     },
     schema: {
-      title: 'One of example',
+      title: 'Object with Example Property of Type A or B',
       type: 'object',
       properties: {
         example: {
@@ -349,6 +352,7 @@ export const Properties = {
     },
     schema: {
       'type': 'object',
+      'title': 'Object with Properties, PatternProperties, and AdditionalProperties Schemas',
       'properties': {
         'asdf': { 'type': 'string', 'title': 'Explicitly Defined Property' },
       },
@@ -369,6 +373,7 @@ export const ItemsAndAdditionalItems = {
     data: [1, 2, 3, 4, 5],
     schema: {
       'type': 'array',
+      'title': 'Array with Items and AdditionalItems Schemas',
       'items': [
         { 'type': 'number', 'title': 'First Item' },
         { 'type': 'number', 'title': 'Second Item' },
@@ -391,6 +396,7 @@ export const DefaultValues = {
     },
     schema: {
       'type': 'object',
+      'title': 'Object with Complex Default Values',
       default: {
         'default': 'default value',
         'deepDefaultValue': {
@@ -401,10 +407,23 @@ export const DefaultValues = {
         'recurseDefault': {},
       },
       'properties': {
+        'default': { 'type': 'string' },
+        'explicitlySetValue': { 'type': 'string' },
+        'deepDefaultValue': {
+          'type': 'object',
+          'properties': {
+            'setString': { 'type': 'string' },
+            'setNumber': { 'type': 'number' },
+            'setArray': { 'type': 'array', 'items': { 'type': 'number' } },
+          },
+        },
         'recurseDefault': {
           'type': 'object',
           default: {
             'deepRecurse': 'recursive default value',
+          },
+          properties: {
+            'deepRecurse': { 'type': 'string' },
           }
         },
       },
@@ -420,6 +439,7 @@ export const RequiredValues = {
     data: {},
     schema: {
       'type': 'object',
+      'title': 'Object with Required Values of All Basic Types',
       'additionalProperties': false,
       'properties': {
         'string': { type: 'string' },
@@ -457,6 +477,7 @@ export const StringInputTypes = {
     },
     schema: {
       'type': 'object',
+      'title': 'Object with All String Input Types',
       'properties': {
         'color': { 'type': 'string', 'format': 'color' },
         'date': { 'type': 'string', 'format': 'date' },
@@ -491,6 +512,7 @@ export const InputAttributes = {
     },
     schema: {
       'type': 'object',
+      'title': 'Object with All Kinds of Input Attributes',
       'properties': {
         'max10': { 'type': 'number', 'maximum': 10 },
         'maxLength10': { 'type': 'string', 'maxLength': 10 },
@@ -515,6 +537,7 @@ export const CustomNodes = {
     },
     schema: {
       'type': 'object',
+      'title': 'Object with a Couple Custom Node Types',
       'properties': {
         'point2d': Point2dSchema,
         'longString': TreemaLongStringSchema,
@@ -535,6 +558,6 @@ export const UnspecifiedJson = {
         'b': {},
       },
     },
-    schema: {},
+    schema: { },
   },
 };

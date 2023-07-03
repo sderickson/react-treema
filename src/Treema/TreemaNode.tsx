@@ -46,8 +46,8 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const workingSchemas = getWorkingSchemas(state, path);
   const workingSchemaIndex = workingSchemas.indexOf(workingSchema);
   const parentIsArray = path && getWorkingSchema(state, getParentJsonPointer(path)).type === 'array';
-  // ternary is so array children w/out schema titles don't show their indices
-  const name = workingSchema.title || (parentIsArray ? undefined : getJsonPointerLastChild(path || ''));
+  const isRoot = path === '';
+  let name = workingSchema.title;
   const definition = getDefinitionAtPath(state, path);
   const canOpen = hasChildrenAtPath(state, path);
   const description = workingSchema.description;
@@ -58,6 +58,17 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const isDefaultRoot = getIsDefaultRoot(state, path);
   const isAddingProperty = 'addTo:' + path === state.lastSelected && state.addingProperty;
   const isFocusedOnAddProperty = 'addTo:' + path === state.lastSelected && !state.addingProperty;
+
+  // Determine string for key
+  if (name === undefined) {
+    if (isRoot) {
+      name = '(Document Root)';
+    } else if (parentIsArray) {
+      // keep undefined
+    } else {
+      name = getJsonPointerLastChild(path || '');
+    }
+  }
 
   // Event handlers
   const onSelect = useCallback(
@@ -144,7 +155,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const classNames = [
     'treema-node',
     isOpen ? 'treema-open' : 'treema-closed',
-    path === '' ? 'treema-root' : '',
+    isRoot ? 'treema-root' : '',
     isSelected ? 'treema-selected' : '',
     errors.length ? 'treema-has-error' : '',
     isDefaultRoot ? 'treema-default-stub' : '',

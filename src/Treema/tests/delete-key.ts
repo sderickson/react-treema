@@ -8,6 +8,7 @@ export const deleteAllData: GenericTest = {
   test: async (ctx) => {
     await ctx.fireFocus();
     await ctx.fireArrowDown();
+    await ctx.fireArrowDown();
     await ctx.fireBackspace();
     await ctx.fireBackspace();
     await ctx.fireBackspace();

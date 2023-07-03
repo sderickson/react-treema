@@ -36,17 +36,18 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Object and array displays
 
 #### In Progress
-- [X] Edit working schemas
-  - [X] Show errors by working schema
-  - [X] Retain initial working schema settings
-  - [X] advanced combineSchemas
-    - [X] combine properties
-    - [X] combine required
-  - [X] Deleting prompt quiz content breaks treema
-- [X] Migrate to json pointer utils
-- [X] Support for enum
-- [ ] Optionally show root elem
-- [ ] Ace Editor integration
+- [ ] Feature Parity for AI Scenario
+  - [X] Edit working schemas
+    - [X] Show errors by working schema
+    - [X] Retain initial working schema settings
+    - [X] advanced combineSchemas
+      - [X] combine properties
+      - [X] combine required
+    - [X] Deleting prompt quiz content breaks treema
+  - [X] Migrate to json pointer utils
+  - [X] Support for enum
+  - [X] Show root elem
+  - [ ] Ace Editor integration
 
 #### TODO
 - [ ] Mouse click to edit
@@ -56,6 +57,7 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] export utility functions
 - [ ] Test integrating a few code editors
 - [ ] Audit css
+  - [ ] "Border" error look when error is for collection
 - [ ] Shift/Meta click
 - [ ] Copy/Paste
 - [ ] Prevent editing into other bad schema states

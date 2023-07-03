@@ -8,6 +8,7 @@ export const editRow: GenericTest = {
   test: async (ctx) => {
     await ctx.fireFocus();
     await ctx.fireEnter();
+    await ctx.fireEnter();
     await ctx.type('Hi!');
     await ctx.fireEnter();
     const data = ctx.getData();
@@ -37,6 +38,7 @@ export const editRootArrayTest: GenericTest = {
   name: 'can get to the final row and add another element to the array',
   test: async (ctx) => {
     await ctx.fireFocus();
+    await ctx.fireTab();
     await ctx.fireTab();
     await ctx.fireTab();
     await ctx.fireTab();

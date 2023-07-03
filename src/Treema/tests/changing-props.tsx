@@ -47,6 +47,7 @@ export const selectStaysOnAddTest: GenericTest = {
     await ctx.fireTab();
     await ctx.fireTab();
     await ctx.fireTab();
+    await ctx.fireTab();
 
     // add "40" to the end via treema
     await ctx.fireEnter();

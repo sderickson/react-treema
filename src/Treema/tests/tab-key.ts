@@ -8,6 +8,7 @@ export const tabHiddenAndClosedRowTest: GenericTest = {
   test: async (ctx) => {
     await ctx.fireFocus();
     await ctx.fireTab();
+    await ctx.fireTab();
     ctx.expect(ctx.getLastPath()).toBe('/name');
     await ctx.fireTab();
     ctx.expect(ctx.getLastPath()).toBe('/numbers');
