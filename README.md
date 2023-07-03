@@ -39,7 +39,10 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] Edit working schemas
   - [X] Show errors by working schema
   - [X] Retain initial working schema settings
-  - [X] advanced combineSchemas
+  - [ ] advanced combineSchemas
+    - [ ] combine properties
+    - [ ] combine required?
+  - [ ] Deleting prompt quiz content breaks treema
   - [ ] better applying of defaults for working schemas
   - [ ] better applying of requireds for working schemas
 - [ ] Migrate to json pointer utils
