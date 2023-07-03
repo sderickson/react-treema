@@ -539,7 +539,7 @@ export const ManyPropertyAdditions = {
  * Treema will also attempt to smartly merge schemas together, for example the schema with its oneOf, or every allOf together.
  * It will tend to simply override one property with another, except for properties which it will recursively merge. You can
  * see the recursive merging here where the title for "type" is provided in the base schema but shows up for each working
- * schema.
+ * schema. It will also concat `required` lists together, which you can see by trying to delete any of the defined properties.
  * 
  * You should each `oneOf` and `anyOf` schema a distinct `title` to make it easier for the user to understand what they are choosing between.
  */
@@ -561,6 +561,7 @@ export const WorkingSchemas = {
           properties: {
             type: { title: "Inherited Type Title" },
           },
+          required: ['type'],
 
           oneOf: [
             {

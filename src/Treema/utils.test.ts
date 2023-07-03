@@ -277,6 +277,15 @@ describe('combineSchemas', () => {
       key1: { title: 'key1', const: 'some-const' },
     });
   });
+
+  it('concats required arrays', () => {
+    const result = combineSchemas({
+      required: ['key1'],
+    }, {
+      required: ['key2'],
+    });
+    expect(result.required).toEqual(['key1', 'key2']);
+  });
 });
 
 describe('clone', () => {

@@ -334,6 +334,9 @@ export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: Supporte
       }
     }
   }
+  if (schema.required && baseSchema.required) {
+    result.required = baseSchema.required.concat(schema.required);
+  }
 
   return result;
 };
