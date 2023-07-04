@@ -46,7 +46,7 @@ And http://codecombat.github.io/treema/demo.html
   - [X] Support for enum
   - [X] Show root elem
   - [X] Ace Editor integration
-  - [ ] Full custom type definition interface
+  - [X] Full custom type definition interface
     - [X] Write documentation on making them
     - [X] Export all tools necessary
     - [X] Finalize names
