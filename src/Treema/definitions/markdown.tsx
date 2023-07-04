@@ -1,16 +1,16 @@
 import React, { useCallback } from "react";
 import ReactMarkdown from 'react-markdown'
 import AceEditor from "react-ace";
-import { TreemaTypeDefinition } from '../types';
+import { TreemaSupportedJsonSchema, TreemaTypeDefinition } from '../types';
 import { useTreemaKeyboardEvent, useTreemaEditRef } from './hooks';
 
 import "ace-builds/src-noconflict/mode-markdown";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
 
-export const TreemaMarkdownSchema = {
+export const TreemaMarkdownSchema: TreemaSupportedJsonSchema = {
+  '$id': 'https://example.com/markdown.schema.json',
   type: 'string',
-  format: 'markdown',
 };
 
 /**
@@ -18,6 +18,7 @@ export const TreemaMarkdownSchema = {
  */
 export const TreemaMarkdownNodeDefinition: TreemaTypeDefinition = {
   id: 'markdown',
+  schema: TreemaMarkdownSchema,
 
   Display: (props) => {
     const { data } = props;

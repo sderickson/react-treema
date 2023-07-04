@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useReducer, useMemo, useRef } from 'react';
-import { JsonPointer, TreemaRootProps } from './types';
-import { noopLib, populateRequireds, walk, joinJsonPointers, getJsonPointerDepth } from './utils';
+import { JsonPointer, TreemaRootProps, TreemaWrappedSchemaLib } from './types';
+import { getNoopLib, populateRequireds, walk, joinJsonPointers, getJsonPointerDepth } from './utils';
 import {
   selectPath,
   navigateUp,
@@ -27,9 +27,9 @@ import {
 import { reducer } from './state/reducer';
 import { TreemaNode } from './TreemaNode';
 import { coreDefinitions, wrapDefinitions } from './definitions';
-import { TreemaNodeEventCallbackHandler } from './definitions/hooks';
 import { ContextInterface, TreemaContext } from './context';
 import { handleAddChild } from './common';
+import { TreemaNodeEventCallbackHandler } from './definitions/hooks';
 
 /**
  * The main entrypoint for any Treema rendered on your site. Provide data and a schema and this component
@@ -42,7 +42,15 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
    * what paths are open or closed, populating required fields, and initializing a noop schema
    * library if none is provided.
    */
-  const lib = schemaLib || noopLib;
+  const lib: TreemaWrappedSchemaLib = useMemo(() => {
+    const lib = schemaLib || getNoopLib();
+    definitions?.forEach((definition) => {
+      if (definition.schema && definition.schema.$id) {
+        lib.addSchema(definition.schema, definition.schema.$id);
+      }
+    });
+    return lib;
+  }, [definitions, schemaLib]);
   const closed: { [key: JsonPointer]: boolean } = useMemo(() => {
     if (initOpen === undefined) {
       return {};

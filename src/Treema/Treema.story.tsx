@@ -3,9 +3,9 @@ import tv4 from 'tv4';
 import { wrapTv4 } from './utils';
 import Ajv from 'ajv';
 import { wrapAjv } from './utils';
-import { Point2dSchema, TreemaPoint2dNodeDefinition } from './definitions/point2d';
-import { TreemaLongStringSchema, TreemaLongStringNodeDefinition } from './definitions/long-string';
-import { TreemaMarkdownNodeDefinition, TreemaMarkdownSchema } from './definitions/markdown';
+import { TreemaPoint2dNodeDefinition } from './definitions/point2d';
+import { TreemaLongStringNodeDefinition } from './definitions/long-string';
+import { TreemaMarkdownNodeDefinition } from './definitions/markdown';
 
 export default {
   title: 'Main/TreemaRoot',
@@ -542,16 +542,16 @@ export const CustomNodes = {
       'type': 'object',
       'title': 'Object with a Couple Custom Node Types',
       'properties': {
-        'point2d': Point2dSchema,
-        'longString': TreemaLongStringSchema,
-        'markdown': TreemaMarkdownSchema,
+        'point2d': { $ref: TreemaPoint2dNodeDefinition.schema?.$id },
+        'longString': { $ref: TreemaLongStringNodeDefinition.schema?.$id },
+        'markdown': { $ref: TreemaMarkdownNodeDefinition.schema?.$id },
       },
     },
-    definitions: {
-      'point2d': TreemaPoint2dNodeDefinition,
-      'long-string': TreemaLongStringNodeDefinition,
-      'markdown': TreemaMarkdownNodeDefinition,      
-    }
+    definitions: [
+      TreemaPoint2dNodeDefinition,
+      TreemaLongStringNodeDefinition,
+      TreemaMarkdownNodeDefinition,
+    ],
   },
 };
 

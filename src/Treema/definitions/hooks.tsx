@@ -2,7 +2,7 @@ import { useEffect, useContext } from 'react';
 import { TreemaContext } from '../context';
 import React from 'react';
 
-export type NodeEventCallbackHandler = (event: KeyboardEvent) => boolean;
+export type TreemaNodeEventCallbackHandler = (event: KeyboardEvent) => boolean;
 
 /**
  * Use this in `edit` for definitions to register a callback for keyboard events.
@@ -11,7 +11,7 @@ export type NodeEventCallbackHandler = (event: KeyboardEvent) => boolean;
  * lines where tab and enter are normally used. This can also be used to implement
  * custom errors where navigation is prevented until an error is fixed.
  */
-export const useTreemaKeyboardEvent = (callback: NodeEventCallbackHandler): void => {
+export const useTreemaKeyboardEvent = (callback: TreemaNodeEventCallbackHandler): void => {
   const { keyboardCallbackRef } = useContext(TreemaContext);
 
   useEffect(() => {

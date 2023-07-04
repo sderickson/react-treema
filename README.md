@@ -52,7 +52,7 @@ And http://codecombat.github.io/treema/demo.html
     - [X] Write documentation on making them
     - [X] Export all tools necessary
     - [X] Finalize names
-    - [ ] Add schema prop to definition
+    - [X] Add schema prop to definition
     - [ ] Put documentation in storybook mdx?
   - [ ] export getters/setters
   - [ ] export utility functions

@@ -303,6 +303,10 @@ export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => Tre
       return definitions[dataType];
     }
 
+    if (schema.$id && definitions[schema.$id]) {
+      return definitions[schema.$id];
+    }
+
     return definitions[schema.format || ''] || definitions[schema.type];
   },
 );

@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
-import { TreemaTypeDefinition } from '../types';
+import { TreemaSupportedJsonSchema, TreemaTypeDefinition } from '../types';
 import { useTreemaKeyboardEvent, useTreemaEditRef } from './hooks';
 
-export const TreemaLongStringSchema = {
+export const TreemaLongStringSchema: TreemaSupportedJsonSchema = {
+  '$id': 'https://example.com/long-string.schema.json',
   type: 'string',
-  format: 'long-string',
 };
 
 /**
@@ -12,6 +12,7 @@ export const TreemaLongStringSchema = {
  */
 export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
   id: 'long-string',
+  schema: TreemaLongStringSchema,
   shortened: false,
   Display: ({ data }) => {
     return <div>{data}</div>;

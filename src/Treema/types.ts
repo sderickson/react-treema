@@ -318,9 +318,19 @@ export interface TreemaNodeWalkContext {
  */
 export interface TreemaTypeDefinition {
   /**
-   * The `format` or `type` this definition applies to.
+   * The `format` or `type` this definition applies to. Also the div surrounding the display
+   * and edit components will have a classname of the form `treema-${id}` which can be used
+   * to target css rules for those nodes.
    */
   id: string;
+
+  /**
+   * A schema to associate with this definition. If provided, this definition will be used
+   * for data with this schema. Schemas in definitions must have an $id. The schema
+   * provided to TreemaRoot can contain $refs to the $id of this schema; Treema will automatically
+   * call `addSchema` on the schema library with schemas in definitions.
+   */
+  schema?: TreemaSupportedJsonSchema;
 
   /**
    * Renders the data value as a viewable React component. May also be used to render

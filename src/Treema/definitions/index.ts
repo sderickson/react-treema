@@ -25,6 +25,9 @@ export const wrapDefinitions = (defs: TreemaTypeDefinition[]): {[key: string]: T
   const wrapped: {[key: string]: TreemaTypeDefinition} = {};
   defs.forEach((def) => {
     wrapped[def.id] = def;
+    if (def.schema?.$id) {
+      wrapped[def.schema.$id] = def;
+    }
   });
   return wrapped;
 }

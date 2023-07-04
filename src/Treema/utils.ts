@@ -5,10 +5,24 @@ export const noopValidator: TreemaValidator = () => {
   return { valid: true, errors: [], missing: [] };
 };
 
-export const noopLib: TreemaWrappedSchemaLib = {
-  validateMultiple: noopValidator,
-  getSchemaRef: () => ({}),
-  addSchema: () => {},
+class NoopLib implements TreemaWrappedSchemaLib {
+  _schemas: { [key: string]: TreemaSupportedJsonSchema } = {};
+  constructor() {
+    this._schemas = {};
+  }
+  validateMultiple(d: any, s: TreemaSupportedJsonSchema) {
+    return noopValidator(d, s);
+  }
+  getSchemaRef(id: string) {
+    return this._schemas[id];
+  }
+  addSchema(schema: TreemaSupportedJsonSchema, id: string) {
+    this._schemas[id] = schema;
+  }
+}
+
+export const getNoopLib: () => TreemaWrappedSchemaLib = () => {
+  return new NoopLib();
 };
 
 type Tv4 = any;
