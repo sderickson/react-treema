@@ -49,7 +49,7 @@ export interface TreemaRootProps {
    * data's schema, then will match its "type". If no match is found, Treema will use the
    * default node definitions, keying off what type the data currently is.
    *
-   * See [TreemaTypeDefinition](https://github.com/sderickson/react-treema/blob/main/src/Treema/definitions/types.ts#L16)
+   * See [TreemaTypeDefinition](https://github.com/sderickson/react-treema/blob/4923128ed24089d8677b11608cbe9afbfde1c51b/src/Treema/types.ts#L319)
    * for documentation on definitions.
    *
    * @default The default definitions, which cover all JSON Schema types and a few advanced examples.

@@ -525,9 +525,9 @@ export const InputAttributes = {
 };
 
 /**
- * Custom type definitions need some work...
- * 
- * TODO: Fully spec out custom type definitions.
+ * See [TreemaTypeDefinition](https://github.com/sderickson/react-treema/blob/4923128ed24089d8677b11608cbe9afbfde1c51b/src/Treema/types.ts#L319)
+ * for how to define your own custom node types, extending beyond the basic types like strings and numbers. The following example
+ * has a long string use a `textarea`, a 2d point object with a custom display, and markdown with an ace editor and rendered display.
  */
 export const CustomNodes = {
   args: {
