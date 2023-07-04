@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import ReactMarkdown from 'react-markdown'
 import AceEditor from "react-ace";
-import { DisplayProps, EditProps, TreemaTypeDefinition } from '../types';
+import { TreemaTypeDefinition } from '../types';
 import { useTreemaKeyboardEvent, useTreemaEditRef } from './hooks';
 
 import "ace-builds/src-noconflict/mode-markdown";
@@ -19,13 +19,13 @@ export const TreemaMarkdownSchema = {
 export const TreemaMarkdownNodeDefinition: TreemaTypeDefinition = {
   id: 'markdown',
 
-  Display: (props: DisplayProps) => {
+  Display: (props) => {
     const { data } = props;
 
     return <ReactMarkdown children={data} />;
   },
 
-  Edit: (props: EditProps) => {
+  Edit: (props) => {
     const { data, onChange } = props;
     const ref = useTreemaEditRef();
 

@@ -1,17 +1,17 @@
 import React from 'react';
-import { DisplayProps, EditProps, TreemaTypeDefinition } from '../types';
+import { TreemaTypeDefinition } from '../types';
 import { useTreemaEditRef } from './hooks';
 
 export const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
   id: 'boolean',
 
-  Display: (props: DisplayProps) => {
+  Display: (props) => {
     const { data } = props;
 
     return <span>{JSON.stringify(data)}</span>;
   },
 
-  Edit: (props: EditProps) => {
+  Edit: (props) => {
     const { data, onChange } = props;
     const ref = useTreemaEditRef();
 

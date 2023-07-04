@@ -18,7 +18,7 @@ export interface TreemaRootProps {
    * @see https://json-schema.org/understanding-json-schema/
    * @default {} (any JSON object allowed)
    */
-  schema: SupportedJsonSchema;
+  schema: TreemaSupportedJsonSchema;
 
   /**
    * A schema library instance to use to validate the data.
@@ -33,7 +33,7 @@ export interface TreemaRootProps {
    *
    * @default A noop version - no validation, no error messages
    */
-  schemaLib?: SchemaLib;
+  schemaLib?: TreemaWrappedSchemaLib;
 
   /**
    * A callback for when the user interacts with the treema.
@@ -74,7 +74,7 @@ export type JsonPointer = string;
 
 
 /**
- * Configuration passed into TreeamRot
+ * Configuration passed into TreemaRoot
  */
 export interface TreemaSettings {
   readOnly?: boolean;
@@ -91,14 +91,14 @@ export type TreemaEventHandler = (event: TreemaEvent) => void;
 /**
  * Comprehensive list of events emitted by Treema.
  */
-export type TreemaEvent = ChangeSelectEvent | ChangeDataEvent;
+export type TreemaEvent = TreemaChangeSelectEvent | TreemaChangeDataEvent;
 
 /**
  * Whenever the selected node changes, this event is emitted. This
  * includes when the user stops selecting any node (path is undefined).
  * So this is both for listening for "focus" or "blur".
  */
-export interface ChangeSelectEvent {
+export interface TreemaChangeSelectEvent {
   type: 'change_select_event';
   path: JsonPointer | undefined;
 }
@@ -111,7 +111,7 @@ export interface ChangeSelectEvent {
  * given back to Treema in the "data" prop if Treema is not being used as
  * the "source of truth".
  */
-export interface ChangeDataEvent {
+export interface TreemaChangeDataEvent {
   type: 'change_data_event';
   data: any;
 }
@@ -124,34 +124,34 @@ export interface ChangeDataEvent {
  * 
  * Treema exports two example and workable wrapping functions: wrapAjv and wrapTv4.
  */
-export interface SchemaLib {
+export interface TreemaWrappedSchemaLib {
   /**
    * Used to validate arbitrary data/schema combinations. Schema may be a
    * reference schema.
    */
-  validateMultiple: SchemaValidator;
+  validateMultiple: TreemaValidator;
   /**
    * Looks up a reference string and returns the schema it refers to.
    */
-  getSchemaRef: (ref: string) => SupportedJsonSchema;
+  getSchemaRef: (ref: string) => TreemaSupportedJsonSchema;
   /**
    * Populates the schema library with a schema.
    */
   addSchema: (schema: object, id: string) => void;
 }
 
-export type SchemaValidator = (data: any, schema: SupportedJsonSchema) => ValidatorResponse;
+export type TreemaValidator = (data: any, schema: TreemaSupportedJsonSchema) => TreemaValidatorResponse;
 
-export interface ValidatorResponse {
+export interface TreemaValidatorResponse {
   valid: boolean;
   /**
    * Should be a list of schema ref strings that are missing from the schema library.
    */
   missing: string[];
-  errors: ValidatorError[];
+  errors: TreemaValidatorError[];
 }
 
-export interface ValidatorError {
+export interface TreemaValidatorError {
   /**
    * Validator libraries typically categorize validation errors by an id, either a
    * string or number. Expose this in the error so it can be used if desired (e.g. 
@@ -177,28 +177,28 @@ export interface ValidatorError {
 /**
  * The list of valid JSON Schema types.
  */
-export type BaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string' | 'integer';
+export type SchemaBaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string' | 'integer';
 
 
 /**
  * Typing for supported JSON Schema keywords. Properties listed here will be used to create
  * the Treema interface. Of course, anything not listed can still be used as part of validation.
  */
-export interface SupportedJsonSchema {
+export interface TreemaSupportedJsonSchema {
   /**
    * Determines what sort of data input to use. If multiple are given, Treema will provide
    * a selector for the user to choose from.
    */
-  type?: BaseType | BaseType[];
+  type?: SchemaBaseType | SchemaBaseType[];
 
   /**
    * `items` and other "child" schema keywords will be used to apply to the appropriate data.
    */
-  items?: SupportedJsonSchema | SupportedJsonSchema[];
-  additionalItems?: SupportedJsonSchema;
-  properties?: { [key: string]: SupportedJsonSchema };
-  patternProperties?: { [key: string]: SupportedJsonSchema };
-  additionalProperties?: SupportedJsonSchema | boolean;
+  items?: TreemaSupportedJsonSchema | TreemaSupportedJsonSchema[];
+  additionalItems?: TreemaSupportedJsonSchema;
+  properties?: { [key: string]: TreemaSupportedJsonSchema };
+  patternProperties?: { [key: string]: TreemaSupportedJsonSchema };
+  additionalProperties?: TreemaSupportedJsonSchema | boolean;
 
   /**
    * If the schema is an object, the value for this property will be displayed as its label.
@@ -220,14 +220,14 @@ export interface SupportedJsonSchema {
   /**
    * Treema will combine `allOf` schemas into the "root" schema to form a single working schema.
    */
-  allOf?: SupportedJsonSchema[];
+  allOf?: TreemaSupportedJsonSchema[];
 
   /**
    * Treema will combine each `oneOf` and `anyOf` schema int working schemas, and then use
    * the resulting title (or type) as the label.
    */
-  oneOf?: SupportedJsonSchema[];
-  anyOf?: SupportedJsonSchema[];
+  oneOf?: TreemaSupportedJsonSchema[];
+  anyOf?: TreemaSupportedJsonSchema[];
 
   /**
    * Treema will display default values semi-transparently. If the user changes the value,
@@ -300,13 +300,13 @@ export interface SupportedJsonSchema {
  * Note that working schemas do *not* contain other working schemas. It is expected if you
  * are considering a child value, you will get the working schema for it as needed separately.
  */
-export type WorkingSchema = Omit<SupportedJsonSchema, '$ref' | 'allOf' | 'anyOf' | 'oneOf'> & { type: BaseType };
+export type TreemaWorkingSchema = Omit<TreemaSupportedJsonSchema, '$ref' | 'allOf' | 'anyOf' | 'oneOf'> & { type: SchemaBaseType };
 
 export interface TreemaNodeWalkContext {
   data: any;
-  schema: WorkingSchema;
+  schema: TreemaWorkingSchema;
   path: JsonPointer;
-  possibleSchemas: WorkingSchema[];
+  possibleSchemas: TreemaWorkingSchema[];
 }
 
 
@@ -326,7 +326,7 @@ export interface TreemaTypeDefinition {
    * Renders the data value as a viewable React component. May also be used to render
    * the value as part of the containing node.
    */
-  Display: React.FC<DisplayProps>;
+  Display: React.FC<TreemaDisplayProps>;
 
   /**
    * Renders the data value as an editable React component. The component *must* use
@@ -334,7 +334,7 @@ export interface TreemaTypeDefinition {
    * Treema can manage keyboard navigation and focus. Edit elements may also use
    * `useTreemaKeyboardEvent` to override Treema's default keyboard behavior.
    */
-  Edit?: React.FC<EditProps>;
+  Edit?: React.FC<TreemaEditProps>;
 
   /**
    * If true, the display value will be truncated to a single line.
@@ -342,21 +342,21 @@ export interface TreemaTypeDefinition {
   shortened?: boolean;
 }
 
-export interface DisplayProps {
+export interface TreemaDisplayProps {
   data: any;
   /**
    * See WorkingSchema type for more information about these.
    */
-  schema: WorkingSchema;
+  schema: TreemaWorkingSchema;
   path: JsonPointer;
 }
 
-export interface EditProps {
+export interface TreemaEditProps {
   data: any;
   /**
    * See WorkingSchema type for more information about these.
    */
-  schema: WorkingSchema;
+  schema: TreemaWorkingSchema;
   /**
    * The edit component manages taking whatever input values there are and converting
    * them into the appropriate data type, then calling onChange with the new value.

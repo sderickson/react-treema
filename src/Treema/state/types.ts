@@ -1,4 +1,4 @@
-import { SchemaLib, SupportedJsonSchema, JsonPointer, TreemaSettings, TreemaTypeDefinition } from '../types';
+import { TreemaWrappedSchemaLib, TreemaSupportedJsonSchema, JsonPointer, TreemaSettings, TreemaTypeDefinition } from '../types';
 
 export type InsertPropertyPlaceholder = string;
 export type OrderEntry = JsonPointer | InsertPropertyPlaceholder;
@@ -7,8 +7,8 @@ export type WorkingSchemaChoices = {[path: string]: number};
 
 export interface TreemaState {
   data: any;
-  schemaLib: SchemaLib;
-  rootSchema: SupportedJsonSchema;
+  schemaLib: TreemaWrappedSchemaLib;
+  rootSchema: TreemaSupportedJsonSchema;
   lastSelected?: JsonPointer;
   closed: { [path: JsonPointer]: boolean };
   editing?: JsonPointer;

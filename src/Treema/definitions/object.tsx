@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { getWorkingSchema } from '../state/selectors';
 import { TreemaContext } from '../context';
-import { DisplayProps, TreemaTypeDefinition } from '../types';
+import { TreemaTypeDefinition } from '../types';
 import { getType, joinJsonPointers } from '../utils';
 
 export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
   id: 'object',
   shortened: true,
-  Display: ({ data, schema, path }: DisplayProps) => {
+  Display: ({ data, schema, path }) => {
     const context = useContext(TreemaContext);
     const { state } = context;
 

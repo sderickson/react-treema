@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { TreemaTypeDefinition, EditProps, DisplayProps } from '../types';
+import { TreemaTypeDefinition } from '../types';
 import { useTreemaKeyboardEvent, useTreemaEditRef } from './hooks';
 
 export const TreemaLongStringSchema = {
@@ -13,11 +13,11 @@ export const TreemaLongStringSchema = {
 export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
   id: 'long-string',
   shortened: false,
-  Display: ({ data }: DisplayProps) => {
+  Display: ({ data }) => {
     return <div>{data}</div>;
   },
 
-  Edit: ({ data, schema, onChange }: EditProps) => {
+  Edit: ({ data, schema, onChange }) => {
     const ref = useTreemaEditRef();
     useTreemaKeyboardEvent(
       useCallback((e: KeyboardEvent) => {

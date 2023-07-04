@@ -7,30 +7,28 @@ export type {
 
   // common
   JsonPointer,
-  WorkingSchema,
-
-  // various setting props
-  TreemaSettings,
+  SchemaBaseType,
+  TreemaWorkingSchema,
 
   // onEvent
   TreemaEventHandler,
   TreemaEvent,
-  ChangeSelectEvent,
-  ChangeDataEvent,
+  TreemaChangeSelectEvent,
+  TreemaChangeDataEvent,
 
   // schemaLib
-  SchemaLib,
-  SchemaValidator,
-  ValidatorError,
+  TreemaWrappedSchemaLib,
+  TreemaValidator,
+  TreemaValidatorResponse,
+  TreemaValidatorError,
 
   // schema
-  SupportedJsonSchema,
-  BaseType,
+  TreemaSupportedJsonSchema,
 
   // definitions
   TreemaTypeDefinition,
-  DisplayProps,
-  EditProps,
+  TreemaDisplayProps,
+  TreemaEditProps,
 } from './Treema/types';
 
 // Used for TreemaTypeDefinition.Edit implementations

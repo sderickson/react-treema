@@ -1,5 +1,5 @@
 import { getParentJsonPointer, getType, walk, joinJsonPointers } from '../utils';
-import { JsonPointer, ValidatorError, WorkingSchema, TreemaTypeDefinition } from '../types';
+import { JsonPointer, TreemaValidatorError, TreemaWorkingSchema, TreemaTypeDefinition } from '../types';
 import { TreemaState, OrderEntry, WorkingSchemaChoices } from './types';
 import { createSelector } from 'reselect';
 
@@ -19,8 +19,8 @@ export const getWorkingSchemaChoices = (state: TreemaState) => state.workingSche
 type DataSchemaMap = {
   [key: JsonPointer]: {
     data: any;
-    schema: WorkingSchema;
-    possibleSchemas: WorkingSchema[];
+    schema: TreemaWorkingSchema;
+    possibleSchemas: TreemaWorkingSchema[];
     defaultRoot: boolean;
   };
 };
@@ -110,14 +110,14 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
   },
 );
 
-export const getWorkingSchema: (state: TreemaState, path: JsonPointer) => WorkingSchema = createSelector(
+export const getWorkingSchema: (state: TreemaState, path: JsonPointer) => TreemaWorkingSchema = createSelector(
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
   (path, datasAndSchemas) => {
     return datasAndSchemas[path].schema;
   },
 );
 
-export const getWorkingSchemas: (state: TreemaState, path: JsonPointer) => WorkingSchema[] = createSelector(
+export const getWorkingSchemas: (state: TreemaState, path: JsonPointer) => TreemaWorkingSchema[] = createSelector(
   [(_, path: JsonPointer) => path, getAllDatasAndSchemas],
   (path, datasAndSchemas) => {
     return datasAndSchemas[path].possibleSchemas;
@@ -173,7 +173,7 @@ export const getPropertiesAvailableAtPath: (state: TreemaState, path: JsonPointe
   },
 );
 
-const _getPropertiesAvailable = (data: any, schema: WorkingSchema): KeyTitlePair[] => {
+const _getPropertiesAvailable = (data: any, schema: TreemaWorkingSchema): KeyTitlePair[] => {
   if (!schema.properties) {
     return [];
   }
@@ -208,7 +208,7 @@ export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boole
   },
 );
 
-const _canAddChild = (data: any, schema: WorkingSchema): boolean => {
+const _canAddChild = (data: any, schema: TreemaWorkingSchema): boolean => {
   if (schema.readOnly) {
     return false;
   }
@@ -236,10 +236,10 @@ const _canAddChild = (data: any, schema: WorkingSchema): boolean => {
 // ----------------------------------------------------------------------------
 // Error selectors
 interface SchemaErrorsByPath {
-  [key: JsonPointer]: ValidatorError[];
+  [key: JsonPointer]: TreemaValidatorError[];
 }
 
-export const getSchemaErrors = createSelector([getData, getRootSchema, getSchemaLib], (data, rootSchema, schemaLib) => {
+export const getSchemaErrors = createSelector([getData, getRootSchema, getSchemaLib], (data, rootSchema, schemaLib): TreemaValidatorError[] => {
   return schemaLib.validateMultiple(data, rootSchema).errors;
 });
 

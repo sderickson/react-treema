@@ -1,4 +1,4 @@
-import { SupportedJsonSchema } from './types';
+import { TreemaSupportedJsonSchema } from './types';
 import {
   buildWorkingSchemas,
   wrapTv4,
@@ -19,7 +19,7 @@ const schemaLib = wrapTv4(tv4);
 
 describe('walk', () => {
   it('calls a callback on every piece of data in a JSON object, providing path, data and working schema', () => {
-    const schema: SupportedJsonSchema = {
+    const schema: TreemaSupportedJsonSchema = {
       type: 'object',
       properties: {
         key1: { title: 'Number 1' },
@@ -48,7 +48,7 @@ describe('walk', () => {
   });
 
   it('traverses arrays', () => {
-    const schema: SupportedJsonSchema = {
+    const schema: TreemaSupportedJsonSchema = {
       type: 'array',
       items: {
         type: 'object',
@@ -71,19 +71,19 @@ describe('walk', () => {
 
 describe('getChildSchema', () => {
   it('returns child schemas from properties', () => {
-    const schema: SupportedJsonSchema = { properties: { key1: { title: 'some title' } } };
+    const schema: TreemaSupportedJsonSchema = { properties: { key1: { title: 'some title' } } };
     const childSchema = getChildSchema('key1', schema);
     expect(childSchema.title).toBe('some title');
   });
 
   it('returns child schemas from additionalProperties', () => {
-    const schema: SupportedJsonSchema = { additionalProperties: { title: 'some title' } };
+    const schema: TreemaSupportedJsonSchema = { additionalProperties: { title: 'some title' } };
     const childSchema = getChildSchema('key1', schema);
     expect(childSchema.title).toBe('some title');
   });
 
   it('returns child schemas from patternProperties', () => {
-    const schema: SupportedJsonSchema = { patternProperties: { '^[a-z]+$': { title: 'some title' } } };
+    const schema: TreemaSupportedJsonSchema = { patternProperties: { '^[a-z]+$': { title: 'some title' } } };
     const childSchema = getChildSchema('key', schema);
     expect(childSchema.title).toBe('some title');
     const childSchema2 = getChildSchema('123', schema);
@@ -91,13 +91,13 @@ describe('getChildSchema', () => {
   });
 
   it('returns child schemas from an items schema', () => {
-    const schema: SupportedJsonSchema = { items: { title: 'some title' } };
+    const schema: TreemaSupportedJsonSchema = { items: { title: 'some title' } };
     const childSchema = getChildSchema(0, schema);
     expect(childSchema.title).toBe('some title');
   });
 
   it('returns child schemas from an items array of schemas', () => {
-    const schema: SupportedJsonSchema = { items: [{ title: 'some title' }] };
+    const schema: TreemaSupportedJsonSchema = { items: [{ title: 'some title' }] };
     const childSchema = getChildSchema(0, schema);
     expect(childSchema.title).toBe('some title');
     const childSchema2 = getChildSchema(1, schema);
@@ -105,7 +105,7 @@ describe('getChildSchema', () => {
   });
 
   it('returns child schemas from additionalItems', () => {
-    const schema: SupportedJsonSchema = { items: [{ title: 'some title' }], additionalItems: { title: 'another title' } };
+    const schema: TreemaSupportedJsonSchema = { items: [{ title: 'some title' }], additionalItems: { title: 'another title' } };
     const childSchema = getChildSchema(1, schema);
     expect(childSchema.title).toBe('another title');
   });
@@ -113,13 +113,13 @@ describe('getChildSchema', () => {
 
 describe('buildWorkingSchemas', () => {
   it('returns the same single schema if there are no combinatorials or references', () => {
-    const schema: SupportedJsonSchema = { type: 'string' };
+    const schema: TreemaSupportedJsonSchema = { type: 'string' };
     const workingSchemas = buildWorkingSchemas(schema, schemaLib);
     expect(workingSchemas[0] === schema).toBeTruthy();
   });
 
   it('combines allOf into a single schema', () => {
-    const schema: SupportedJsonSchema = { title: 'title', allOf: [{ description: 'description' }, { type: 'number' }] };
+    const schema: TreemaSupportedJsonSchema = { title: 'title', allOf: [{ description: 'description' }, { type: 'number' }] };
     const workingSchemas = buildWorkingSchemas(schema, schemaLib);
     expect(workingSchemas.length).toBe(1);
     const workingSchema = workingSchemas[0];
@@ -129,7 +129,7 @@ describe('buildWorkingSchemas', () => {
   });
 
   it('creates a separate working schema for each anyOf', () => {
-    const schema: SupportedJsonSchema = { title: 'title', anyOf: [{ type: 'string' }, { type: 'number' }] };
+    const schema: TreemaSupportedJsonSchema = { title: 'title', anyOf: [{ type: 'string' }, { type: 'number' }] };
     const workingSchemas = buildWorkingSchemas(schema, schemaLib);
     expect(workingSchemas.length).toBe(2);
     const types = workingSchemas.map((schema) => schema.type);
@@ -138,7 +138,7 @@ describe('buildWorkingSchemas', () => {
   });
 
   it('creates a separate working schema for each oneOf', () => {
-    const schema: SupportedJsonSchema = { title: 'title', oneOf: [{ type: 'string' }, { type: 'number' }] };
+    const schema: TreemaSupportedJsonSchema = { title: 'title', oneOf: [{ type: 'string' }, { type: 'number' }] };
     const workingSchemas = buildWorkingSchemas(schema, schemaLib);
     expect(workingSchemas.length).toBe(2);
     const types = workingSchemas.map((schema) => schema.type);
@@ -147,7 +147,7 @@ describe('buildWorkingSchemas', () => {
   });
 
   it('creates one working schema for every type if no type is specified', () => {
-    const schema: SupportedJsonSchema = {};
+    const schema: TreemaSupportedJsonSchema = {};
     const workingSchemas = buildWorkingSchemas(schema, schemaLib);
     expect(workingSchemas.length).toBe(6);
     const types = workingSchemas.map((schema) => schema.type);
@@ -156,7 +156,7 @@ describe('buildWorkingSchemas', () => {
   });
 
   it('creates one working schema for every type if type is an array', () => {
-    const schema: SupportedJsonSchema = { type: ['boolean', 'number'] };
+    const schema: TreemaSupportedJsonSchema = { type: ['boolean', 'number'] };
     const workingSchemas = buildWorkingSchemas(schema, schemaLib);
     expect(workingSchemas.length).toBe(2);
     const types = workingSchemas.map((schema) => schema.type);
@@ -167,7 +167,7 @@ describe('buildWorkingSchemas', () => {
 
 describe('chooseWorkingSchema', () => {
   it('can use pattern (for tv4) or const (for ajv) to disambiguate which oneOf the data is using', () => {
-    const schema: SupportedJsonSchema = {
+    const schema: TreemaSupportedJsonSchema = {
       type: 'object',
       oneOf: [
         {
@@ -197,7 +197,7 @@ describe('chooseWorkingSchema', () => {
   });
 
   it('picks the working schema with the least errors', () => {
-    const schema: SupportedJsonSchema = {
+    const schema: TreemaSupportedJsonSchema = {
       type: 'object',
       oneOf: [
         {
@@ -313,7 +313,7 @@ describe('clone', () => {
 });
 
 describe('populateRequireds', () => {
-  const schema: SupportedJsonSchema = {
+  const schema: TreemaSupportedJsonSchema = {
     'type': 'object',
     'additionalProperties': false,
     'properties': {
@@ -343,7 +343,7 @@ describe('populateRequireds', () => {
   });
 
   it("populates data from the object's default property", () => {
-    const schema: SupportedJsonSchema = {
+    const schema: TreemaSupportedJsonSchema = {
       type: 'object',
       default: { key1: 'object default' },
       required: ['key1'],
@@ -353,7 +353,7 @@ describe('populateRequireds', () => {
   });
 
   it('populates data based on the child schema type', () => {
-    const schema: SupportedJsonSchema = {
+    const schema: TreemaSupportedJsonSchema = {
       type: 'object',
       required: ['key2'],
       properties: {
@@ -365,7 +365,7 @@ describe('populateRequireds', () => {
   });
 
   it("populates data from the child schema's default property", () => {
-    const schema: SupportedJsonSchema = {
+    const schema: TreemaSupportedJsonSchema = {
       type: 'object',
       required: ['key3'],
       properties: {
@@ -377,7 +377,7 @@ describe('populateRequireds', () => {
   });
 
   it('populates data as an empty string if nothing else is available', () => {
-    const schema: SupportedJsonSchema = {
+    const schema: TreemaSupportedJsonSchema = {
       required: ['key4'],
     };
     const result = populateRequireds({}, schema, schemaLib);

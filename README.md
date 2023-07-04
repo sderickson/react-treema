@@ -51,9 +51,9 @@ And http://codecombat.github.io/treema/demo.html
   - [ ] Full custom type definition interface
     - [X] Write documentation on making them
     - [X] Export all tools necessary
-    - [ ] Put documentation in storybook mdx?
-    - [ ] Finalize names
+    - [X] Finalize names
     - [ ] Add schema prop to definition
+    - [ ] Put documentation in storybook mdx?
   - [ ] export getters/setters
   - [ ] export utility functions
 
@@ -75,6 +75,7 @@ And http://codecombat.github.io/treema/demo.html
 - [ ] search (that one jquery ui thing)
 - [ ] drag and drop (that other jquery ui thing), noSortable
 - [ ] comprehensive input attribute support
+- [ ] Shore up coverage
 - [ ] README
 - [ ] Github pages
 - [ ] Publish

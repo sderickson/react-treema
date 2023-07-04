@@ -1,11 +1,11 @@
-import { SchemaValidator, SupportedJsonSchema, SchemaLib, TreemaNodeWalkContext, WorkingSchema, BaseType } from './types';
+import { TreemaSupportedJsonSchema, TreemaWrappedSchemaLib, TreemaNodeWalkContext, TreemaWorkingSchema, SchemaBaseType, TreemaValidator } from './types';
 import { JsonPointer } from './types';
 
-export const noopValidator: SchemaValidator = () => {
+export const noopValidator: TreemaValidator = () => {
   return { valid: true, errors: [], missing: [] };
 };
 
-export const noopLib: SchemaLib = {
+export const noopLib: TreemaWrappedSchemaLib = {
   validateMultiple: noopValidator,
   getSchemaRef: () => ({}),
   addSchema: () => {},
@@ -14,7 +14,7 @@ export const noopLib: SchemaLib = {
 type Tv4 = any;
 
 // https://github.com/geraintluff/tv4
-export const wrapTv4 = (tv4: Tv4): SchemaLib => {
+export const wrapTv4 = (tv4: Tv4): TreemaWrappedSchemaLib => {
   return {
     validateMultiple: (data, schema) => {
       let tv4Result = tv4.validateMultiple(data, schema);
@@ -41,7 +41,7 @@ export const wrapTv4 = (tv4: Tv4): SchemaLib => {
 };
 
 // https://ajv.js.org/api.html
-export const wrapAjv = (ajv: any): SchemaLib => {
+export const wrapAjv = (ajv: any): TreemaWrappedSchemaLib => {
   ajv.addKeyword('displayProperty');
 
   return {
@@ -91,9 +91,9 @@ export const wrapAjv = (ajv: any): SchemaLib => {
  */
 export const walk: (
   data: any,
-  schema: SupportedJsonSchema,
-  lib: SchemaLib,
-  callback: (context: TreemaNodeWalkContext) => void | WorkingSchema,
+  schema: TreemaSupportedJsonSchema,
+  lib: TreemaWrappedSchemaLib,
+  callback: (context: TreemaNodeWalkContext) => void | TreemaWorkingSchema,
   path?: string,
 ) => any = (data, schema, lib, callback, path) => {
   const workingSchemas = buildWorkingSchemas(schema, lib);
@@ -144,7 +144,7 @@ export const getType = (function () {
   };
 })();
 
-export const getJsonType = (data: any): BaseType | undefined => {
+export const getJsonType = (data: any): SchemaBaseType | undefined => {
   const type = getType(data);
   switch (type) {
     case 'boolean':
@@ -164,7 +164,7 @@ export const getJsonType = (data: any): BaseType | undefined => {
   return undefined;
 };
 
-export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib): WorkingSchema[] => {
+export const buildWorkingSchemas = (schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib): TreemaWorkingSchema[] => {
   const givenSchema = resolveReference(schema, lib);
   if (!givenSchema.allOf && !givenSchema.anyOf && !givenSchema.oneOf) {
     return spreadTypes(givenSchema);
@@ -183,7 +183,7 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
     }
   }
 
-  let singularSchemas: SupportedJsonSchema[] = [];
+  let singularSchemas: TreemaSupportedJsonSchema[] = [];
   if (anyOf) {
     singularSchemas = singularSchemas.concat(anyOf);
   }
@@ -191,7 +191,7 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
     singularSchemas = singularSchemas.concat(oneOf);
   }
 
-  let workingSchemas: WorkingSchema[] = [];
+  let workingSchemas: TreemaWorkingSchema[] = [];
   for (let singularSchema of singularSchemas) {
     singularSchema = resolveReference(singularSchema, lib);
     let newBase = cloneSchema(baseSchema);
@@ -207,21 +207,21 @@ export const buildWorkingSchemas = (schema: SupportedJsonSchema, lib: SchemaLib)
 };
 
 // Notes that the first base type is effectively the "default" type for a schema without a type specified
-const baseTypes: BaseType[] = ['string', 'boolean', 'number', 'array', 'object', 'null'];
+const baseTypes: SchemaBaseType[] = ['string', 'boolean', 'number', 'array', 'object', 'null'];
 
-const spreadTypes = (schema: SupportedJsonSchema): WorkingSchema[] => {
-  const workingSchemas: WorkingSchema[] = [];
+const spreadTypes = (schema: TreemaSupportedJsonSchema): TreemaWorkingSchema[] => {
+  const workingSchemas: TreemaWorkingSchema[] = [];
   if (schema.type === undefined) {
-    baseTypes.forEach((type: BaseType) => {
+    baseTypes.forEach((type: SchemaBaseType) => {
       workingSchemas.push({
         ...schema,
         type,
       });
     });
   } else if (getType(schema.type) === 'string') {
-    return [schema as WorkingSchema];
+    return [schema as TreemaWorkingSchema];
   } else {
-    (schema.type as BaseType[]).forEach((type: BaseType) => {
+    (schema.type as SchemaBaseType[]).forEach((type: SchemaBaseType) => {
       workingSchemas.push({
         ...schema,
         type,
@@ -232,7 +232,7 @@ const spreadTypes = (schema: SupportedJsonSchema): WorkingSchema[] => {
   return workingSchemas;
 };
 
-export const chooseWorkingSchema = (data: any, workingSchemas: WorkingSchema[], lib: SchemaLib): WorkingSchema => {
+export const chooseWorkingSchema = (data: any, workingSchemas: TreemaWorkingSchema[], lib: TreemaWrappedSchemaLib): TreemaWorkingSchema => {
   if (workingSchemas.length === 1) {
     return workingSchemas[0];
   }
@@ -253,7 +253,7 @@ export const chooseWorkingSchema = (data: any, workingSchemas: WorkingSchema[], 
   return bestSchema;
 };
 
-export const getChildSchema = (key: string | number, schema: SupportedJsonSchema): SupportedJsonSchema => {
+export const getChildSchema = (key: string | number, schema: TreemaSupportedJsonSchema): TreemaSupportedJsonSchema => {
   if (typeof key === 'string') {
     for (const [childKey, childSchema] of Object.entries(schema.properties || {})) {
       if (childKey === key) {
@@ -287,10 +287,10 @@ export const getChildSchema = (key: string | number, schema: SupportedJsonSchema
   return {};
 };
 
-export const getChildWorkingSchema: (key: string | number, schema: SupportedJsonSchema, lib: SchemaLib) => WorkingSchema = (
+export const getChildWorkingSchema: (key: string | number, schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib) => TreemaWorkingSchema = (
   key: string | number,
-  schema: SupportedJsonSchema,
-  lib: SchemaLib,
+  schema: TreemaSupportedJsonSchema,
+  lib: TreemaWrappedSchemaLib,
 ) => {
   const childSchema = getChildSchema(key, schema);
   const workingSchemas = buildWorkingSchemas(childSchema, lib);
@@ -299,7 +299,7 @@ export const getChildWorkingSchema: (key: string | number, schema: SupportedJson
   return workingSchema;
 };
 
-const resolveReference = (schema: SupportedJsonSchema, lib: SchemaLib): SupportedJsonSchema => {
+const resolveReference = (schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib): TreemaSupportedJsonSchema => {
   if (schema.$ref) {
     const resolved = lib.getSchemaRef(schema.$ref);
     if (!resolved) {
@@ -314,7 +314,7 @@ const resolveReference = (schema: SupportedJsonSchema, lib: SchemaLib): Supporte
   }
 };
 
-const cloneSchema = (schema: SupportedJsonSchema): SupportedJsonSchema => {
+const cloneSchema = (schema: TreemaSupportedJsonSchema): TreemaSupportedJsonSchema => {
   return Object.assign({}, schema);
 };
 
@@ -325,7 +325,7 @@ const cloneSchema = (schema: SupportedJsonSchema): SupportedJsonSchema => {
  * these (see `inlineInteraction` in `CodeCombat.story.tsx`). If there are other use cases for other keywords,
  * the logic can be extended here.
  */
-export const combineSchemas = (baseSchema: SupportedJsonSchema, schema: SupportedJsonSchema): SupportedJsonSchema => {
+export const combineSchemas = (baseSchema: TreemaSupportedJsonSchema, schema: TreemaSupportedJsonSchema): TreemaSupportedJsonSchema => {
   const result = Object.assign({}, baseSchema, schema);
 
   // combine properties
@@ -381,7 +381,7 @@ export const clone = (data: any, options?: CloneOptions): any => {
   return result;
 };
 
-export const getValueForRequiredType: (type: BaseType) => any = (type: BaseType) => {
+export const getValueForRequiredType: (type: SchemaBaseType) => any = (type: SchemaBaseType) => {
   switch (type) {
     case 'boolean':
       return false;
@@ -399,7 +399,7 @@ export const getValueForRequiredType: (type: BaseType) => any = (type: BaseType)
   }
 };
 
-export const populateRequireds = (givenData: any, schema: SupportedJsonSchema, lib: SchemaLib): any => {
+export const populateRequireds = (givenData: any, schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib): any => {
   const returnData = clone(givenData) || {};
   walk(returnData, schema, lib, ({ data, schema }) => {
     if (schema.required && getType(data) === 'object') {
