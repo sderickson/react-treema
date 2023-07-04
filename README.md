@@ -34,8 +34,6 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Test data prop changing
 - [X] Hidden format
 - [X] Object and array displays
-
-#### In Progress
 - [X] Feature Parity for AI Scenario
   - [X] Edit working schemas
     - [X] Show errors by working schema
@@ -53,11 +51,13 @@ And http://codecombat.github.io/treema/demo.html
     - [X] Export all tools necessary
     - [X] Finalize names
     - [X] Add schema prop to definition
-    - [ ] Put documentation in storybook mdx?
-  - [ ] export getters/setters
-  - [ ] export utility functions
+  - [X] export utility functions
+
+#### In Progress
 
 #### TODO
+- [ ] export getters/setters
+- [ ] Put more documentation in storybook mdx
 - [ ] Mouse click to edit
 - [ ] Shift/Meta click
 - [ ] readOnly, skipValidation

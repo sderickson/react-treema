@@ -178,6 +178,12 @@ export const getJsonType = (data: any): SchemaBaseType | undefined => {
   return undefined;
 };
 
+/**
+ * Create a list of "working schemas" from a given schema. See TreemaWorkingSchema for more info.
+ * @param schema 
+ * @param lib 
+ * @returns array of working schemas
+ */
 export const buildWorkingSchemas = (schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib): TreemaWorkingSchema[] => {
   const givenSchema = resolveReference(schema, lib);
   if (!givenSchema.allOf && !givenSchema.anyOf && !givenSchema.oneOf) {
@@ -246,6 +252,15 @@ const spreadTypes = (schema: TreemaSupportedJsonSchema): TreemaWorkingSchema[] =
   return workingSchemas;
 };
 
+/**
+ * Returns the first working schema that the data is valid for. Otherwise, returns the one with
+ * the fewest errors.
+ * 
+ * @param data 
+ * @param workingSchemas 
+ * @param lib 
+ * @returns best guess which working schema the data is intended for
+ */
 export const chooseWorkingSchema = (data: any, workingSchemas: TreemaWorkingSchema[], lib: TreemaWrappedSchemaLib): TreemaWorkingSchema => {
   if (workingSchemas.length === 1) {
     return workingSchemas[0];
@@ -267,6 +282,14 @@ export const chooseWorkingSchema = (data: any, workingSchemas: TreemaWorkingSche
   return bestSchema;
 };
 
+/**
+ * Given a key and a schema, returns the schema for the child at that key, based on keywords like
+ * properties and items.
+ * 
+ * @param key 
+ * @param schema
+ * @returns the raw schema 
+ */
 export const getChildSchema = (key: string | number, schema: TreemaSupportedJsonSchema): TreemaSupportedJsonSchema => {
   if (typeof key === 'string') {
     for (const [childKey, childSchema] of Object.entries(schema.properties || {})) {
@@ -372,6 +395,14 @@ export const combineSchemas = (baseSchema: TreemaSupportedJsonSchema, schema: Tr
 interface CloneOptions {
   shallow?: boolean;
 }
+
+/**
+ * Creates a deep clone of data, unless shallow is true, in which case it only clones the top level.
+ * 
+ * @param data 
+ * @param options 
+ * @returns 
+ */
 export const clone = (data: any, options?: CloneOptions): any => {
   let result = data;
   const type = getType(data);
@@ -413,6 +444,16 @@ export const getValueForRequiredType: (type: SchemaBaseType) => any = (type: Sch
   }
 };
 
+/**
+ * Given a schema and data, populates any required properties in the data with default values. Also
+ * takes in a TreemaWrappedSchemaLib, which is used to dereference $ref and determine which working
+ * schema to use.
+ * 
+ * @param givenData 
+ * @param schema 
+ * @param lib 
+ * @returns a new version of givenData with required values included
+ */
 export const populateRequireds = (givenData: any, schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib): any => {
   const returnData = clone(givenData) || {};
   walk(returnData, schema, lib, ({ data, schema }) => {
@@ -425,7 +466,8 @@ export const populateRequireds = (givenData: any, schema: TreemaSupportedJsonSch
           data[key] = clone(schema.default[key]);
         } else {
           const childSchema = getChildSchema(key, schema);
-          const workingSchema = buildWorkingSchemas(childSchema, lib)[0];
+          const workingSchemas = buildWorkingSchemas(childSchema, lib);
+          const workingSchema = chooseWorkingSchema(data, workingSchemas, lib);
           const schemaDefault = workingSchema.default;
           if (schemaDefault) {
             data[key] = clone(schemaDefault);

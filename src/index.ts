@@ -36,3 +36,15 @@ export {
   useTreemaKeyboardEvent,
   useTreemaEditRef,
 } from './Treema/definitions/hooks';
+
+// Util functions that can be generally useful
+export {
+  populateRequireds,
+  walk,
+  getChildSchema,
+  buildWorkingSchemas,
+  chooseWorkingSchema,
+  combineSchemas,
+  clone,
+  getValueForRequiredType as defaultForType,
+} from './Treema/utils';
