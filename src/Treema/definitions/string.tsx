@@ -1,5 +1,5 @@
 import React from 'react';
-import { TreemaTypeDefinition } from './types';
+import { TreemaTypeDefinition } from '../types';
 import { useTreemaEditRef } from './hooks';
 
 const stringInputTypes = ['color', 'date', 'datetime-local', 'email', 'password', 'tel', 'text', 'time', 'url'];

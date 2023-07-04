@@ -1,4 +1,4 @@
-import { TreemaRoot } from './TreemaRoot';
+import { TreemaRoot } from './index';
 import tv4 from 'tv4';
 import { wrapTv4 } from './utils';
 import Ajv from 'ajv';
@@ -8,7 +8,7 @@ import { TreemaLongStringSchema, TreemaLongStringNodeDefinition } from './defini
 import { TreemaMarkdownNodeDefinition, TreemaMarkdownSchema } from './definitions/markdown';
 
 export default {
-  title: 'Main/Treema',
+  title: 'Main/TreemaRoot',
   component: TreemaRoot,
   tags: ['autodocs'],
 };

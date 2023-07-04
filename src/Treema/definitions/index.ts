@@ -8,15 +8,25 @@ import { TreemaIntegerNodeDefinition } from './integer';
 import { TreemaEnumNodeDefinition } from './enum';
 import './core.scss';
 
-import { TreemaTypeDefinition } from './types';
+import { TreemaTypeDefinition } from '../types';
 
-export const coreDefinitions: { [key: string]: TreemaTypeDefinition } = {
-  'object': TreemaObjectNodeDefinition,
-  'array': TreemaArrayNodeDefinition,
-  'string': TreemaStringNodeDefinition,
-  'number': TreemaNumberNodeDefinition,
-  'boolean': TreemaBooleanNodeDefinition,
-  'null': TreemaNullNodeDefinition,
-  'integer': TreemaIntegerNodeDefinition,
-  'enum': TreemaEnumNodeDefinition,
-};
+export const coreDefinitions: TreemaTypeDefinition[] = [
+  TreemaObjectNodeDefinition,
+  TreemaArrayNodeDefinition,
+  TreemaStringNodeDefinition,
+  TreemaNumberNodeDefinition,
+  TreemaBooleanNodeDefinition,
+  TreemaNullNodeDefinition,
+  TreemaIntegerNodeDefinition,
+  TreemaEnumNodeDefinition,
+]
+
+export const wrapDefinitions = (defs: TreemaTypeDefinition[]): {[key: string]: TreemaTypeDefinition} => {
+  const wrapped: {[key: string]: TreemaTypeDefinition} = {};
+  defs.forEach((def) => {
+    wrapped[def.id] = def;
+  });
+  return wrapped;
+}
+
+export const coreDefinitionsMap = wrapDefinitions(coreDefinitions);

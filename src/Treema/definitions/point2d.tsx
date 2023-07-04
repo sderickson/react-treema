@@ -1,5 +1,5 @@
 import React from 'react';
-import { DisplayProps, TreemaTypeDefinition } from './types';
+import { DisplayProps, TreemaTypeDefinition } from '../types';
 
 interface Point2d {
   x: number;

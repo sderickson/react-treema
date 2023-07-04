@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { getWorkingSchema } from '../state/selectors';
 import { TreemaContext } from '../context';
-import { DisplayProps, TreemaTypeDefinition } from './types';
+import { DisplayProps, TreemaTypeDefinition } from '../types';
 import { getType, joinJsonPointers } from '../utils';
 
 export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {

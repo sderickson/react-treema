@@ -1,7 +1,8 @@
 import React from 'react';
 import { TreemaStorybookTestContext } from './context';
 import { GenericTest } from './types';
-import { TreemaRootProps, TreemaRoot } from '../TreemaRoot';
+import { TreemaRootProps } from '../types';
+import { TreemaRoot } from '../TreemaRoot';
 import { render, screen } from '@testing-library/react';
 import * as mainJest from '@jest/globals';
 import * as mainTestingLibrary from '@testing-library/react';

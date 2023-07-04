@@ -1,11 +1,4 @@
-import { TreemaTypeDefinition } from '../definitions/types';
-import { SchemaLib, SupportedJsonSchema, JsonPointer } from '../types';
-
-export interface TreemaSettings {
-  readOnly?: boolean;
-  noSortable?: boolean; // TODO
-  skipValidation?: boolean; // TODO
-}
+import { SchemaLib, SupportedJsonSchema, JsonPointer, TreemaSettings, TreemaTypeDefinition } from '../types';
 
 export type InsertPropertyPlaceholder = string;
 export type OrderEntry = JsonPointer | InsertPropertyPlaceholder;

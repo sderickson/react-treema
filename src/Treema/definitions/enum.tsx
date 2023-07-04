@@ -1,5 +1,5 @@
 import React from 'react';
-import { TreemaTypeDefinition } from './types';
+import { TreemaTypeDefinition } from '../types';
 import { useTreemaEditRef } from './hooks';
 
 export const TreemaEnumNodeDefinition: TreemaTypeDefinition = {
@@ -20,7 +20,7 @@ export const TreemaEnumNodeDefinition: TreemaTypeDefinition = {
         }}
         data-testid="treema-edit-enum-input"
       >
-        {(schema.enum || []).map((value, index) => (
+        {(schema.enum || []).map((value: any, index: number) => (
           <option key={index} value={value}>
             {value}
           </option>

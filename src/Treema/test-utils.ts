@@ -1,9 +1,9 @@
 import { TreemaState } from './state/types';
 import { noopLib } from './utils';
-import { coreDefinitions } from './definitions';
+import { coreDefinitionsMap } from './definitions';
 import { TreemaAction } from './state/actions';
 import { reducer } from './state/reducer';
-import { TreemaRootProps } from './TreemaRoot';
+import { TreemaRootProps } from './types';
 
 export const getDefaultState = (): TreemaState => {
   return {
@@ -11,7 +11,7 @@ export const getDefaultState = (): TreemaState => {
     schemaLib: noopLib,
     rootSchema: {},
     closed: {},
-    definitions: coreDefinitions,
+    definitions: coreDefinitionsMap,
     settings: {},
     workingSchemaChoices: {},
   };

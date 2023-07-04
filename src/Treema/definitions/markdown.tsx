@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import ReactMarkdown from 'react-markdown'
 import AceEditor from "react-ace";
-import { DisplayProps, EditProps, TreemaTypeDefinition } from './types';
+import { DisplayProps, EditProps, TreemaTypeDefinition } from '../types';
 import { useTreemaKeyboardEvent, useTreemaEditRef } from './hooks';
 
 import "ace-builds/src-noconflict/mode-markdown";

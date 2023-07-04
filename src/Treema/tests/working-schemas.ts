@@ -1,7 +1,7 @@
 import { onEvent } from './context';
 import { wrapAjv } from '../utils';
 import Ajv from 'ajv';
-import { TreemaRootProps } from 'Treema/TreemaRoot';
+import { TreemaRootProps } from '../types';
 import { GenericTest } from './types';
 
 export const switchWorkingSchema: GenericTest = {

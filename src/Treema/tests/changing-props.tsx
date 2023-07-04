@@ -1,9 +1,9 @@
 import { onEvent } from './context';
 import { clone, noopLib } from '../utils';
-import { TreemaRoot, TreemaRootProps } from '../TreemaRoot';
+import { TreemaRoot } from '../TreemaRoot';
 import { GenericTest } from './types';
 import React, { useCallback, useState } from 'react';
-import { TreemaEventHandler } from '../types';
+import { TreemaEventHandler, TreemaRootProps } from '../types';
 
 /**
  * A parent component that has the data stored in its useState hook. It includes buttons for

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { TreemaTypeDefinition } from './types';
+import { TreemaTypeDefinition } from '../types';
 import { getWorkingSchema, getDefinitionAtPath } from '../state/selectors';
 import { TreemaContext } from '../context';
 import { joinJsonPointers } from '../utils';

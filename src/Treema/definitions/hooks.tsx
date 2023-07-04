@@ -11,7 +11,7 @@ export type NodeEventCallbackHandler = (event: KeyboardEvent) => boolean;
  * lines where tab and enter are normally used. This can also be used to implement
  * custom errors where navigation is prevented until an error is fixed.
  */
-export const useTreemaKeyboardEvent = (callback: NodeEventCallbackHandler): NodeEventCallbackHandler | void => {
+export const useTreemaKeyboardEvent = (callback: NodeEventCallbackHandler): void => {
   const { keyboardCallbackRef } = useContext(TreemaContext);
 
   useEffect(() => {
@@ -27,6 +27,12 @@ export const useTreemaKeyboardEvent = (callback: NodeEventCallbackHandler): Node
   }, [keyboardCallbackRef, callback]);
 };
 
+/**
+ * Provides a ref which should be used for the input element rendered. This is so
+ * that Treema can manage focus and blur events.
+ * 
+ * Currently Treema only supports one input per "node".
+ */
 export const useTreemaEditRef = () => {
   const { editRefs } = useContext(TreemaContext);
   const editRef = React.useRef(null);

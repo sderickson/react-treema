@@ -1,6 +1,40 @@
+// core Treema functionality
 export { TreemaRoot } from './Treema';
-export type { TreemaRootProps } from './Treema';
 
-export type { SupportedJsonSchema, SchemaLib, TreemaEventHandler, TreemaEvent, ChangeSelectEvent, ChangeDataEvent } from './Treema/types';
-export type { TreemaTypeDefinition } from './Treema/definitions/types';
-export type { TreemaSettings } from './Treema/state/types';
+// types for TreemaRoot props.
+export type {
+  TreemaRootProps,
+
+  // common
+  JsonPointer,
+  WorkingSchema,
+
+  // various setting props
+  TreemaSettings,
+
+  // onEvent
+  TreemaEventHandler,
+  TreemaEvent,
+  ChangeSelectEvent,
+  ChangeDataEvent,
+
+  // schemaLib
+  SchemaLib,
+  SchemaValidator,
+  ValidatorError,
+
+  // schema
+  SupportedJsonSchema,
+  BaseType,
+
+  // definitions
+  TreemaTypeDefinition,
+  DisplayProps,
+  EditProps,
+} from './Treema/types';
+
+// Used for TreemaTypeDefinition.Edit implementations
+export { 
+  useTreemaKeyboardEvent,
+  useTreemaEditRef,
+} from './Treema/definitions/hooks';

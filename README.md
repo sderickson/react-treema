@@ -49,8 +49,11 @@ And http://codecombat.github.io/treema/demo.html
   - [X] Show root elem
   - [X] Ace Editor integration
   - [ ] Full custom type definition interface
-    - [ ] Write documentation on making them
-    - [ ] Export all tools necessary
+    - [X] Write documentation on making them
+    - [X] Export all tools necessary
+    - [ ] Put documentation in storybook mdx?
+    - [ ] Finalize names
+    - [ ] Add schema prop to definition
   - [ ] export getters/setters
   - [ ] export utility functions
 

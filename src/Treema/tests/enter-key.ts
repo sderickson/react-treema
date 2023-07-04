@@ -1,6 +1,6 @@
 import { onEvent } from './context';
 import { noopLib } from '../utils';
-import { TreemaRootProps } from 'Treema/TreemaRoot';
+import { TreemaRootProps } from '../types';
 import { GenericTest } from './types';
 
 export const editRow: GenericTest = {

@@ -1,4 +1,4 @@
-import { TreemaRootProps } from '../TreemaRoot';
+import { TreemaRootProps } from '../types';
 import { GenericTest } from './types';
 
 export const renderStringTest: GenericTest = {
