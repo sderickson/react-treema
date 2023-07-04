@@ -1,6 +1,6 @@
 import React from 'react';
 import { DisplayProps, EditProps, TreemaTypeDefinition } from './types';
-import { useTreemaInput } from './hooks';
+import { useTreemaEditRef } from './hooks';
 
 export const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
   id: 'boolean',
@@ -13,7 +13,7 @@ export const TreemaBooleanNodeDefinition: TreemaTypeDefinition = {
 
   Edit: (props: EditProps) => {
     const { data, onChange } = props;
-    const ref = useTreemaInput();
+    const ref = useTreemaEditRef();
 
     return (
       <span>

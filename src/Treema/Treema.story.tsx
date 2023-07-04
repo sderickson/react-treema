@@ -3,8 +3,9 @@ import tv4 from 'tv4';
 import { wrapTv4 } from './utils';
 import Ajv from 'ajv';
 import { wrapAjv } from './utils';
-import { Point2dSchema } from './definitions/point2d';
-import { TreemaLongStringSchema } from './definitions/long-string';
+import { Point2dSchema, TreemaPoint2dNodeDefinition } from './definitions/point2d';
+import { TreemaLongStringSchema, TreemaLongStringNodeDefinition } from './definitions/long-string';
+import { TreemaMarkdownNodeDefinition, TreemaMarkdownSchema } from './definitions/markdown';
 
 export default {
   title: 'Main/Treema',
@@ -534,6 +535,8 @@ export const CustomNodes = {
       point2d: { x: 50, y: 80 },
       longString:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      markdown: `## Markdown document
+      *hello world!*`,
     },
     schema: {
       'type': 'object',
@@ -541,8 +544,14 @@ export const CustomNodes = {
       'properties': {
         'point2d': Point2dSchema,
         'longString': TreemaLongStringSchema,
+        'markdown': TreemaMarkdownSchema,
       },
     },
+    definitions: {
+      'point2d': TreemaPoint2dNodeDefinition,
+      'long-string': TreemaLongStringNodeDefinition,
+      'markdown': TreemaMarkdownNodeDefinition,      
+    }
   },
 };
 

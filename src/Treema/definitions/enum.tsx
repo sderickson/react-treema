@@ -1,6 +1,6 @@
 import React from 'react';
 import { TreemaTypeDefinition } from './types';
-import { useTreemaSelect } from './hooks';
+import { useTreemaEditRef } from './hooks';
 
 export const TreemaEnumNodeDefinition: TreemaTypeDefinition = {
   id: 'enum',
@@ -9,7 +9,7 @@ export const TreemaEnumNodeDefinition: TreemaTypeDefinition = {
   },
 
   Edit: ({ data, schema, onChange }) => {
-    const ref = useTreemaSelect();
+    const ref = useTreemaEditRef();
 
     return (
       <select

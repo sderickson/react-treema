@@ -36,7 +36,7 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Object and array displays
 
 #### In Progress
-- [ ] Feature Parity for AI Scenario
+- [X] Feature Parity for AI Scenario
   - [X] Edit working schemas
     - [X] Show errors by working schema
     - [X] Retain initial working schema settings
@@ -47,27 +47,31 @@ And http://codecombat.github.io/treema/demo.html
   - [X] Migrate to json pointer utils
   - [X] Support for enum
   - [X] Show root elem
-  - [ ] Ace Editor integration
+  - [X] Ace Editor integration
+  - [ ] Full custom type definition interface
+    - [ ] Write documentation on making them
+    - [ ] Export all tools necessary
+  - [ ] export getters/setters
+  - [ ] export utility functions
 
 #### TODO
 - [ ] Mouse click to edit
+- [ ] Shift/Meta click
 - [ ] readOnly, skipValidation
 - [ ] undo/redo
-- [ ] export getters/setters
-- [ ] export utility functions
-- [ ] Test integrating a few code editors
-- [ ] Audit css
+- [ ] A11y
+  - [ ] Add roles, test with screen reader
+  - [ ] Form mode
+  - [ ] Update tests to use role
+- [ ] CSS
   - [ ] "Border" error look when error is for collection
-- [ ] Shift/Meta click
+  - [ ] Audit existing CSS, remove floats and unnecessary rules
+  - [ ] Responsive
 - [ ] Copy/Paste
-- [ ] Prevent editing into other bad schema states
 - [ ] filter?
 - [ ] search (that one jquery ui thing)
 - [ ] drag and drop (that other jquery ui thing), noSortable
 - [ ] comprehensive input attribute support
-- [ ] Full custom type definition interface
-  - [ ] Write documentation on making them
-  - [ ] Export all tools necessary
 - [ ] README
 - [ ] Github pages
 - [ ] Publish

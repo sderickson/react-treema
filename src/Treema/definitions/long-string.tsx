@@ -7,9 +7,12 @@ export const TreemaLongStringSchema = {
   format: 'long-string',
 };
 
+/**
+ * Not included in Treema by default! This is an example of how to customize rendering of a string.
+ */
 export const TreemaLongStringNodeDefinition: TreemaTypeDefinition = {
   id: 'long-string',
-  shortened: true,
+  shortened: false,
   Display: ({ data }: DisplayProps) => {
     return <div>{data}</div>;
   },

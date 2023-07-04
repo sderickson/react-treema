@@ -1,6 +1,7 @@
 import { TreemaRoot } from '../TreemaRoot';
 import tv4 from 'tv4';
 import { wrapTv4 } from '../utils';
+import { TreemaMarkdownNodeDefinition } from '../definitions/markdown';
 
 /**
  * This storybook tests complex CodeCombat scenarios. CodeCombat is what Treema was originally built for,
@@ -732,5 +733,8 @@ export const AIScenario = {
     onEvent: (e: any) => console.log(e),
     data,
     schema,
+    definitions: {
+      'markdown': TreemaMarkdownNodeDefinition,      
+    }
   },
 };

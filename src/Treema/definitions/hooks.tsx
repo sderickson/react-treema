@@ -27,9 +27,9 @@ export const useTreemaKeyboardEvent = (callback: NodeEventCallbackHandler): Node
   }, [keyboardCallbackRef, callback]);
 };
 
-export const useTreemaInput = () => {
+export const useTreemaEditRef = () => {
   const { editRefs } = useContext(TreemaContext);
-  const editRef = React.useRef<HTMLInputElement>(null);
+  const editRef = React.useRef(null);
 
   useEffect(() => {
     editRefs.push(editRef);
@@ -43,40 +43,4 @@ export const useTreemaInput = () => {
   }, [editRef, editRefs]);
 
   return editRef;
-};
-
-export const useTreemaTextArea = () => {
-  const { editRefs } = useContext(TreemaContext);
-  const editRef = React.useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    editRefs.push(editRef);
-
-    return () => {
-      const refIndex = editRefs.indexOf(editRef);
-      if (refIndex >= 0) {
-        editRefs.splice(refIndex, 1);
-      }
-    };
-  }, [editRef, editRefs]);
-
-  return editRef;
-};
-
-export const useTreemaSelect = () => {
-  const { editRefs } = useContext(TreemaContext);
-  const editRef = React.useRef<HTMLSelectElement>(null);
-
-  useEffect(() => {
-    editRefs.push(editRef);
-
-    return () => {
-      const refIndex = editRefs.indexOf(editRef);
-      if (refIndex >= 0) {
-        editRefs.splice(refIndex, 1);
-      }
-    };
-  }, [editRef, editRefs]);
-
-  return editRef;
-};
+}

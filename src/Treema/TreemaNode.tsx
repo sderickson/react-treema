@@ -134,15 +134,19 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const addPropertyRef = React.useRef<HTMLInputElement>(null);
   const addPropRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
+    let focusable = null;
     if (isEditing) {
       // TODO: handle multiple refs
-      editRefs[0].current?.focus();
+      focusable = editRefs[0]?.current;
     } else if (isAddingProperty) {
-      addPropertyRef.current?.focus();
+      focusable = addPropertyRef.current;
     } else if (isSelected) {
-      displayRef.current?.focus();
+      focusable = displayRef.current;
     } else if (isFocusedOnAddProperty) {
-      addPropRef.current?.focus();
+      focusable = addPropRef.current;
+    }
+    if (focusable && focusable.focus) {
+      focusable.focus();
     }
   });
 
@@ -169,8 +173,6 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     <div className={classNames.join(' ')} onClick={onSelect}>
       {canOpen && path !== '' && <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}></span>}
 
-      {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
-
       <div ref={displayRef} tabIndex={-1} className="treema-row">
         {workingSchemas.length > 1 ? (
           <select onChange={onSetWorkingModel} value={workingSchemaIndex} className="treema-schema-select">
@@ -195,6 +197,8 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
             <definition.Display data={data} schema={workingSchema} path={path} />
           )}
         </div>
+
+        {errors.length ? <span className="treema-error">{errors[0].message}</span> : null}
       </div>
 
       {childrenKeys.length && canOpen && isOpen ? (

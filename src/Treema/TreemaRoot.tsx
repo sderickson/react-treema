@@ -98,7 +98,7 @@ export interface TreemaRootProps {
  * will render that data, and enable edits, according to that schema. You can and probably should also
  * provide a JSON Schema validator library which will thoroughly enforce the schema and provide error messages.
  */
-export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent }) => {
+export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent, definitions }) => {
   /**
    * TreemaRoot handles initializing the state, and updating it when props change. This includes
    * what paths are open or closed, populating required fields, and initializing a noop schema
@@ -129,7 +129,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     schemaLib: lib,
     rootSchema: schema,
     closed,
-    definitions: coreDefinitions,
+    definitions: Object.assign({}, coreDefinitions, definitions || {}),
     settings: {},
     workingSchemaChoices: {},
   });

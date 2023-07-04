@@ -20,6 +20,9 @@ export const Point2dSchema = {
   },
 };
 
+/**
+ * Not included in Treema by default! This is an example of how to customize display of a complex object.
+ */
 export const TreemaPoint2dNodeDefinition: TreemaTypeDefinition = {
   id: 'object',
   Display: (props: DisplayProps) => {
