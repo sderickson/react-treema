@@ -17,7 +17,7 @@ export default {
  * This Treema shows a relatively simple data structure: an array of objects with values that are
  * all primitive data types. You can try creating a new object, editing the values, and deleting
  * entries or values.
- * 
+ *
  * Navigate quickly and easily by keyboard. Try using arrow keys, enter,
  * tab, and escape. Use shift to reverse direction. When entering a new property, press arrow-down
  * to use the native browser autocomplete for available properties.
@@ -99,7 +99,7 @@ export const BasicExample = {
 /**
  * Schemas are highly flexible, including allowing properties to be of various types. In this example, the "numbers"
  * property can either by an array or string. Treema provides a `select` box in this case, allowing switching between
- * those two types. 
+ * those two types.
  */
 export const TypeSelector = {
   args: {
@@ -275,7 +275,6 @@ export const Refs = {
   },
 };
 
-
 /**
  * Treema has an internal concept of "Working Schemas". Basically if you have a complex schema (uses combinatorial applicators like
  * `oneOf` or `anyOf`, or has more than one possible `type`), Treema will generate a set of "working schemas" for the user to
@@ -283,12 +282,12 @@ export const Refs = {
  *
  * In this example, an object can either be of "type a" or "type b", but the data fits neither schema. The user can switch between
  * the two and see how the data doesn't fit with either and then fix the data in whichever direction.
- * 
+ *
  * Treema will also attempt to smartly merge schemas together, for example the schema with its oneOf, or every allOf together.
  * It will tend to simply override one property with another, except for properties which it will recursively merge. You can
  * see the recursive merging here where the title for "type" is provided in the base schema but shows up for each working
  * schema. It will also concat `required` lists together, which you can see by trying to delete any of the defined properties.
- * 
+ *
  * You should each `oneOf` and `anyOf` schema a distinct `title` to make it easier for the user to understand what they are choosing between.
  */
 export const WorkingSchemas = {
@@ -307,7 +306,7 @@ export const WorkingSchemas = {
           type: 'object',
 
           properties: {
-            type: { title: "Inherited Type Title" },
+            type: { title: 'Inherited Type Title' },
           },
           required: ['type'],
 
@@ -337,7 +336,6 @@ export const WorkingSchemas = {
     schemaLib: wrapAjv(new Ajv({ allErrors: true })),
   },
 };
-
 
 /**
  * Treema supports `properties`, `patternProperties`, and `additionalProperties`, taking into
@@ -425,7 +423,7 @@ export const DefaultValues = {
           },
           properties: {
             'deepRecurse': { 'type': 'string' },
-          }
+          },
         },
       },
     },
@@ -460,7 +458,7 @@ export const RequiredValues = {
 /**
  * Schema `format` values will often use the equivalent browser input type. The following example includes
  * all supported string input types. Support may vary based on browser.
- * 
+ *
  * See the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types) for more information.
  */
 export const StringInputTypes = {
@@ -498,9 +496,9 @@ export const StringInputTypes = {
  * In some cases, Treema will fill `<input>` attribute fields. Currently the following are supported:
  * * For strings, schema values for `maxLength` and `minLength` are set as `maxlength` and `minlength` input attributes.
  * * For numbers, schema values for `minimum` and `maximum` are set to `min` and `max` input attributes.
- * 
+ *
  * See the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attributes) for more information.
- * 
+ *
  * TODO: Add support for more input attributes.
  */
 export const InputAttributes = {
@@ -547,17 +545,13 @@ export const CustomNodes = {
         'markdown': { $ref: TreemaMarkdownNodeDefinition.schema?.$id },
       },
     },
-    definitions: [
-      TreemaPoint2dNodeDefinition,
-      TreemaLongStringNodeDefinition,
-      TreemaMarkdownNodeDefinition,
-    ],
+    definitions: [TreemaPoint2dNodeDefinition, TreemaLongStringNodeDefinition, TreemaMarkdownNodeDefinition],
   },
 };
 
 /**
  * If no schema is provided, essentially Treema acts as a free-form JSON data editor.
- * 
+ *
  * TODO: combine this with a view of the raw JSON.
  */
 export const UnspecifiedJson = {
@@ -567,6 +561,6 @@ export const UnspecifiedJson = {
         'b': {},
       },
     },
-    schema: { },
+    schema: {},
   },
 };

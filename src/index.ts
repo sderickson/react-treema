@@ -32,10 +32,7 @@ export type {
 } from './Treema/types';
 
 // Used for TreemaTypeDefinition.Edit implementations
-export { 
-  useTreemaKeyboardEvent,
-  useTreemaEditRef,
-} from './Treema/definitions/hooks';
+export { useTreemaKeyboardEvent, useTreemaEditRef } from './Treema/definitions/hooks';
 
 // Util functions that can be generally useful
 export {

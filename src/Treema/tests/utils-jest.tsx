@@ -12,7 +12,15 @@ export const wrapGenericTestInJest = (overallName: string, tests: GenericTest[],
   describe(overallName, () => {
     for (const test of tests) {
       it(test.name, async () => {
-        render(<TreemaRoot data={args?.data} schema={args?.schema || {}} initOpen={args.initOpen} onEvent={onEvent} schemaLib={args.schemaLib} />);
+        render(
+          <TreemaRoot
+            data={args?.data}
+            schema={args?.schema || {}}
+            initOpen={args.initOpen}
+            onEvent={onEvent}
+            schemaLib={args.schemaLib}
+          />,
+        );
         const treema = screen.getByTestId('treema-root');
         const context = new TreemaStorybookTestContext(treema, mainJest, mainTestingLibrary, 0);
         await test.test(context);

@@ -280,11 +280,14 @@ describe('combineSchemas', () => {
   });
 
   it('concats required arrays', () => {
-    const result = combineSchemas({
-      required: ['key1'],
-    }, {
-      required: ['key2'],
-    });
+    const result = combineSchemas(
+      {
+        required: ['key1'],
+      },
+      {
+        required: ['key2'],
+      },
+    );
     expect(result.required).toEqual(['key1', 'key2']);
   });
 });

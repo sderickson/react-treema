@@ -49,6 +49,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         lib.addSchema(definition.schema, definition.schema.$id);
       }
     });
+
     return lib;
   }, [definitions, schemaLib]);
   const closed: { [key: JsonPointer]: boolean } = useMemo(() => {

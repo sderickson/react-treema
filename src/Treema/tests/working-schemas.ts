@@ -29,7 +29,7 @@ export const breakCurrentWorkingSchema: GenericTest = {
     // now make the value no longer fit "type b"
     // but we should still see the "type b" schema title of the adjacent property...
     await ctx.testingLibrary.within(ctx.treema).getByText('Stringed Foo:');
-  }
+  },
 };
 
 export const workingSchemaTests: GenericTest[] = [switchWorkingSchema, breakCurrentWorkingSchema];
@@ -68,7 +68,6 @@ export const args: TreemaRootProps = {
     },
   },
 };
-
 
 /**
  * TODO Use cases:

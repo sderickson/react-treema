@@ -22,12 +22,14 @@
   &.treema-root > .treema-row > .treema-key {
     font-weight: bold;
   }
-  &.treema-root > .treema-row .treema-type-select, &.treema-root > .treema-row > .treema-value {
+  &.treema-root > .treema-row .treema-type-select,
+  &.treema-root > .treema-row > .treema-value {
     display: none;
   }
 
   // Treema root elements and children should be aligned along the left edge
-  &.treema-root > .treema-children, &.treema-root > .treema-add-child {
+  &.treema-root > .treema-children,
+  &.treema-root > .treema-add-child {
     margin-left: 0;
     left: 0;
   }

@@ -133,7 +133,7 @@ export const enumTest: GenericTest = {
     await ctx.fireEnter(); // commit changes
     ctx.expect(ctx.getData()).toEqual({ a: 'c' });
   },
-}
+};
 
 export const enumArgs: TreemaRootProps = {
   data: { a: 'b' },
@@ -141,7 +141,7 @@ export const enumArgs: TreemaRootProps = {
     type: 'object',
     properties: {
       a: { enum: ['a', 'b', 'c'], type: 'string' },
-    }
+    },
   },
   onEvent,
 };

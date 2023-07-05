@@ -19,17 +19,18 @@ export const coreDefinitions: TreemaTypeDefinition[] = [
   TreemaNullNodeDefinition,
   TreemaIntegerNodeDefinition,
   TreemaEnumNodeDefinition,
-]
+];
 
-export const wrapDefinitions = (defs: TreemaTypeDefinition[]): {[key: string]: TreemaTypeDefinition} => {
-  const wrapped: {[key: string]: TreemaTypeDefinition} = {};
+export const wrapDefinitions = (defs: TreemaTypeDefinition[]): { [key: string]: TreemaTypeDefinition } => {
+  const wrapped: { [key: string]: TreemaTypeDefinition } = {};
   defs.forEach((def) => {
     wrapped[def.id] = def;
     if (def.schema?.$id) {
       wrapped[def.schema.$id] = def;
     }
   });
+
   return wrapped;
-}
+};
 
 export const coreDefinitionsMap = wrapDefinitions(coreDefinitions);

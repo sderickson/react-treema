@@ -30,7 +30,7 @@ export const useTreemaKeyboardEvent = (callback: TreemaNodeEventCallbackHandler)
 /**
  * Provides a ref which should be used for the input element rendered. This is so
  * that Treema can manage focus and blur events.
- * 
+ *
  * Currently Treema only supports one input per "node".
  */
 export const useTreemaEditRef = () => {
@@ -49,4 +49,4 @@ export const useTreemaEditRef = () => {
   }, [editRef, editRefs]);
 
   return editRef;
-}
+};

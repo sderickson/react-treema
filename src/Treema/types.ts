@@ -64,14 +64,12 @@ export interface TreemaRootProps {
   initOpen?: number;
 }
 
-
 /**
  * JsonPointers. See [RFC 6901](https://datatracker.ietf.org/doc/html/rfc6901).
  * These are used by Treema, and also typically by validator libraries such
  * as Ajv and Tv4.
  */
 export type JsonPointer = string;
-
 
 /**
  * Configuration passed into TreemaRoot
@@ -81,7 +79,6 @@ export interface TreemaSettings {
   noSortable?: boolean; // TODO
   skipValidation?: boolean; // TODO
 }
-
 
 /**
  * Callback handler for Treema events.
@@ -116,12 +113,11 @@ export interface TreemaChangeDataEvent {
   data: any;
 }
 
-
 /**
  * So that Treema is not tied to any specific validator library, it expects
  * any validator to be wrapped in this generic interface. The validator library
  * is not only used to validate data, but as a store for schemas.
- * 
+ *
  * Treema exports two example and workable wrapping functions: wrapAjv and wrapTv4.
  */
 export interface TreemaWrappedSchemaLib {
@@ -154,7 +150,7 @@ export interface TreemaValidatorResponse {
 export interface TreemaValidatorError {
   /**
    * Validator libraries typically categorize validation errors by an id, either a
-   * string or number. Expose this in the error so it can be used if desired (e.g. 
+   * string or number. Expose this in the error so it can be used if desired (e.g.
    * with utility functions).
    */
   id: string | number;
@@ -172,13 +168,10 @@ export interface TreemaValidatorError {
   dataPath: JsonPointer;
 }
 
-
-
 /**
  * The list of valid JSON Schema types.
  */
 export type SchemaBaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string' | 'integer';
-
 
 /**
  * Typing for supported JSON Schema keywords. Properties listed here will be used to create
@@ -254,7 +247,7 @@ export interface TreemaSupportedJsonSchema {
    * Mainly used to lookup what TypeDefinition to use if a custom one is provided. Also if
    * `type` is `"string"`, and format is one of a handful of valid values, Treema will use
    * the format as the HTML input `type` attribute. These are:
-   * 
+   *
    * 'color', 'date', 'datetime-local', 'email', 'password', 'tel', 'text', 'time', 'url'
    */
   format?: string;
@@ -275,7 +268,7 @@ export interface TreemaSupportedJsonSchema {
   enum?: any[];
 
   /**
-   * 
+   *
    */
   [x: string]: any;
 }
@@ -309,10 +302,9 @@ export interface TreemaNodeWalkContext {
   possibleSchemas: TreemaWorkingSchema[];
 }
 
-
 /**
  * Treema may have its functionality extended with custom TypeDefinitions. A TypeDefinition
- * specifies how data of a certain `format` or `type` should be displayed and edited. See 
+ * specifies how data of a certain `format` or `type` should be displayed and edited. See
  * `/definitions` directory for plenty of examples and core uses (all basic types are defined
  * with this interface).
  */
@@ -373,4 +365,3 @@ export interface TreemaEditProps {
    */
   onChange: (data: any) => void;
 }
-

@@ -92,7 +92,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         // otherwise "breaking" data for a working schema will cause the working schema to
         // become whatever is the first one if none of them work. Users should explicitly
         // change the working schema after initial load.
-        workingSchemaChoices: getEffectiveWorkingSchemaChoices(state)
+        workingSchemaChoices: getEffectiveWorkingSchemaChoices(state),
       };
 
     case 'begin_edit_action':
@@ -176,6 +176,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
           delete workingSchemaChoices[key];
         }
       }
+
       return { ...state, workingSchemaChoices };
 
     default:

@@ -3,7 +3,7 @@ import { TreemaWrappedSchemaLib, TreemaSupportedJsonSchema, JsonPointer, TreemaS
 export type InsertPropertyPlaceholder = string;
 export type OrderEntry = JsonPointer | InsertPropertyPlaceholder;
 
-export type WorkingSchemaChoices = {[path: string]: number};
+export type WorkingSchemaChoices = { [path: string]: number };
 
 export interface TreemaState {
   data: any;

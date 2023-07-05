@@ -734,7 +734,7 @@ export const AIScenario = {
     data,
     schema,
     definitions: {
-      'markdown': TreemaMarkdownNodeDefinition,      
-    }
+      'markdown': TreemaMarkdownNodeDefinition,
+    },
   },
 };

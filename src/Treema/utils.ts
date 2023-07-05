@@ -1,4 +1,11 @@
-import { TreemaSupportedJsonSchema, TreemaWrappedSchemaLib, TreemaNodeWalkContext, TreemaWorkingSchema, SchemaBaseType, TreemaValidator } from './types';
+import {
+  TreemaSupportedJsonSchema,
+  TreemaWrappedSchemaLib,
+  TreemaNodeWalkContext,
+  TreemaWorkingSchema,
+  SchemaBaseType,
+  TreemaValidator,
+} from './types';
 import { JsonPointer } from './types';
 
 export const noopValidator: TreemaValidator = () => {
@@ -125,7 +132,7 @@ export const walk: (
   if (['array', 'object'].includes(dataType)) {
     const f = (key: string | number, value: any) => {
       value = data[key];
-      const childPath = joinJsonPointers((path || ''), key.toString());
+      const childPath = joinJsonPointers(path || '', key.toString());
       let childSchema = getChildSchema(key, workingSchema);
       walk(value, childSchema, lib, callback, childPath);
     };
@@ -180,8 +187,8 @@ export const getJsonType = (data: any): SchemaBaseType | undefined => {
 
 /**
  * Create a list of "working schemas" from a given schema. See TreemaWorkingSchema for more info.
- * @param schema 
- * @param lib 
+ * @param schema
+ * @param lib
  * @returns array of working schemas
  */
 export const buildWorkingSchemas = (schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib): TreemaWorkingSchema[] => {
@@ -255,10 +262,10 @@ const spreadTypes = (schema: TreemaSupportedJsonSchema): TreemaWorkingSchema[] =
 /**
  * Returns the first working schema that the data is valid for. Otherwise, returns the one with
  * the fewest errors.
- * 
- * @param data 
- * @param workingSchemas 
- * @param lib 
+ *
+ * @param data
+ * @param workingSchemas
+ * @param lib
  * @returns best guess which working schema the data is intended for
  */
 export const chooseWorkingSchema = (data: any, workingSchemas: TreemaWorkingSchema[], lib: TreemaWrappedSchemaLib): TreemaWorkingSchema => {
@@ -285,10 +292,10 @@ export const chooseWorkingSchema = (data: any, workingSchemas: TreemaWorkingSche
 /**
  * Given a key and a schema, returns the schema for the child at that key, based on keywords like
  * properties and items.
- * 
- * @param key 
+ *
+ * @param key
  * @param schema
- * @returns the raw schema 
+ * @returns the raw schema
  */
 export const getChildSchema = (key: string | number, schema: TreemaSupportedJsonSchema): TreemaSupportedJsonSchema => {
   if (typeof key === 'string') {
@@ -324,11 +331,11 @@ export const getChildSchema = (key: string | number, schema: TreemaSupportedJson
   return {};
 };
 
-export const getChildWorkingSchema: (key: string | number, schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib) => TreemaWorkingSchema = (
+export const getChildWorkingSchema: (
   key: string | number,
   schema: TreemaSupportedJsonSchema,
   lib: TreemaWrappedSchemaLib,
-) => {
+) => TreemaWorkingSchema = (key: string | number, schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib) => {
   const childSchema = getChildSchema(key, schema);
   const workingSchemas = buildWorkingSchemas(childSchema, lib);
   const workingSchema = chooseWorkingSchema(undefined, workingSchemas, lib);
@@ -388,7 +395,7 @@ export const combineSchemas = (baseSchema: TreemaSupportedJsonSchema, schema: Tr
   * Intersection of `type` arrays
   etc...
   */
-  
+
   return result;
 };
 
@@ -398,10 +405,10 @@ interface CloneOptions {
 
 /**
  * Creates a deep clone of data, unless shallow is true, in which case it only clones the top level.
- * 
- * @param data 
- * @param options 
- * @returns 
+ *
+ * @param data
+ * @param options
+ * @returns
  */
 export const clone = (data: any, options?: CloneOptions): any => {
   let result = data;
@@ -448,10 +455,10 @@ export const getValueForRequiredType: (type: SchemaBaseType) => any = (type: Sch
  * Given a schema and data, populates any required properties in the data with default values. Also
  * takes in a TreemaWrappedSchemaLib, which is used to dereference $ref and determine which working
  * schema to use.
- * 
- * @param givenData 
- * @param schema 
- * @param lib 
+ *
+ * @param givenData
+ * @param schema
+ * @param lib
  * @returns a new version of givenData with required values included
  */
 export const populateRequireds = (givenData: any, schema: TreemaSupportedJsonSchema, lib: TreemaWrappedSchemaLib): any => {
@@ -483,7 +490,6 @@ export const populateRequireds = (givenData: any, schema: TreemaSupportedJsonSch
   return returnData;
 };
 
-
 // JsonPointer utils. Probably should just use a standard lib...
 
 export const splitJsonPointer = (path: JsonPointer): string[] => {
@@ -493,14 +499,16 @@ export const splitJsonPointer = (path: JsonPointer): string[] => {
 
 export const getJsonPointerLastChild = (path: JsonPointer): string => {
   const parts = splitJsonPointer(path);
-  return parts[parts.length-1];
+
+  return parts[parts.length - 1];
 };
 
 export const joinJsonPointers = (...paths: string[]): JsonPointer => {
   // if the last one is just a property name, turn it into a path
-  if (paths[paths.length-1][0] !== '/') {
-    paths[paths.length-1] = '/' + paths[paths.length-1];
+  if (paths[paths.length - 1][0] !== '/') {
+    paths[paths.length - 1] = '/' + paths[paths.length - 1];
   }
+
   return paths.join('');
 };
 
@@ -521,14 +529,13 @@ export const getDataAtJsonPointer = (data: any, path: JsonPointer): any => {
     return data;
   }
   let returnData = data;
-  splitJsonPointer(path)
-    .forEach((key) => {
-      if (getType(returnData) === 'array') {
-        returnData = returnData[parseInt(key)];
-      } else {
-        returnData = returnData[key];
-      }
-    });
+  splitJsonPointer(path).forEach((key) => {
+    if (getType(returnData) === 'array') {
+      returnData = returnData[parseInt(key)];
+    } else {
+      returnData = returnData[key];
+    }
+  });
 
   return returnData;
 };

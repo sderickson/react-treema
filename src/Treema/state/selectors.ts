@@ -104,7 +104,7 @@ export const getAllDatasAndSchemas: (state: TreemaState) => DataSchemaMap = crea
           defaultRoot,
         };
       });
-    };
+    }
 
     return datasAndSchemas;
   },
@@ -141,6 +141,7 @@ export const getEffectiveWorkingSchemaChoices: (state: TreemaState) => WorkingSc
       const index = possibleSchemas.indexOf(schema);
       effectiveWorkingSchemaChoices[path] = index;
     });
+
     return Object.assign({}, effectiveWorkingSchemaChoices, workingSchemaChoices);
   },
 );
@@ -239,9 +240,12 @@ interface SchemaErrorsByPath {
   [key: JsonPointer]: TreemaValidatorError[];
 }
 
-export const getSchemaErrors = createSelector([getData, getRootSchema, getSchemaLib], (data, rootSchema, schemaLib): TreemaValidatorError[] => {
-  return schemaLib.validateMultiple(data, rootSchema).errors;
-});
+export const getSchemaErrors = createSelector(
+  [getData, getRootSchema, getSchemaLib],
+  (data, rootSchema, schemaLib): TreemaValidatorError[] => {
+    return schemaLib.validateMultiple(data, rootSchema).errors;
+  },
+);
 
 export const getSchemaErrorsByPath: (state: TreemaState) => SchemaErrorsByPath = createSelector(
   [getSchemaErrors, getAllDatasAndSchemas, getSchemaLib],

@@ -116,7 +116,7 @@ describe('getListOfPaths', () => {
     };
     const result = getListOfPaths(state);
     // both /a and /a/b and their addTo: paths should be included
-    expect(result).toEqual([ '', '/a', '/a/b', 'addTo:/a/b', 'addTo:/a', 'addTo:' ]);
+    expect(result).toEqual(['', '/a', '/a/b', 'addTo:/a/b', 'addTo:/a', 'addTo:']);
   });
 });
 

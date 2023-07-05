@@ -1,12 +1,12 @@
-import React, { useCallback } from "react";
-import ReactMarkdown from 'react-markdown'
-import AceEditor from "react-ace";
+import React, { useCallback } from 'react';
+import ReactMarkdown from 'react-markdown';
+import AceEditor from 'react-ace';
 import { TreemaSupportedJsonSchema, TreemaTypeDefinition } from '../types';
 import { useTreemaKeyboardEvent, useTreemaEditRef } from './hooks';
 
-import "ace-builds/src-noconflict/mode-markdown";
-import "ace-builds/src-noconflict/theme-github";
-import "ace-builds/src-noconflict/ext-language_tools";
+import 'ace-builds/src-noconflict/mode-markdown';
+import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/ext-language_tools';
 
 export const TreemaMarkdownSchema: TreemaSupportedJsonSchema = {
   '$id': 'https://example.com/markdown.schema.json',
