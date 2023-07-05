@@ -126,7 +126,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       dispatch(setData(path, newData));
       dispatch(setWorkingSchema(path, newIndex));
     },
-    [dispatch, path, workingSchema, workingSchemas],
+    [dispatch, path, workingSchemas],
   );
 
   // Handle focus
