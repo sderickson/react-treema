@@ -1,5 +1,5 @@
 import { onEvent } from './context';
-import { noopLib } from '../utils';
+import { getNoopLib } from '../utils';
 import { TreemaRootProps } from '../types';
 import { GenericTest } from './types';
 
@@ -19,7 +19,7 @@ export const editRow: GenericTest = {
 export const enterKeyTests: GenericTest[] = [editRow];
 
 export const args: TreemaRootProps = {
-  schemaLib: noopLib,
+  schemaLib: getNoopLib(),
   onEvent,
   initOpen: 1,
   data: { name: 'Bob', numbers: ['401-401-1337', ['123-456-7890']], address: 'Mars' },

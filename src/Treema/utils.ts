@@ -474,7 +474,7 @@ export const populateRequireds = (givenData: any, schema: TreemaSupportedJsonSch
         } else {
           const childSchema = getChildSchema(key, schema);
           const workingSchemas = buildWorkingSchemas(childSchema, lib);
-          const workingSchema = chooseWorkingSchema(data, workingSchemas, lib);
+          const workingSchema = chooseWorkingSchema(undefined, workingSchemas, lib);
           const schemaDefault = workingSchema.default;
           if (schemaDefault) {
             data[key] = clone(schemaDefault);

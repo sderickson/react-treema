@@ -733,8 +733,6 @@ export const AIScenario = {
     onEvent: (e: any) => console.log(e),
     data,
     schema,
-    definitions: {
-      'markdown': TreemaMarkdownNodeDefinition,
-    },
+    definitions: [TreemaMarkdownNodeDefinition],
   },
 };
