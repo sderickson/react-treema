@@ -23,6 +23,7 @@ import {
   canEditPathDirectly,
   normalizeToPath,
   isInsertPropertyPlaceholder,
+  getClosed,
 } from './state/selectors';
 import { reducer } from './state/reducer';
 import { TreemaNode } from './TreemaNode';
@@ -214,6 +215,44 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     [dispatch, state, keyboardCallbackRef],
   );
 
+  const onMouseClick = useCallback(
+    (event: React.MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const treemaNode = target.closest('.treema-node') as HTMLElement;
+      if (!treemaNode) {
+        return;
+      }
+      const path = treemaNode.dataset.path || '';
+
+      // handle toggle open/close
+      const treemaToggle = target.closest('.treema-toggle');
+      if (treemaToggle) {
+        const isOpen = !getClosed(state)[path];
+        dispatch(setPathClosed(path, isOpen));
+        return;
+      }
+
+      // handle add child
+      const treemaAddChild = target.closest('.treema-add-child');
+      if (treemaAddChild) {
+        handleAddChild(path, state, dispatch);
+        return;
+      }
+
+      // handle select
+      if (state.editing && state.lastSelected && state.lastSelected !== path) {
+        // clicked off a row being edited; save changes and end edit
+        dispatch(setData(state.lastSelected, state.editingData));
+        dispatch(endEdit());
+      }
+      if (state.editing && state.lastSelected === path) {
+        return;
+      }
+      dispatch(selectPath(path || ''));
+    },
+    [dispatch, state],
+  );
+
   useEffect(() => {
     rootRef.current?.addEventListener('keydown', onKeyDown);
     const currentRef = rootRef.current;
@@ -265,7 +304,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
 
   return (
     <TreemaContext.Provider value={context}>
-      <div ref={rootRef} data-testid="treema-root" tabIndex={-1}>
+      <div ref={rootRef} data-testid="treema-root" tabIndex={-1} onClick={onMouseClick}>
         <TreemaNode path={''} />
       </div>
     </TreemaContext.Provider>

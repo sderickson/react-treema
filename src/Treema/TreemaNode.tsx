@@ -71,43 +71,11 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   }
 
   // Event handlers
-  const onSelect = useCallback(
-    (e: React.MouseEvent) => {
-      if (isEditing) {
-        // don't let parent elements grab focus
-        e.stopPropagation();
-
-        return;
-      }
-      if (state.editing && state.lastSelected) {
-        // clicked off a row being edited; save changes and end edit
-        dispatch(setData(state.lastSelected, state.editingData));
-        dispatch(endEdit());
-      }
-      e.stopPropagation();
-      dispatch(selectPath(path || ''));
-    },
-    [dispatch, path, state.editing, state.editingData, state.lastSelected, isEditing],
-  );
-  const onToggle = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      dispatch(setPathClosed(path, isOpen));
-    },
-    [isOpen, path, dispatch],
-  );
   const onChangeValue = useCallback(
     (val: any) => {
       dispatch(editValue(val));
     },
     [dispatch],
-  );
-  const onAddChild = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      handleAddChild(path, context.state, context.dispatch);
-    },
-    [path, context.state, context.dispatch],
   );
   const onChangeAddProperty = useCallback(
     (val: any) => {
@@ -170,8 +138,8 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
 
   // Render
   return (
-    <div className={classNames.join(' ')} onClick={onSelect}>
-      {canOpen && path !== '' && <span className="treema-toggle" role="button" onClick={onToggle} placeholder={togglePlaceholder}></span>}
+    <div className={classNames.join(' ')} data-path={path}>
+      {canOpen && path !== '' && <span className="treema-toggle" role="button" placeholder={togglePlaceholder}></span>}
 
       <div ref={displayRef} tabIndex={-1} className="treema-row">
         {workingSchemas.length > 1 ? (
@@ -229,7 +197,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
         </>
       )}
       {isOpen && canAddChildAtPath(state, path) && (
-        <div className="treema-add-child" onClick={onAddChild} ref={addPropRef} tabIndex={-1}>
+        <div className="treema-add-child" ref={addPropRef} tabIndex={-1}>
           <span>+</span>
         </div>
       )}

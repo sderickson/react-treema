@@ -54,11 +54,13 @@ And http://codecombat.github.io/treema/demo.html
   - [X] export utility functions
 
 #### In Progress
+- [ ] Mouse click to edit
+- [ ] Copy/Paste
+- [ ] Filter
 
 #### TODO
 - [ ] export getters/setters
 - [ ] Put more documentation in storybook mdx
-- [ ] Mouse click to edit
 - [ ] Shift/Meta click
 - [ ] readOnly, skipValidation
 - [ ] undo/redo
@@ -70,8 +72,6 @@ And http://codecombat.github.io/treema/demo.html
   - [ ] "Border" error look when error is for collection
   - [ ] Audit existing CSS, remove floats and unnecessary rules
   - [ ] Responsive
-- [ ] Copy/Paste
-- [ ] filter?
 - [ ] search (that one jquery ui thing)
 - [ ] drag and drop (that other jquery ui thing), noSortable
 - [ ] comprehensive input attribute support
