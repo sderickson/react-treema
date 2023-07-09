@@ -239,15 +239,26 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         return;
       }
 
-      // handle select
+      // finish edits if clicking off the editing row
       if (state.editing && state.lastSelected && state.lastSelected !== path) {
         // clicked off a row being edited; save changes and end edit
         dispatch(setData(state.lastSelected, state.editingData));
         dispatch(endEdit());
       }
+
+      // don't mess with currently-editing row
       if (state.editing && state.lastSelected === path) {
         return;
       }
+
+      // handle edit
+      const displayNode = target.closest('.treema-display');
+      if (displayNode && canEditPathDirectly(state, path)) {
+        dispatch(beginEdit(path));
+        return;
+      }
+
+      // handle select
       dispatch(selectPath(path || ''));
     },
     [dispatch, state],
