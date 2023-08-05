@@ -14,6 +14,7 @@ export const getDefaultState = (): TreemaState => {
     definitions: coreDefinitionsMap,
     settings: {},
     workingSchemaChoices: {},
+    clipboardMode: 'standby',
   };
 };
 

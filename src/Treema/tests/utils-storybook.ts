@@ -3,8 +3,9 @@ import * as jest from '@storybook/jest';
 import * as testLibrary from '@storybook/testing-library';
 import { sleep } from './context';
 import { GenericTest } from './types';
-import { TreemaRootProps, TreemaRoot } from '../TreemaRoot';
+import { TreemaRoot } from '../TreemaRoot';
 import type { StoryObj } from '@storybook/react';
+import { TreemaRootProps } from '../types';
 
 export type Story = StoryObj<typeof TreemaRoot>;
 

@@ -1,5 +1,5 @@
 import { onEvent } from './context';
-import { noopLib } from '../utils';
+import { getNoopLib } from '../utils';
 import { TreemaRootProps } from '../types';
 import { GenericTest } from './types';
 
@@ -20,7 +20,7 @@ export const tabHiddenAndClosedRowTest: GenericTest = {
 export const tabKeyTests: GenericTest[] = [tabHiddenAndClosedRowTest];
 
 export const args: TreemaRootProps = {
-  schemaLib: noopLib,
+  schemaLib: getNoopLib(),
   onEvent,
   initOpen: 1,
   data: { id: 'xyzzy', name: 'Bob', numbers: ['401-401-1337'], address: 'Mars' },

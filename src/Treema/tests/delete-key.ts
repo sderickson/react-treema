@@ -1,5 +1,5 @@
 import { onEvent } from './context';
-import { noopLib } from '../utils';
+import { getNoopLib } from '../utils';
 import { TreemaRootProps } from '../types';
 import { GenericTest } from './types';
 
@@ -20,7 +20,7 @@ export const deleteAllData: GenericTest = {
 export const deleteKeyTests: GenericTest[] = [deleteAllData];
 
 export const args: TreemaRootProps = {
-  schemaLib: noopLib,
+  schemaLib: getNoopLib(),
   onEvent,
   data: [1, 2, 3],
   schema: {

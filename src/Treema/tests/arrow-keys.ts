@@ -1,5 +1,5 @@
 import { onEvent } from './context';
-import { noopLib } from '../utils';
+import { getNoopLib } from '../utils';
 import { TreemaRootProps } from '../types';
 import { GenericTest } from './types';
 
@@ -105,7 +105,7 @@ export const eitherEnd: GenericTest = {
 export const arrowKeyTests: GenericTest[] = [downStartTest, skipClosed, rightOpens, traverseOpenCollections, closeCollections, eitherEnd];
 
 export const args: TreemaRootProps = {
-  schemaLib: noopLib,
+  schemaLib: getNoopLib(),
   onEvent,
   initOpen: 1,
   data: { name: 'Bob', numbers: ['401-401-1337', ['123-456-7890']], address: 'Mars' },
