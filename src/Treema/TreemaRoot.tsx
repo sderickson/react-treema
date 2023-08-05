@@ -14,6 +14,7 @@ import {
   endAddProperty,
   deleteAction,
   setClipboardMode,
+  setFilter,
 } from './state/actions';
 import {
   getCanClose,
@@ -38,7 +39,7 @@ import { TreemaNodeEventCallbackHandler } from './definitions/hooks';
  * will render that data, and enable edits, according to that schema. You can and probably should also
  * provide a JSON Schema validator library which will thoroughly enforce the schema and provide error messages.
  */
-export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent, definitions }) => {
+export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent, definitions, filter }) => {
   /**
    * TreemaRoot handles initializing the state, and updating it when props change. This includes
    * what paths are open or closed, populating required fields, and initializing a noop schema
@@ -82,6 +83,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     settings: {},
     workingSchemaChoices: {},
     clipboardMode: 'standby',
+    filter: filter,
   });
 
   /**
@@ -289,6 +291,10 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     };
   }, [onKeyDown]);
 
+  /**
+   * The following properties are manually propagated to the state. Others are not
+   * expected to change after initialization.
+   */
   const dataRef = useRef(data);
   useEffect(() => {
     // Update state data when prop data changes. This keeps Treema data integrated
@@ -299,7 +305,15 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       dispatch(setData('', data));
       dataRef.current = data;
     }
-  }, [data, dataRef]);
+  }, [data, dataRef, dispatch]);
+
+  const filterRef = useRef(filter);
+  useEffect(() => {
+    if (filter !== filterRef.current) {
+      dispatch(setFilter(filter));
+      filterRef.current = filter;
+    }
+  }, [filter, filterRef, dispatch]);
 
   /**
    * In addition to handling the inputs for the base Treema interface, TreemaRoot also handles

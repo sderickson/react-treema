@@ -1,4 +1,4 @@
-import { TreemaWrappedSchemaLib, TreemaSupportedJsonSchema, JsonPointer, TreemaSettings, TreemaTypeDefinition } from '../types';
+import { TreemaWrappedSchemaLib, TreemaSupportedJsonSchema, JsonPointer, TreemaSettings, TreemaTypeDefinition, TreemaFilterFunction } from '../types';
 
 export type InsertPropertyPlaceholder = string;
 export type OrderEntry = JsonPointer | InsertPropertyPlaceholder;
@@ -25,4 +25,5 @@ export interface TreemaState {
   settings: TreemaSettings;
   workingSchemaChoices: WorkingSchemaChoices;
   clipboardMode: ClipboardMode;
+  filter?: string | RegExp | TreemaFilterFunction;
 }

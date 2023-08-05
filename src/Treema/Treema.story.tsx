@@ -460,6 +460,8 @@ export const RequiredValues = {
  * all supported string input types. Support may vary based on browser.
  *
  * See the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types) for more information.
+ * 
+ * Note that fields with format set to `"hidden"` will not be visible. There is a hidden field in this example.
  */
 export const StringInputTypes = {
   args: {
@@ -473,6 +475,7 @@ export const StringInputTypes = {
       'text': 'text',
       'time': '00:00:00',
       'url': 'https://example.com',
+      'hidden': 'you cannot see me',
     },
     schema: {
       'type': 'object',
@@ -487,6 +490,7 @@ export const StringInputTypes = {
         'text': { 'type': 'string', 'format': 'text' },
         'time': { 'type': 'string', 'format': 'time' },
         'url': { 'type': 'string', 'format': 'url' },
+        'hidden': { type: 'string', 'format': 'hidden' },
       },
     },
   },

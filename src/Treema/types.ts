@@ -62,7 +62,24 @@ export interface TreemaRootProps {
    * @default All levels are open by default
    */
   initOpen?: number;
+
+  /**
+   * Filters what nodes are visible. If a string, filters nodes that do not contain it.
+   * If a regex, filters nodes that do not match it. If a function, filters nodes which
+   * the function returns false.
+   * 
+   * If you are using a function and its behavior changes, be sure to provide a new
+   * function with each change otherwise Treema will not update.
+   */
+  filter?: TreemaFilter;
 }
+
+/**
+ * Determine for each node, given its path, data, and schema, whether it should be visible.
+ */
+export type TreemaFilterFunction = (context: TreemaNodeWalkContext) => boolean;
+
+export type TreemaFilter = string | RegExp | TreemaFilterFunction;
 
 /**
  * JsonPointers. See [RFC 6901](https://datatracker.ietf.org/doc/html/rfc6901).

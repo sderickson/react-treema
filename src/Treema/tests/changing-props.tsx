@@ -1,5 +1,5 @@
 import { onEvent } from './context';
-import { clone, noopLib } from '../utils';
+import { clone, getNoopLib } from '../utils';
 import { TreemaRoot } from '../TreemaRoot';
 import { GenericTest } from './types';
 import React, { useCallback, useState } from 'react';
@@ -63,7 +63,7 @@ export const selectStaysOnAddTest: GenericTest = {
 };
 
 export const changingPropsArgs: TreemaRootProps = {
-  schemaLib: noopLib,
+  schemaLib: getNoopLib(),
   onEvent,
   data: [0, 1, 2],
   schema: {

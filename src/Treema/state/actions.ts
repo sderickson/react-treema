@@ -1,4 +1,4 @@
-import { JsonPointer } from '../types';
+import { JsonPointer, TreemaFilter, TreemaFilterFunction } from '../types';
 import { OrderEntry } from './types';
 import { ClipboardMode } from './types';
 
@@ -194,6 +194,20 @@ export const setClipboardMode = (mode: ClipboardMode): SetClipboardModeAction =>
   };
 };
 
+// Filter Action
+
+type SetFilterAction = {
+  type: 'set_filter_action';
+  filter?: TreemaFilter;
+};
+
+export const setFilter = (filter?: TreemaFilter): SetFilterAction => {
+  return {
+    type: 'set_filter_action',
+    filter,
+  };
+};
+
 export type TreemaAction =
   | SelectPathAction
   | NavigateUpAction
@@ -210,4 +224,5 @@ export type TreemaAction =
   | EndAddPropertyAction
   | DeleteAction
   | SetWorkingSchemaAction
-  | SetClipboardModeAction;
+  | SetClipboardModeAction
+  | SetFilterAction;
