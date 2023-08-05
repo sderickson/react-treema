@@ -13,6 +13,7 @@ import {
   endEdit,
   endAddProperty,
   deleteAction,
+  setClipboardMode,
 } from './state/actions';
 import {
   getCanClose,
@@ -24,6 +25,7 @@ import {
   normalizeToPath,
   isInsertPropertyPlaceholder,
   getClosed,
+  getDataAtPath,
 } from './state/selectors';
 import { reducer } from './state/reducer';
 import { TreemaNode } from './TreemaNode';
@@ -80,13 +82,13 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     definitions: Object.assign({}, wrapDefinitions(coreDefinitions), wrapDefinitions(definitions || [])),
     settings: {},
     workingSchemaChoices: {},
+    clipboardMode: 'standby',
   });
 
   /**
    * Being at the top level, TreemaRoot is responsible for handling keyboard events. It should describe
    * at a high level how the state changes, and rely on the reducer to handle the details.
    */
-  // const nodeCallbackHandler = useTreemaKeyboardEvent();
   const keyboardCallbackRef = useRef<TreemaNodeEventCallbackHandler>();
   const rootRef = React.useRef<HTMLDivElement>(null);
   const onKeyDown = useCallback(
@@ -211,8 +213,21 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           dispatch(deleteAction(state.lastSelected));
         }
       }
+
+      if ((event.key === 'Meta' || event.key === 'Control') && !state.editing) {
+        dispatch(setClipboardMode('active'));
+      }
     },
     [dispatch, state, keyboardCallbackRef],
+  );
+
+  const onKeyUp = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === 'Meta' || event.key === 'Control') {
+        dispatch(setClipboardMode('standby'));
+      }
+    },
+    [dispatch],
   );
 
   const onMouseClick = useCallback(
@@ -266,10 +281,12 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
 
   useEffect(() => {
     rootRef.current?.addEventListener('keydown', onKeyDown);
+    rootRef.current?.addEventListener('keyup', onKeyUp);
     const currentRef = rootRef.current;
 
     return () => {
       currentRef?.removeEventListener('keydown', onKeyDown);
+      currentRef?.removeEventListener('keyup', onKeyUp);
     };
   }, [onKeyDown]);
 

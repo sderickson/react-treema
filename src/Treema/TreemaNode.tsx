@@ -57,6 +57,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const isDefaultRoot = getIsDefaultRoot(state, path);
   const isAddingProperty = 'addTo:' + path === state.lastSelected && state.addingProperty;
   const isFocusedOnAddProperty = 'addTo:' + path === state.lastSelected && !state.addingProperty;
+  const clipboardMode = state.clipboardMode;
 
   // Determine string for key
   if (name === undefined) {
@@ -100,13 +101,18 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const displayRef = React.useRef<HTMLDivElement>(null);
   const addPropertyRef = React.useRef<HTMLInputElement>(null);
   const addPropRef = React.useRef<HTMLDivElement>(null);
+  const clipboardRef = React.useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     let focusable = null;
+    let andSelectAll = false;
     if (isEditing) {
       // TODO: handle multiple refs
       focusable = editRefs[0]?.current;
     } else if (isAddingProperty) {
       focusable = addPropertyRef.current;
+    } else if (clipboardMode !== 'standby' && isSelected) {
+      focusable = clipboardRef.current;
+      andSelectAll = true;
     } else if (isSelected) {
       focusable = displayRef.current;
     } else if (isFocusedOnAddProperty) {
@@ -114,8 +120,19 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     }
     if (focusable && focusable.focus) {
       focusable.focus();
+      if (andSelectAll) {
+        // select the contents of the hidden text area so that it will be copied
+        clipboardRef.current?.select();
+      }
     }
   });
+
+  const onPaste = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      dispatch(setData(path, JSON.parse(e.target.value)));
+    },
+    [dispatch],
+  )
 
   // No more hooks allowed below here...
   if (workingSchema.format === 'hidden') {
@@ -141,6 +158,16 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       {canOpen && path !== '' && <span className="treema-toggle" role="button" placeholder={togglePlaceholder}></span>}
 
       <div ref={displayRef} tabIndex={-1} className="treema-row">
+        {clipboardMode === 'active' && isSelected && (
+          <>
+            <span className="treema-clipboard-mode">📋</span>
+            <div className="treema-clipboard-container">
+              {/* This hidden text area contains text to copy, and receives pasted text. */}
+              <textarea className="treema-clipboard" ref={clipboardRef} value={JSON.stringify(data, null, '\t')} onChange={onPaste}></textarea>
+            </div>
+          </>
+        )}
+
         {workingSchemas.length > 1 ? (
           <select onChange={onSetWorkingModel} value={workingSchemaIndex} className="treema-schema-select">
             {workingSchemas.map((schema, index) => (

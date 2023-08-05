@@ -5,6 +5,12 @@ export type OrderEntry = JsonPointer | InsertPropertyPlaceholder;
 
 export type WorkingSchemaChoices = { [path: string]: number };
 
+/**
+ * Clipboard mode is "active" when either the command or ctrl key is held down. When active, the user gets a
+ * visual hint, and a hidden textarea is rendered to provide text for copying, and to receive text for pasting.
+ */
+export type ClipboardMode = 'active' | 'standby';
+
 export interface TreemaState {
   data: any;
   schemaLib: TreemaWrappedSchemaLib;
@@ -18,4 +24,5 @@ export interface TreemaState {
   definitions: { [key: string]: TreemaTypeDefinition };
   settings: TreemaSettings;
   workingSchemaChoices: WorkingSchemaChoices;
+  clipboardMode: ClipboardMode;
 }

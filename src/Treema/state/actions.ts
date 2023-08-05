@@ -1,5 +1,6 @@
 import { JsonPointer } from '../types';
 import { OrderEntry } from './types';
+import { ClipboardMode } from './types';
 
 // Select Action
 
@@ -179,6 +180,20 @@ export const setWorkingSchema = (path: JsonPointer, index: number): SetWorkingSc
   };
 };
 
+// Clipboard Action
+
+type SetClipboardModeAction = {
+  type: 'set_clipboard_mode_action';
+  mode: ClipboardMode;
+};
+
+export const setClipboardMode = (mode: ClipboardMode): SetClipboardModeAction => {
+  return {
+    type: 'set_clipboard_mode_action',
+    mode,
+  };
+};
+
 export type TreemaAction =
   | SelectPathAction
   | NavigateUpAction
@@ -194,4 +209,5 @@ export type TreemaAction =
   | EditAddPropertyAction
   | EndAddPropertyAction
   | DeleteAction
-  | SetWorkingSchemaAction;
+  | SetWorkingSchemaAction
+  | SetClipboardModeAction;

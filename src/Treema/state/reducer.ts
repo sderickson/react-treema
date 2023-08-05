@@ -179,6 +179,9 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
 
       return { ...state, workingSchemaChoices };
 
+    case 'set_clipboard_mode_action':
+      return { ...state, clipboardMode: action.mode };
+
     default:
       console.error('Unknown action', action);
   }
