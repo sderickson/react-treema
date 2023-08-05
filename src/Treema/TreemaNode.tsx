@@ -131,7 +131,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       dispatch(setData(path, JSON.parse(e.target.value)));
     },
-    [dispatch],
+    [dispatch, path],
   );
 
   // No more hooks allowed below here...

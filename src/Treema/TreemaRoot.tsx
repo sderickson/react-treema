@@ -292,7 +292,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       currentRef?.removeEventListener('keydown', onKeyDown);
       currentRef?.removeEventListener('keyup', onKeyUp);
     };
-  }, [onKeyDown]);
+  }, [onKeyDown, onKeyUp]);
 
   /**
    * The following properties are manually propagated to the state. Others are not

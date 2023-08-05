@@ -377,8 +377,6 @@ const applyFilter = (datasAndSchemas: DataSchemaMap, path: JsonPointer, filter?:
       possibleSchemas: datasAndSchemas[path].possibleSchemas,
     });
   }
-
-  return false;
 };
 
 type OrderInfo = {
