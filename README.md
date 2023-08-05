@@ -53,17 +53,17 @@ And http://codecombat.github.io/treema/demo.html
     - [X] Add schema prop to definition
   - [X] export utility functions
 - [X] Mouse click to edit
+- [X] Copy/Paste
 
 #### In Progress
-- [ ] Copy/Paste
 - [ ] Filter
+- [ ] undo/redo
 
 #### TODO
 - [ ] export getters/setters
 - [ ] Put more documentation in storybook mdx
 - [ ] Shift/Meta click
 - [ ] readOnly, skipValidation
-- [ ] undo/redo
 - [ ] A11y
   - [ ] Add roles, test with screen reader
   - [ ] Form mode

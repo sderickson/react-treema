@@ -25,7 +25,6 @@ import {
   normalizeToPath,
   isInsertPropertyPlaceholder,
   getClosed,
-  getDataAtPath,
 } from './state/selectors';
 import { reducer } from './state/reducer';
 import { TreemaNode } from './TreemaNode';
