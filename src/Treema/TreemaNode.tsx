@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useContext, useEffect } from 'react';
 import { JsonPointer } from './types';
 import { TreemaContext } from './context';
-import { selectPath, setPathClosed, setData, endEdit, editValue, editAddProperty, setWorkingSchema } from './state/actions';
+import { setData, editValue, editAddProperty, setWorkingSchema } from './state/actions';
 import {
   getClosed,
   getSchemaErrorsByPath,
@@ -16,7 +16,6 @@ import {
   hasChildrenAtPath,
 } from './state/selectors';
 import './base.scss';
-import { handleAddChild } from './common';
 import { clone, getJsonPointerLastChild, getParentJsonPointer, getValueForRequiredType } from './utils';
 
 interface TreemaNodeProps {

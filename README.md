@@ -52,9 +52,9 @@ And http://codecombat.github.io/treema/demo.html
     - [X] Finalize names
     - [X] Add schema prop to definition
   - [X] export utility functions
+- [X] Mouse click to edit
 
 #### In Progress
-- [ ] Mouse click to edit
 - [ ] Copy/Paste
 - [ ] Filter
 
