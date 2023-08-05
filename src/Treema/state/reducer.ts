@@ -57,7 +57,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       return { ...state, lastSelected: normalizeToPath(nextSelected) };
 
     case 'navigate_in_action':
-      paths = getListOfPaths(state).slice(1);
+      paths = getListOfPaths(state);
       index = paths.indexOf(state.lastSelected || '');
       nextPath = paths[index + 1];
       if (normalizeToPath(nextPath).indexOf(normalizeToPath(paths[index])) === 0) {
