@@ -54,9 +54,9 @@ And http://codecombat.github.io/treema/demo.html
   - [X] export utility functions
 - [X] Mouse click to edit
 - [X] Copy/Paste
+- [X] Filter
 
 #### In Progress
-- [ ] Filter
 - [ ] undo/redo
 
 #### TODO
