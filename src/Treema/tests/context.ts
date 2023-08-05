@@ -48,8 +48,8 @@ export class TreemaStorybookTestContext {
     return this.testingLibrary.within(this.root);
   }
 
-  async fireFocus(): Promise<void> {
-    await this.testingLibrary.fireEvent.focus(this.treema);
+  async fireFocus(e?: Element): Promise<void> {
+    await this.testingLibrary.fireEvent.focus(e || this.treema);
     await sleep(this.speed);
   }
 
@@ -88,8 +88,18 @@ export class TreemaStorybookTestContext {
     await sleep(this.speed);
   }
 
-  async type(input: string): Promise<void> {
+  async fireMouseClick(e: Element): Promise<void> {
+    await this.testingLibrary.fireEvent.click(e);
+    await sleep(this.speed);
+  }
+
+  async keyboard(input: string): Promise<void> {
     await user.keyboard(input);
+    await sleep(this.speed);
+  }
+
+  async type(element: Element, text: string): Promise<void> {
+    await user.type(element, text);
     await sleep(this.speed);
   }
 

@@ -1,5 +1,5 @@
-import { getParentJsonPointer, getType, walk, joinJsonPointers } from '../utils';
-import { JsonPointer, TreemaValidatorError, TreemaWorkingSchema, TreemaTypeDefinition } from '../types';
+import { getParentJsonPointer, getType, walk, joinJsonPointers, getJsonPointerLastChild } from '../utils';
+import { JsonPointer, TreemaValidatorError, TreemaWorkingSchema, TreemaTypeDefinition, TreemaFilter } from '../types';
 import { TreemaState, OrderEntry, WorkingSchemaChoices } from './types';
 import { createSelector } from 'reselect';
 
@@ -12,6 +12,7 @@ export const getLastSelectedPath = (state: TreemaState) => state.lastSelected ||
 export const getDefinitions = (state: TreemaState) => state.definitions;
 export const getSettings = (state: TreemaState) => state.settings;
 export const getWorkingSchemaChoices = (state: TreemaState) => state.workingSchemaChoices;
+export const getFilter = (state: TreemaState) => state.filter;
 
 // ----------------------------------------------------------------------------
 // Data and schema selectors
@@ -342,6 +343,43 @@ export const normalizeToPath = (path: OrderEntry): JsonPointer => {
   return path;
 };
 
+const applyFilter = (datasAndSchemas: DataSchemaMap, path: JsonPointer, filter?: TreemaFilter): boolean => {
+  const { data, schema } = datasAndSchemas[path];
+  if (!filter) {
+    return true;
+  } else if (typeof filter === 'string') {
+    if(getJsonPointerLastChild(path).indexOf(filter) !== -1) {
+      return true;
+    };
+    if(typeof data === 'string') {
+      return data.indexOf(filter) !== -1;
+    } else if (typeof data === 'object') {
+      return false;
+    } else {
+      return JSON.stringify(data).indexOf(filter) !== -1;
+    }
+  } else if (filter instanceof RegExp) {
+    if(filter.exec(getJsonPointerLastChild(path))) {
+      return true;
+    };
+    if(typeof data === 'string') {
+      return !!filter.exec(data);
+    } else if (typeof data === 'object') {
+      return false;
+    } else {
+      return !!filter.exec(JSON.stringify(data));
+    }
+  } else {
+    return filter({
+      path,
+      data,
+      schema,
+      possibleSchemas: datasAndSchemas[path].possibleSchemas,
+    });
+  }
+  return false;
+};
+
 type OrderInfo = {
   pathOrder: OrderEntry[];
   pathToChildren: { [key: JsonPointer]: JsonPointer[] };
@@ -353,78 +391,121 @@ type OrderInfo = {
  * real and default data information. This way we can create a full list of all paths to display,
  * default or not, as well as what each object and array's children should be.
  */
-export const getOrderInfo = createSelector([getAllDatasAndSchemas], (datasAndSchemas): OrderInfo => {
-  const pathList: OrderEntry[] = [];
-  let stack: OrderEntry[] = [''];
-  const pathToChildren: { [key: JsonPointer]: JsonPointer[] } = {};
-  while (stack.length) {
-    const path = stack.shift() as JsonPointer;
-    if (isInsertPropertyPlaceholder(path)) {
-      pathList.push(path);
-      continue;
-    }
-    const { data, schema } = datasAndSchemas[path];
-    if (schema.format === 'hidden') {
-      continue;
-    }
+export const getOrderInfo = createSelector([getAllDatasAndSchemas, getFilter], (datasAndSchemas, filter): OrderInfo => {
+  return getOrderInfoRecursively('', datasAndSchemas, filter);
+});
 
-    const dataType = getType(data);
+const getArrayKeys = (path: JsonPointer, data: any): JsonPointer[] => {
+  return data.map((_: any, index: number) => {
+    return path + '/' + index;
+  });
+}
 
-    if (dataType === 'array') {
-      const childPaths = data.map((_: any, index: number) => {
-        return path + '/' + index;
-      });
-      if (_canAddChild(data, schema)) {
-        stack.unshift('addTo:' + path);
+const getObjectKeys = (path: JsonPointer, data: any, schema: TreemaWorkingSchema): JsonPointer[] => {
+  const keys: JsonPointer[] = [];
+  const keysListed: Set<JsonPointer> = new Set();
+  if (schema.properties) {
+    // first list known properties, for which we have data to show
+    Object.keys(schema.properties).forEach((key: string) => {
+      if (data[key] !== undefined || (schema.default || {})[key] !== undefined) {
+        keys.push(`${path}/${key}`);
+        keysListed.add(key);
       }
-      stack = childPaths.concat(stack);
-      pathToChildren[path] = childPaths;
-    }
+    });
+  }
+  // then list any other properties (not listed in properties), for which we have data
+  if (typeof data === 'object') {
+    Object.keys(data).forEach((key: string) => {
+      if (!keysListed.has(key)) {
+        keys.push(`${path}/${key}`);
+        keysListed.add(key);
+      }
+    });
+  }
+  // then list any default properties (not listed in properties)
+  if (schema.default) {
+    Object.keys(schema.default).forEach((key: string) => {
+      if (!keysListed.has(key)) {
+        keys.push(`${path}/${key}`);
+        keysListed.add(key);
+      }
+    });
+  }
+  return keys;
+}
 
-    if (dataType === 'object') {
-      const keys: JsonPointer[] = [];
-      const keysListed: Set<JsonPointer> = new Set();
-      if (schema.properties) {
-        // first list known properties, for which we have data to show
-        Object.keys(schema.properties).forEach((key: string) => {
-          if (data[key] !== undefined || (schema.default || {})[key] !== undefined) {
-            keys.push(`${path}/${key}`);
-            keysListed.add(key);
-          }
-        });
-      }
-      // then list any other properties (not listed in properties), for which we have data
-      if (typeof data === 'object') {
-        Object.keys(data).forEach((key: string) => {
-          if (!keysListed.has(key)) {
-            keys.push(`${path}/${key}`);
-            keysListed.add(key);
-          }
-        });
-      }
-      // then list any default properties (not listed in properties)
-      if (schema.default) {
-        Object.keys(schema.default).forEach((key: string) => {
-          if (!keysListed.has(key)) {
-            keys.push(`${path}/${key}`);
-            keysListed.add(key);
-          }
-        });
-      }
-      if (_canAddChild(data, schema)) {
-        stack.unshift('addTo:' + path);
-      }
-      stack = keys.concat(stack);
-      pathToChildren[path] = keys;
-    }
-    pathList.push(path);
+export const getOrderInfoRecursively = (path: JsonPointer, datasAndSchemas: DataSchemaMap, filter?: TreemaFilter): OrderInfo => {
+  /**
+   * Recursively determine the order/visibility of all nodes. Needs to be done recursively because in some
+   * instances whether a parent is visible is dependent on if any children are visibile. By doing both at
+   * the same time we make sure the keyboard ordering matches what is visible.
+   */
+
+  const { schema, data } = datasAndSchemas[path];
+
+  // if self is hidden, return empty
+  if (schema.format === 'hidden') {
+    return {
+      pathOrder: [],
+      pathToChildren: {},
+    };
   }
 
-  return {
-    pathOrder: pathList,
-    pathToChildren,
+  const visible = applyFilter(datasAndSchemas, path, filter);
+  const dataType = getType(data);
+
+  // If not a collection, return self based on visibility.
+  if (['array', 'object'].indexOf(dataType) === -1) {
+    return {
+      pathOrder: visible ? [path] : [],
+      pathToChildren: {},
+    };
+  }
+
+  // determine child keys
+  const childPaths = dataType === 'array' ? getArrayKeys(path, data) : getObjectKeys(path, data, schema);
+
+  // Recursively get children OrderInfo
+  const childOrderInfos = childPaths.map(
+    (childPath) => getOrderInfoRecursively(
+      childPath,
+      datasAndSchemas,
+      visible ? undefined : filter) // don't propagate filter if self (and by extension children) is unfiltered
+  );
+
+  // Combine children OrderInfos
+  const orderInfo: OrderInfo = {
+    pathOrder: childOrderInfos.reduce((acc: Array<string>, childOrderInfo) => acc.concat(childOrderInfo.pathOrder), []),
+    pathToChildren: childOrderInfos.reduce((acc: { [key: JsonPointer]: JsonPointer[] }, childOrderInfo) => {
+      return Object.assign(acc, childOrderInfo.pathToChildren);
+    }, {}),
   };
-});
+
+  // If self is not visible, and no visible children, return empty.
+  if (!visible && orderInfo.pathOrder.length === 0) {
+    return {
+      pathOrder: [],
+      pathToChildren: {},
+    };
+  }
+
+  // Extend combined orderInfo with own info
+  orderInfo.pathOrder.unshift(path);
+  if (_canAddChild(data, schema)) {
+    orderInfo.pathOrder.push('addTo:' + path);
+  }
+  const ownChildren: JsonPointer[] = [];
+  for (let i = 0; i < childPaths.length; i++) {
+    const childPath = childPaths[i];
+    const childOrderInfo = childOrderInfos[i];
+    if (childOrderInfo.pathOrder.length > 0) {
+      ownChildren.push(childPath);
+    }
+  }
+  orderInfo.pathToChildren[path] = ownChildren;
+
+  return orderInfo;
+};
 
 export const getListOfPaths = createSelector([getOrderInfo], (orderInfo): OrderEntry[] => {
   return orderInfo.pathOrder;

@@ -1,4 +1,5 @@
-import { TreemaRoot } from './index';
+import React, { useCallback, useState } from 'react';
+import { TreemaRoot, TreemaRootProps } from './index';
 import tv4 from 'tv4';
 import { wrapTv4 } from './utils';
 import Ajv from 'ajv';
@@ -6,6 +7,7 @@ import { wrapAjv } from './utils';
 import { TreemaPoint2dNodeDefinition } from './definitions/point2d';
 import { TreemaLongStringNodeDefinition } from './definitions/long-string';
 import { TreemaMarkdownNodeDefinition } from './definitions/markdown';
+import { TreemaFilter, TreemaNodeWalkContext } from './types';
 
 export default {
   title: 'Main/TreemaRoot',
@@ -567,4 +569,70 @@ export const UnspecifiedJson = {
     },
     schema: {},
   },
+};
+
+
+const FilterParentComponent: React.FC<TreemaRootProps> = (props) => {
+  const [filter, setFilter] = useState<string>('');
+  const [filterType, setFilterType] = useState<string>('string');
+  const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value);
+  }, [setFilter]);
+
+  let filterProp: TreemaFilter;
+  if (filterType === 'string') {
+    filterProp = filter;
+  } else if (filterType === 'regex') {
+    filterProp = new RegExp(filter, 'i');
+  } else {
+    filterProp = (ctx: TreemaNodeWalkContext) => {
+      if (ctx.schema.type === 'string' && typeof ctx.data === 'string') {
+        return ctx.data.includes(filter);
+      }
+      return false;
+    };
+  }
+
+  return (
+    <div data-testid="integration-test">
+      <span>Filter: </span>
+      <input onChange={onChange} value={filter} data-testid="test-filter-input" />
+      <div>
+        <label htmlFor="filter-type">Filter Type: </label>
+        <select id="filter-type" data-testid="test-filter-type" onChange={(val) => {setFilterType(val.target.value)}}>
+          <option value="string">String (exact match)</option>
+          <option value="regex">Regex (case-insensitive)</option>
+          <option value="function">Function (matches only words, not language)</option>
+        </select>
+      </div>
+      <TreemaRoot {...props} filter={filterProp} />
+    </div>
+  );
+};
+
+const commonEnglishWords = ["the", "be", "to", "of"];
+const commonSpanishWords = ["gracias", "ser", "a", "ir"];
+
+/**
+ * This storybook demonstrates and tests the filter TreemaRoot prop.
+ */
+export const Filters = {
+  component: FilterParentComponent,
+  args: {
+    data: {
+      'English': commonEnglishWords,
+      'Spanish': commonSpanishWords,
+    },
+    schema: {
+      title: 'Common Words By Language',
+      type: 'object',
+      additionalProperties: {
+        name: 'Common Words',
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+      },
+    },
+  }
 };

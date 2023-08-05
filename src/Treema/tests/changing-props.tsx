@@ -51,7 +51,7 @@ export const selectStaysOnAddTest: GenericTest = {
 
     // add "40" to the end via treema
     await ctx.fireEnter();
-    await ctx.type('4');
+    await ctx.keyboard('4');
     await ctx.fireTab();
 
     // add "5" to the end of the array by separate button

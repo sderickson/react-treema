@@ -118,6 +118,29 @@ describe('getListOfPaths', () => {
     // both /a and /a/b and their addTo: paths should be included
     expect(result).toEqual(['', '/a', '/a/b', 'addTo:/a/b', 'addTo:/a', 'addTo:']);
   });
+
+  it('takes into account filters', () => {
+    const state: TreemaState = {
+      ...getDefaultState(),
+      rootSchema: {},
+      data: {
+        a: {
+          b: [
+            'c',
+            'd',
+            'e',
+          ],
+          f: 'f',
+        },
+        g: 'g',
+        h: [],
+      },
+      filter: 'd',
+    };
+    const result = getListOfPaths(state);
+    // /a/b/1 and all parents/addTo: paths along the path should be included
+    expect(result).toEqual(['', '/a', '/a/b', '/a/b/1', 'addTo:/a/b', 'addTo:/a', 'addTo:']);
+  });
 });
 
 describe('getSchemaErrorsByPath', () => {

@@ -3,23 +3,42 @@ import { getNoopLib } from '../utils';
 import { TreemaRoot } from '../TreemaRoot';
 import { GenericTest } from './types';
 import React, { useCallback, useState } from 'react';
-import { TreemaRootProps } from '../types';
+import { TreemaRootProps, TreemaFilter, TreemaNodeWalkContext } from '../types';
 
-/**
- * A parent component that has the data stored in its useState hook. It includes buttons for
- * changing the data, a display for the data, and a Treema instance.
- */
 export const ParentComponent: React.FC<TreemaRootProps> = (props) => {
   const [filter, setFilter] = useState<string>('');
+  const [filterType, setFilterType] = useState<string>('string');
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value);
   }, [setFilter]);
+
+  let filterProp: TreemaFilter;
+  if (filterType === 'string') {
+    filterProp = filter;
+  } else if (filterType === 'regex') {
+    filterProp = new RegExp(filter, 'i');
+  } else {
+    filterProp = (ctx: TreemaNodeWalkContext) => {
+      if (ctx.schema.type === 'string' && typeof ctx.data === 'string') {
+        return ctx.data.includes(filter);
+      }
+      return false;
+    };
+  }
 
   return (
     <div data-testid="integration-test">
       <span>Filter: </span>
       <input onChange={onChange} value={filter} data-testid="test-filter-input" />
-      <TreemaRoot {...props} onEvent={onEvent} filter={filter} />
+      <div>
+        <label htmlFor="filter-type">Filter Type: </label>
+        <select id="filter-type" data-testid="test-filter-type" onChange={(val) => {setFilterType(val.target.value)}}>
+          <option value="string">String (exact match)</option>
+          <option value="regex">Regex (case-insensitive)</option>
+          <option value="function">Function (matches only words, not language)</option>
+        </select>
+      </div>
+      <TreemaRoot {...props} onEvent={onEvent} filter={filterProp} />
     </div>
   );
 };
@@ -27,7 +46,10 @@ export const ParentComponent: React.FC<TreemaRootProps> = (props) => {
 export const stringFilterTest: GenericTest = {
   name: 'setting a string filter should work',
   test: async (ctx) => {
-    // todo
+    await ctx.type(ctx.query().getByTestId('test-filter-input'), 'te');
+    ctx.expect(ctx.query().queryByText('English:')).toBeTruthy();
+    ctx.expect(ctx.query().queryByText('after')).toBeTruthy();
+    ctx.expect(ctx.query().queryByText('hacer')).toBe(null);
   },
 };
 

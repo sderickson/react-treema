@@ -500,7 +500,7 @@ export const splitJsonPointer = (path: JsonPointer): string[] => {
 export const getJsonPointerLastChild = (path: JsonPointer): string => {
   const parts = splitJsonPointer(path);
 
-  return parts[parts.length - 1];
+  return parts[parts.length - 1] || '';
 };
 
 export const joinJsonPointers = (...paths: string[]): JsonPointer => {

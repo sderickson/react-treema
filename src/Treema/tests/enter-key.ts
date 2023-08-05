@@ -9,7 +9,7 @@ export const editRow: GenericTest = {
     await ctx.fireFocus();
     await ctx.fireEnter();
     await ctx.fireEnter();
-    await ctx.type('Hi!');
+    await ctx.keyboard('Hi!');
     await ctx.fireEnter();
     const data = ctx.getData();
     ctx.expect(data.name).toEqual('BobHi!');
@@ -45,9 +45,9 @@ export const editRootArrayTest: GenericTest = {
     await ctx.fireTab();
     await ctx.fireEnter();
     await ctx.fireArrowRight();
-    await ctx.type('9001');
+    await ctx.keyboard('9001');
     await ctx.fireEnter();
-    await ctx.type('9002');
+    await ctx.keyboard('9002');
     await ctx.fireEnter();
     const data = ctx.getData();
     ctx.expect(data).toEqual([1, 2, 3, 90010, 90020, 0]); // not sure what's going on with "type" here... should be 9001
@@ -94,13 +94,13 @@ export const noMorePropsTest: GenericTest = {
     await ctx.fireFocus();
     await ctx.fireTab();
     await ctx.fireEnter();
-    await ctx.type('a');
+    await ctx.keyboard('a');
     await ctx.fireEnter();
-    await ctx.type('asdf');
+    await ctx.keyboard('asdf');
 
     // if the interface allows the following to work, this is broken
     await ctx.fireEnter();
-    await ctx.type('b');
+    await ctx.keyboard('b');
     await ctx.fireEnter();
     const data = ctx.getData();
     ctx.expect(data).toEqual({ a: 'asdf' });

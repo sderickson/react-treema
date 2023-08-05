@@ -24,7 +24,7 @@ export const breakCurrentWorkingSchema: GenericTest = {
 
     await ctx.fireEnter();
     await ctx.clear();
-    await ctx.type('a');
+    await ctx.keyboard('a');
     await ctx.fireTab();
     // now make the value no longer fit "type b"
     // but we should still see the "type b" schema title of the adjacent property...
