@@ -132,7 +132,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       dispatch(setData(path, JSON.parse(e.target.value)));
     },
     [dispatch],
-  )
+  );
 
   // No more hooks allowed below here...
   // CSS classes
@@ -159,7 +159,12 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
             <span className="treema-clipboard-mode">📋</span>
             <div className="treema-clipboard-container">
               {/* This hidden text area contains text to copy, and receives pasted text. */}
-              <textarea className="treema-clipboard" ref={clipboardRef} value={JSON.stringify(data, null, '\t')} onChange={onPaste}></textarea>
+              <textarea
+                className="treema-clipboard"
+                ref={clipboardRef}
+                value={JSON.stringify(data, null, '\t')}
+                onChange={onPaste}
+              ></textarea>
             </div>
           </>
         )}

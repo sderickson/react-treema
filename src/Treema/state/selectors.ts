@@ -348,10 +348,10 @@ const applyFilter = (datasAndSchemas: DataSchemaMap, path: JsonPointer, filter?:
   if (!filter) {
     return true;
   } else if (typeof filter === 'string') {
-    if(getJsonPointerLastChild(path).indexOf(filter) !== -1) {
+    if (getJsonPointerLastChild(path).indexOf(filter) !== -1) {
       return true;
-    };
-    if(typeof data === 'string') {
+    }
+    if (typeof data === 'string') {
       return data.indexOf(filter) !== -1;
     } else if (typeof data === 'object') {
       return false;
@@ -359,10 +359,10 @@ const applyFilter = (datasAndSchemas: DataSchemaMap, path: JsonPointer, filter?:
       return JSON.stringify(data).indexOf(filter) !== -1;
     }
   } else if (filter instanceof RegExp) {
-    if(filter.exec(getJsonPointerLastChild(path))) {
+    if (filter.exec(getJsonPointerLastChild(path))) {
       return true;
-    };
-    if(typeof data === 'string') {
+    }
+    if (typeof data === 'string') {
       return !!filter.exec(data);
     } else if (typeof data === 'object') {
       return false;
@@ -377,6 +377,7 @@ const applyFilter = (datasAndSchemas: DataSchemaMap, path: JsonPointer, filter?:
       possibleSchemas: datasAndSchemas[path].possibleSchemas,
     });
   }
+
   return false;
 };
 
@@ -399,7 +400,7 @@ const getArrayKeys = (path: JsonPointer, data: any): JsonPointer[] => {
   return data.map((_: any, index: number) => {
     return path + '/' + index;
   });
-}
+};
 
 const getObjectKeys = (path: JsonPointer, data: any, schema: TreemaWorkingSchema): JsonPointer[] => {
   const keys: JsonPointer[] = [];
@@ -431,8 +432,9 @@ const getObjectKeys = (path: JsonPointer, data: any, schema: TreemaWorkingSchema
       }
     });
   }
+
   return keys;
-}
+};
 
 export const getOrderInfoRecursively = (path: JsonPointer, datasAndSchemas: DataSchemaMap, filter?: TreemaFilter): OrderInfo => {
   /**
@@ -467,10 +469,7 @@ export const getOrderInfoRecursively = (path: JsonPointer, datasAndSchemas: Data
 
   // Recursively get children OrderInfo
   const childOrderInfos = childPaths.map(
-    (childPath) => getOrderInfoRecursively(
-      childPath,
-      datasAndSchemas,
-      visible ? undefined : filter) // don't propagate filter if self (and by extension children) is unfiltered
+    (childPath) => getOrderInfoRecursively(childPath, datasAndSchemas, visible ? undefined : filter), // don't propagate filter if self (and by extension children) is unfiltered
   );
 
   // Combine children OrderInfos

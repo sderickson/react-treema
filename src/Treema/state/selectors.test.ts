@@ -125,11 +125,7 @@ describe('getListOfPaths', () => {
       rootSchema: {},
       data: {
         a: {
-          b: [
-            'c',
-            'd',
-            'e',
-          ],
+          b: ['c', 'd', 'e'],
           f: 'f',
         },
         g: 'g',

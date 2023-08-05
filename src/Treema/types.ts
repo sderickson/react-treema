@@ -67,7 +67,7 @@ export interface TreemaRootProps {
    * Filters what nodes are visible. If a string, filters nodes that do not contain it.
    * If a regex, filters nodes that do not match it. If a function, filters nodes which
    * the function returns false.
-   * 
+   *
    * If you are using a function and its behavior changes, be sure to provide a new
    * function with each change otherwise Treema will not update.
    */

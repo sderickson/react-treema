@@ -1,4 +1,4 @@
-import { JsonPointer, TreemaFilter, TreemaFilterFunction } from '../types';
+import { JsonPointer, TreemaFilter } from '../types';
 import { OrderEntry } from './types';
 import { ClipboardMode } from './types';
 

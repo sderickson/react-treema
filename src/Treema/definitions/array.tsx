@@ -41,6 +41,7 @@ export const TreemaArrayNodeDefinition: TreemaTypeDefinition = {
     if (data.length > 3) {
       joinedChildren.push(<span key={4}> | ...</span>);
     }
+
     return <span>{joinedChildren}</span>;
   },
 

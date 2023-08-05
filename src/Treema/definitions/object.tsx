@@ -19,9 +19,11 @@ export const TreemaObjectNodeDefinition: TreemaTypeDefinition = {
     if (schema.displayProperty) {
       const displayValue = data[schema.displayProperty];
       if (displayValue) {
-        if (typeof displayValue === 'object') { // if for some reason it's an array or object...
+        if (typeof displayValue === 'object') {
+          // if for some reason it's an array or object...
           return <span>{JSON.stringify(displayValue)}</span>;
         }
+
         return <span>{displayValue}</span>;
       }
     }

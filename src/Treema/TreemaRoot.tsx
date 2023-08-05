@@ -245,6 +245,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       if (treemaToggle) {
         const isOpen = !getClosed(state)[path];
         dispatch(setPathClosed(path, isOpen));
+
         return;
       }
 
@@ -252,6 +253,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       const treemaAddChild = target.closest('.treema-add-child');
       if (treemaAddChild) {
         handleAddChild(path, state, dispatch);
+
         return;
       }
 
@@ -271,6 +273,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       const displayNode = target.closest('.treema-display');
       if (displayNode && canEditPathDirectly(state, path)) {
         dispatch(beginEdit(path));
+
         return;
       }
 

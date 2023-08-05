@@ -462,7 +462,7 @@ export const RequiredValues = {
  * all supported string input types. Support may vary based on browser.
  *
  * See the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#input_types) for more information.
- * 
+ *
  * Note that fields with format set to `"hidden"` will not be visible. There is a hidden field in this example.
  */
 export const StringInputTypes = {
@@ -571,13 +571,15 @@ export const UnspecifiedJson = {
   },
 };
 
-
 const FilterParentComponent: React.FC<TreemaRootProps> = (props) => {
   const [filter, setFilter] = useState<string>('');
   const [filterType, setFilterType] = useState<string>('string');
-  const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(e.target.value);
-  }, [setFilter]);
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFilter(e.target.value);
+    },
+    [setFilter],
+  );
 
   let filterProp: TreemaFilter;
   if (filterType === 'string') {
@@ -589,6 +591,7 @@ const FilterParentComponent: React.FC<TreemaRootProps> = (props) => {
       if (ctx.schema.type === 'string' && typeof ctx.data === 'string') {
         return ctx.data.includes(filter);
       }
+
       return false;
     };
   }
@@ -599,7 +602,13 @@ const FilterParentComponent: React.FC<TreemaRootProps> = (props) => {
       <input onChange={onChange} value={filter} data-testid="test-filter-input" />
       <div>
         <label htmlFor="filter-type">Filter Type: </label>
-        <select id="filter-type" data-testid="test-filter-type" onChange={(val) => {setFilterType(val.target.value)}}>
+        <select
+          id="filter-type"
+          data-testid="test-filter-type"
+          onChange={(val) => {
+            setFilterType(val.target.value);
+          }}
+        >
           <option value="string">String (exact match)</option>
           <option value="regex">Regex (case-insensitive)</option>
           <option value="function">Function (matches only words, not language)</option>
@@ -610,8 +619,8 @@ const FilterParentComponent: React.FC<TreemaRootProps> = (props) => {
   );
 };
 
-const commonEnglishWords = ["the", "be", "to", "of"];
-const commonSpanishWords = ["gracias", "ser", "a", "ir"];
+const commonEnglishWords = ['the', 'be', 'to', 'of'];
+const commonSpanishWords = ['gracias', 'ser', 'a', 'ir'];
 
 /**
  * This storybook demonstrates and tests the filter TreemaRoot prop.
@@ -634,5 +643,5 @@ export const Filters = {
         },
       },
     },
-  }
+  },
 };
