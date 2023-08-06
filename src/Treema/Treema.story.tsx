@@ -7,7 +7,7 @@ import { wrapAjv } from './utils';
 import { TreemaPoint2dNodeDefinition } from './definitions/point2d';
 import { TreemaLongStringNodeDefinition } from './definitions/long-string';
 import { TreemaMarkdownNodeDefinition } from './definitions/markdown';
-import { TreemaFilter, TreemaNodeWalkContext } from './types';
+import { TreemaFilter, TreemaNodeContext } from './types';
 
 export default {
   title: 'Main/TreemaRoot',
@@ -587,7 +587,7 @@ const FilterParentComponent: React.FC<TreemaRootProps> = (props) => {
   } else if (filterType === 'regex') {
     filterProp = new RegExp(filter, 'i');
   } else {
-    filterProp = (ctx: TreemaNodeWalkContext) => {
+    filterProp = (ctx: TreemaNodeContext) => {
       if (ctx.schema.type === 'string' && typeof ctx.data === 'string') {
         return ctx.data.includes(filter);
       }

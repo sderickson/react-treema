@@ -1,10 +1,11 @@
 import {
   TreemaSupportedJsonSchema,
   TreemaWrappedSchemaLib,
-  TreemaNodeWalkContext,
+  TreemaNodeContext,
   TreemaWorkingSchema,
   SchemaBaseType,
   TreemaValidator,
+  TreemaCloneOptions,
 } from './types';
 import { JsonPointer } from './types';
 
@@ -114,7 +115,7 @@ export const walk: (
   data: any,
   schema: TreemaSupportedJsonSchema,
   lib: TreemaWrappedSchemaLib,
-  callback: (context: TreemaNodeWalkContext) => void | TreemaWorkingSchema,
+  callback: (context: TreemaNodeContext) => void | TreemaWorkingSchema,
   path?: string,
 ) => any = (data, schema, lib, callback, path) => {
   const workingSchemas = buildWorkingSchemas(schema, lib);
@@ -399,10 +400,6 @@ export const combineSchemas = (baseSchema: TreemaSupportedJsonSchema, schema: Tr
   return result;
 };
 
-interface CloneOptions {
-  shallow?: boolean;
-}
-
 /**
  * Creates a deep clone of data, unless shallow is true, in which case it only clones the top level.
  *
@@ -410,7 +407,7 @@ interface CloneOptions {
  * @param options
  * @returns
  */
-export const clone = (data: any, options?: CloneOptions): any => {
+export const clone = (data: any, options?: TreemaCloneOptions): any => {
   let result = data;
   const type = getType(data);
   if (type === 'object') {

@@ -9,12 +9,14 @@ export type {
   JsonPointer,
   SchemaBaseType,
   TreemaWorkingSchema,
+  TreemaNodeContext,
 
   // onEvent
   TreemaEventHandler,
   TreemaEvent,
   TreemaChangeSelectEvent,
   TreemaChangeDataEvent,
+  TreemaNodeEventCallbackHandler,
 
   // schemaLib
   TreemaWrappedSchemaLib,
@@ -29,6 +31,13 @@ export type {
   TreemaTypeDefinition,
   TreemaDisplayProps,
   TreemaEditProps,
+
+  // filter
+  TreemaFilter,
+  TreemaFilterFunction,
+
+  // utils
+  TreemaCloneOptions,
 } from './Treema/types';
 
 // Used for TreemaTypeDefinition.Edit implementations

@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useReducer, useMemo, useRef } from 'react';
-import { JsonPointer, TreemaRootProps, TreemaWrappedSchemaLib } from './types';
+import { JsonPointer, TreemaNodeEventCallbackHandler, TreemaRootProps, TreemaWrappedSchemaLib } from './types';
 import { getNoopLib, populateRequireds, walk, joinJsonPointers, getJsonPointerDepth } from './utils';
 import {
   selectPath,
@@ -32,7 +32,6 @@ import { TreemaNode } from './TreemaNode';
 import { coreDefinitions, wrapDefinitions } from './definitions';
 import { ContextInterface, TreemaContext } from './context';
 import { handleAddChild } from './common';
-import { TreemaNodeEventCallbackHandler } from './definitions/hooks';
 
 /**
  * The main entrypoint for any Treema rendered on your site. Provide data and a schema and this component

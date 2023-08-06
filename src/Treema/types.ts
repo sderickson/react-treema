@@ -77,7 +77,7 @@ export interface TreemaRootProps {
 /**
  * Determine for each node, given its path, data, and schema, whether it should be visible.
  */
-export type TreemaFilterFunction = (context: TreemaNodeWalkContext) => boolean;
+export type TreemaFilterFunction = (context: TreemaNodeContext) => boolean;
 
 export type TreemaFilter = string | RegExp | TreemaFilterFunction;
 
@@ -312,7 +312,7 @@ export interface TreemaSupportedJsonSchema {
  */
 export type TreemaWorkingSchema = Omit<TreemaSupportedJsonSchema, '$ref' | 'allOf' | 'anyOf' | 'oneOf'> & { type: SchemaBaseType };
 
-export interface TreemaNodeWalkContext {
+export interface TreemaNodeContext {
   data: any;
   schema: TreemaWorkingSchema;
   path: JsonPointer;
@@ -382,3 +382,9 @@ export interface TreemaEditProps {
    */
   onChange: (data: any) => void;
 }
+
+export interface TreemaCloneOptions {
+  shallow?: boolean;
+}
+
+export type TreemaNodeEventCallbackHandler = (event: KeyboardEvent) => boolean;

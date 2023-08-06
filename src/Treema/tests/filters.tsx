@@ -3,7 +3,7 @@ import { getNoopLib } from '../utils';
 import { TreemaRoot } from '../TreemaRoot';
 import { GenericTest } from './types';
 import React, { useCallback, useState } from 'react';
-import { TreemaRootProps, TreemaFilter, TreemaNodeWalkContext } from '../types';
+import { TreemaRootProps, TreemaFilter, TreemaNodeContext } from '../types';
 
 export const ParentComponent: React.FC<TreemaRootProps> = (props) => {
   const [filter, setFilter] = useState<string>('');
@@ -21,7 +21,7 @@ export const ParentComponent: React.FC<TreemaRootProps> = (props) => {
   } else if (filterType === 'regex') {
     filterProp = new RegExp(filter, 'i');
   } else {
-    filterProp = (ctx: TreemaNodeWalkContext) => {
+    filterProp = (ctx: TreemaNodeContext) => {
       if (ctx.schema.type === 'string' && typeof ctx.data === 'string') {
         return ctx.data.includes(filter);
       }

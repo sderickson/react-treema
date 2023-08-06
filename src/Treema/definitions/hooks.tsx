@@ -1,8 +1,7 @@
 import { useEffect, useContext } from 'react';
 import { TreemaContext } from '../context';
 import React from 'react';
-
-export type TreemaNodeEventCallbackHandler = (event: KeyboardEvent) => boolean;
+import { TreemaNodeEventCallbackHandler } from '../types';
 
 /**
  * Use this in `edit` for definitions to register a callback for keyboard events.

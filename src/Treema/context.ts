@@ -2,7 +2,7 @@ import React from 'react';
 import { getNoopLib } from './utils';
 import { TreemaState } from './state/types';
 import { createContext } from 'react';
-import { TreemaNodeEventCallbackHandler } from './definitions/hooks';
+import { TreemaNodeEventCallbackHandler } from './types';
 
 const defaultContextData: ContextInterface = {
   state: {
