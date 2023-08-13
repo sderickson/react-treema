@@ -18,7 +18,7 @@ export type WorkingSchemaChoices = { [path: string]: number };
  */
 export type ClipboardMode = 'active' | 'standby';
 
-interface UndoSnapshot {
+export interface UndoSnapshot {
   data: any;
   lastSelected?: JsonPointer;
 }
