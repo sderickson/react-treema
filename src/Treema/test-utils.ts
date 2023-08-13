@@ -15,6 +15,8 @@ export const getDefaultState = (): TreemaState => {
     settings: {},
     workingSchemaChoices: {},
     clipboardMode: 'standby',
+    undoDataStack: [],
+    redoDataStack: [],
   };
 };
 
