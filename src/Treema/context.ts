@@ -14,6 +14,8 @@ const defaultContextData: ContextInterface = {
     settings: {},
     workingSchemaChoices: {},
     clipboardMode: 'standby',
+    undoDataStack: [],
+    redoDataStack: [],
   },
   dispatch: () => {},
   editRefs: [],

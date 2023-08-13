@@ -112,6 +112,16 @@ export class TreemaStorybookTestContext {
     await sleep(this.speed);
   }
 
+  async fireUndo(): Promise<void> {
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'z', code: 'KeyZ', ctrlKey: true });
+    await sleep(this.speed);
+  }
+
+  async fireRedo(): Promise<void> {
+    await this.testingLibrary.fireEvent.keyDown(this.treema, { key: 'z', code: 'KeyZ', ctrlKey: true, shiftKey: true });
+    await sleep(this.speed);
+  }
+
   getLastPath(): JsonPointer | undefined {
     return lastPath;
   }

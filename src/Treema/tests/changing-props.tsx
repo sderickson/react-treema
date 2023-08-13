@@ -35,10 +35,10 @@ export const ParentComponent: React.FC<TreemaRootProps> = (props) => {
 };
 
 export const selectStaysOnAddTest: GenericTest = {
-  name: 'selection should remain when items are added',
+  name: 'selection should remain when items are added, and undo/redo should work',
   test: async (ctx) => {
     // add "3" to the end of the array by separate button
-    await ctx.testingLibrary.fireEvent.click(await ctx.testingLibrary.within(ctx.root).findByTestId('test-add-element'));
+    await ctx.fireMouseClick(await ctx.testingLibrary.within(ctx.root).findByTestId('test-add-element'));
 
     // get to the add item button
     await ctx.fireFocus();
@@ -49,15 +49,24 @@ export const selectStaysOnAddTest: GenericTest = {
     await ctx.fireTab();
     await ctx.fireTab();
 
-    // add "40" to the end via treema
+    // // add "40" to the end via treema
     await ctx.fireEnter();
     await ctx.keyboard('4');
     await ctx.fireTab();
 
     // add "5" to the end of the array by separate button
-    await ctx.testingLibrary.fireEvent.click(await ctx.testingLibrary.within(ctx.root).findByTestId('test-add-element'));
+    await ctx.fireMouseClick(await ctx.testingLibrary.within(ctx.root).findByTestId('test-add-element'));
 
     // array should be visible, and accurately display
+    await ctx.testingLibrary.within(ctx.root).findByText(JSON.stringify([0, 1, 2, 3, 40, 5]));
+
+    // undo/redo should work
+    await ctx.fireUndo();
+    await ctx.fireUndo();
+    await ctx.testingLibrary.within(ctx.root).findByText(JSON.stringify([0, 1, 2, 3, 0]));
+
+    await ctx.fireRedo();
+    await ctx.fireRedo();
     await ctx.testingLibrary.within(ctx.root).findByText(JSON.stringify([0, 1, 2, 3, 40, 5]));
   },
 };

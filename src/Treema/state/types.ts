@@ -33,4 +33,6 @@ export interface TreemaState {
   workingSchemaChoices: WorkingSchemaChoices;
   clipboardMode: ClipboardMode;
   filter?: string | RegExp | TreemaFilterFunction;
+  undoDataStack: any[];
+  redoDataStack: any[];
 }

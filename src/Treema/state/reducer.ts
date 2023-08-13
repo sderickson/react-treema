@@ -79,12 +79,9 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       return { ...state, closed: { ...state.closed, [action.path]: action.closed } };
 
     case 'set_data_action':
-      if (action.path === '') {
-        // Since the data has changed externally, it's anybody's guess how this will affect
-        // the working schema choices. So just reset them all.
-        return { ...state, data: action.data, workingSchemaChoices: {} };
+      if (action.data === state.data) {
+        return state;
       }
-
       return {
         ...state,
         data: setDataAtPath(state, action.path, action.data),
@@ -93,6 +90,8 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         // become whatever is the first one if none of them work. Users should explicitly
         // change the working schema after initial load.
         workingSchemaChoices: getEffectiveWorkingSchemaChoices(state),
+        undoDataStack: extendUndoStack(state.undoDataStack, state.data),
+        redoDataStack: [],
       };
 
     case 'begin_edit_action':
@@ -131,7 +130,6 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       const parentSchema = getAllDatasAndSchemas(state)[normalizeToPath(state.lastSelected)].schema;
       const childSchema = getChildSchema(state.addingPropertyKey, parentSchema);
       const workingSchema = chooseWorkingSchema(undefined, buildWorkingSchemas(childSchema, state.schemaLib), state.schemaLib);
-
       return {
         ...state,
         addingProperty: false,
@@ -140,6 +138,8 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
           joinJsonPointers(normalizeToPath(state.lastSelected), state.addingPropertyKey),
           getValueForRequiredType(workingSchema.type),
         ),
+        undoDataStack: extendUndoStack(state.undoDataStack, state.data),
+        redoDataStack: [],
       };
 
     case 'delete_action':
@@ -161,7 +161,13 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       if (previousRow === action.path) {
         previousRow = '';
       }
-      const s = { ...state, data: setDataAtPath(state, parent, newData), lastSelected: previousRow };
+      const s = {
+        ...state,
+        data: setDataAtPath(state, parent, newData),
+        lastSelected: previousRow,
+        undoDataStack: extendUndoStack(state.undoDataStack, state.data),
+        redoDataStack: [],
+      };
       const getNextRowResult = getNextRow(s, true);
       s.lastSelected = getNextRowResult;
 
@@ -185,6 +191,34 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
     case 'set_filter_action':
       return { ...state, filter: action.filter };
 
+    case 'undo_action': {
+      if (state.undoDataStack.length === 0) {
+        return state;
+      }
+      const newUndoStack = state.undoDataStack.slice();
+      const undoData = newUndoStack.pop();
+      const newRedoStack = extendUndoStack(state.redoDataStack, state.data);
+      return {
+        ...state,
+        data: undoData,
+        undoDataStack: newUndoStack,
+        redoDataStack: newRedoStack,
+      };
+    }
+    case 'redo_action': {
+      if (state.redoDataStack.length === 0) {
+        return state;
+      }
+      const newRedoStack = state.redoDataStack.slice();
+      const redoData = newRedoStack.pop();
+      const newUndoStack = extendUndoStack(state.undoDataStack, state.data);
+      return {
+        ...state,
+        data: redoData,
+        undoDataStack: newUndoStack,
+        redoDataStack: newRedoStack,
+      };
+    }
     default:
       console.error('Unknown action', action);
   }
@@ -214,4 +248,10 @@ const setDataAtPath = (state: TreemaState, path: JsonPointer, data: any): any =>
   newChildData[lastSegment as string] = data;
 
   return newData;
+};
+
+const extendUndoStack = (undoStack: any[], newData: any): any[] => {
+  const newStack = undoStack.slice();
+  newStack.push(newData);
+  return newStack;
 };

@@ -208,6 +208,28 @@ export const setFilter = (filter?: TreemaFilter): SetFilterAction => {
   };
 };
 
+// Undo/Redo Actions
+
+type UndoAction = {
+  type: 'undo_action';
+};
+
+export const undo = (): UndoAction => {
+  return {
+    type: 'undo_action',
+  };
+};
+
+type RedoAction = {
+  type: 'redo_action';
+};
+
+export const redo = (): RedoAction => {
+  return {
+    type: 'redo_action',
+  };
+};
+
 export type TreemaAction =
   | SelectPathAction
   | NavigateUpAction
@@ -225,4 +247,6 @@ export type TreemaAction =
   | DeleteAction
   | SetWorkingSchemaAction
   | SetClipboardModeAction
-  | SetFilterAction;
+  | SetFilterAction
+  | UndoAction
+  | RedoAction;

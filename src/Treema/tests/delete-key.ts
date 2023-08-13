@@ -4,7 +4,7 @@ import { TreemaRootProps } from '../types';
 import { GenericTest } from './types';
 
 export const deleteAllData: GenericTest = {
-  name: 'deletes all entries in an array',
+  name: 'deletes all entries in an array and undo/redo',
   test: async (ctx) => {
     await ctx.fireFocus();
     await ctx.fireArrowDown();
@@ -14,6 +14,14 @@ export const deleteAllData: GenericTest = {
     await ctx.fireBackspace();
     const data = ctx.getData();
     ctx.expect(data).toEqual([]);
+    await ctx.fireUndo();
+    await ctx.fireUndo();
+    await ctx.fireUndo();
+    ctx.expect(ctx.getData()).toEqual([1,2,3]);
+    await ctx.fireRedo();
+    await ctx.fireRedo();
+    await ctx.fireRedo();
+    ctx.expect(ctx.getData()).toEqual([]);
   },
 };
 

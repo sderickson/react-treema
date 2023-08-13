@@ -15,6 +15,8 @@ import {
   deleteAction,
   setClipboardMode,
   setFilter,
+  undo,
+  redo,
 } from './state/actions';
 import {
   getCanClose,
@@ -83,6 +85,8 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     workingSchemaChoices: {},
     clipboardMode: 'standby',
     filter: filter,
+    undoDataStack: [],
+    redoDataStack: [],
   });
 
   /**
@@ -141,7 +145,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       if (event.key === 'Enter' || event.key === 'Tab') {
         event.preventDefault();
         const tryToEdit = event.key === 'Enter';
-
+        
         // Are currently adding a property. Commit changes, and unless we're shift-entering, begin editing the new property.
         if (state.addingProperty && state.lastSelected && state.addingPropertyKey) {
           dispatch(endAddProperty());
@@ -216,6 +220,11 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
 
       if ((event.key === 'Meta' || event.key === 'Control') && !state.editing) {
         dispatch(setClipboardMode('active'));
+      }
+
+      if (event.key === 'z' && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        dispatch(event.shiftKey ? redo() : undo());
       }
     },
     [dispatch, state, keyboardCallbackRef],
@@ -304,8 +313,8 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     if (data !== dataRef.current) {
       // Don't update data unless it's different than what we have... or we might have
       // an infinite loop. Or at least more actions than necessary.
-      dispatch(setData('', data));
       dataRef.current = data;
+      dispatch(setData('', data));
     }
   }, [data, dataRef, dispatch]);
 
@@ -332,6 +341,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       });
     }
     if (prevData.current !== state.data) {
+      prevData.current = state.data;
       onEvent({
         type: 'change_data_event',
         data: state.data,
