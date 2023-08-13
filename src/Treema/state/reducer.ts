@@ -9,7 +9,7 @@ import {
   getValueForRequiredType,
   joinJsonPointers,
 } from '../utils';
-import { TreemaState, OrderEntry } from './types';
+import { TreemaState, OrderEntry, UndoSnapshot } from './types';
 import { JsonPointer } from '../types';
 import { TreemaAction } from './actions';
 import {
@@ -90,7 +90,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         // become whatever is the first one if none of them work. Users should explicitly
         // change the working schema after initial load.
         workingSchemaChoices: getEffectiveWorkingSchemaChoices(state),
-        undoDataStack: extendUndoStack(state.undoDataStack, state.data),
+        undoDataStack: extendUndoStack(state.undoDataStack, {data: state.data, lastSelected: state.lastSelected}),
         redoDataStack: [],
       };
 
@@ -138,7 +138,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
           joinJsonPointers(normalizeToPath(state.lastSelected), state.addingPropertyKey),
           getValueForRequiredType(workingSchema.type),
         ),
-        undoDataStack: extendUndoStack(state.undoDataStack, state.data),
+        undoDataStack: extendUndoStack(state.undoDataStack, {data: state.data, lastSelected: state.lastSelected}),
         redoDataStack: [],
       };
 
@@ -165,7 +165,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         ...state,
         data: setDataAtPath(state, parent, newData),
         lastSelected: previousRow,
-        undoDataStack: extendUndoStack(state.undoDataStack, state.data),
+        undoDataStack: extendUndoStack(state.undoDataStack, {data: state.data, lastSelected: state.lastSelected}),
         redoDataStack: [],
       };
       const getNextRowResult = getNextRow(s, true);
@@ -196,11 +196,12 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         return state;
       }
       const newUndoStack = state.undoDataStack.slice();
-      const undoData = newUndoStack.pop();
-      const newRedoStack = extendUndoStack(state.redoDataStack, state.data);
+      const undoSnapshot = newUndoStack.pop();
+      const newRedoStack = extendUndoStack(state.redoDataStack, {data: state.data, lastSelected: state.lastSelected});
       return {
         ...state,
-        data: undoData,
+        data: undoSnapshot?.data,
+        lastSelected: undoSnapshot?.lastSelected,
         undoDataStack: newUndoStack,
         redoDataStack: newRedoStack,
       };
@@ -210,11 +211,12 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         return state;
       }
       const newRedoStack = state.redoDataStack.slice();
-      const redoData = newRedoStack.pop();
-      const newUndoStack = extendUndoStack(state.undoDataStack, state.data);
+      const redoSnapshot = newRedoStack.pop();
+      const newUndoStack = extendUndoStack(state.undoDataStack, {data: state.data, lastSelected: state.lastSelected});
       return {
         ...state,
-        data: redoData,
+        data: redoSnapshot?.data,
+        lastSelected: redoSnapshot?.lastSelected,
         undoDataStack: newUndoStack,
         redoDataStack: newRedoStack,
       };
@@ -250,8 +252,8 @@ const setDataAtPath = (state: TreemaState, path: JsonPointer, data: any): any =>
   return newData;
 };
 
-const extendUndoStack = (undoStack: any[], newData: any): any[] => {
+const extendUndoStack = (undoStack: any[], snapshot: UndoSnapshot): any[] => {
   const newStack = undoStack.slice();
-  newStack.push(newData);
+  newStack.push(snapshot);
   return newStack;
 };

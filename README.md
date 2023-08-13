@@ -55,9 +55,9 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Mouse click to edit
 - [X] Copy/Paste
 - [X] Filter
+- [X] undo/redo
 
 #### In Progress
-- [ ] undo/redo
 
 #### TODO
 - [ ] export getters/setters

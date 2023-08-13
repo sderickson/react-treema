@@ -18,6 +18,11 @@ export type WorkingSchemaChoices = { [path: string]: number };
  */
 export type ClipboardMode = 'active' | 'standby';
 
+interface UndoSnapshot {
+  data: any;
+  lastSelected?: JsonPointer;
+}
+
 export interface TreemaState {
   data: any;
   schemaLib: TreemaWrappedSchemaLib;
@@ -33,6 +38,6 @@ export interface TreemaState {
   workingSchemaChoices: WorkingSchemaChoices;
   clipboardMode: ClipboardMode;
   filter?: string | RegExp | TreemaFilterFunction;
-  undoDataStack: any[];
-  redoDataStack: any[];
+  undoDataStack: UndoSnapshot[];
+  redoDataStack: UndoSnapshot[];
 }
