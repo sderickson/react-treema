@@ -24,7 +24,7 @@ the "source of truth".
 
 #### Defined in
 
-[src/Treema/types.ts:130](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L130)
+[src/Treema/types.ts:135](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L135)
 
 ___
 
@@ -34,4 +34,4 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:129](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L129)
+[src/Treema/types.ts:134](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L134)

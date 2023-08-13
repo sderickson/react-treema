@@ -28,7 +28,7 @@ the value as part of the containing node.
 
 #### Defined in
 
-[src/Treema/types.ts:348](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L348)
+[src/Treema/types.ts:356](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L356)
 
 ___
 
@@ -43,7 +43,7 @@ Treema can manage keyboard navigation and focus. Edit elements may also use
 
 #### Defined in
 
-[src/Treema/types.ts:356](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L356)
+[src/Treema/types.ts:364](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L364)
 
 ___
 
@@ -57,7 +57,7 @@ to target css rules for those nodes.
 
 #### Defined in
 
-[src/Treema/types.ts:334](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L334)
+[src/Treema/types.ts:342](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L342)
 
 ___
 
@@ -72,7 +72,7 @@ call `addSchema` on the schema library with schemas in definitions.
 
 #### Defined in
 
-[src/Treema/types.ts:342](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L342)
+[src/Treema/types.ts:350](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L350)
 
 ___
 
@@ -84,4 +84,4 @@ If true, the display value will be truncated to a single line.
 
 #### Defined in
 
-[src/Treema/types.ts:361](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L361)
+[src/Treema/types.ts:369](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L369)

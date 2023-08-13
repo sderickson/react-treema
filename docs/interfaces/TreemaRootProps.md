@@ -33,7 +33,7 @@ An "empty" or "falsy" value of whatever type is given in the schema.
 
 #### Defined in
 
-[src/Treema/types.ts:12](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L12)
+[src/Treema/types.ts:12](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L12)
 
 ___
 
@@ -57,7 +57,7 @@ The default definitions, which cover all JSON Schema types and a few advanced ex
 
 #### Defined in
 
-[src/Treema/types.ts:57](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L57)
+[src/Treema/types.ts:55](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L55)
 
 ___
 
@@ -74,7 +74,7 @@ function with each change otherwise Treema will not update.
 
 #### Defined in
 
-[src/Treema/types.ts:74](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L74)
+[src/Treema/types.ts:72](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L72)
 
 ___
 
@@ -92,7 +92,7 @@ All levels are open by default
 
 #### Defined in
 
-[src/Treema/types.ts:64](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L64)
+[src/Treema/types.ts:62](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L62)
 
 ___
 
@@ -100,14 +100,12 @@ ___
 
 • `Optional` **onEvent**: [`TreemaEventHandler`](../modules.md#treemaeventhandler)
 
-A callback for when the user interacts with the treema.
-
-Supported events:
-- `change_select_event`: when the user selects a node. Includes `path` in the event.
+A callback for when the user interacts with the treema. See [TreemaEvent](modules.md#treemaevent)
+for more information on each event.
 
 #### Defined in
 
-[src/Treema/types.ts:44](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L44)
+[src/Treema/types.ts:42](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L42)
 
 ___
 
@@ -130,7 +128,7 @@ https://json-schema.org/understanding-json-schema/
 
 #### Defined in
 
-[src/Treema/types.ts:21](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L21)
+[src/Treema/types.ts:21](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L21)
 
 ___
 
@@ -138,13 +136,13 @@ ___
 
 • `Optional` **schemaLib**: [`TreemaWrappedSchemaLib`](TreemaWrappedSchemaLib.md)
 
-A schema library instance to use to validate the data.
+A schema library instance to use. Treema depends on this library
+to validate data, provide error messages, and dereference schemas.
 There are [many JavaScript libraries](https://json-schema.org/implementations.html#validators)
 that support various drafts of the JSON Schema spec.
-Wrap your chosen library to match the TypeScript interface "SchemaLib".
+Wrap your chosen library to match [TreemaWrappedSchemaLib](interfaces/TreemaWrappedSchemaLib.md).
 Generally you should initialize the library, which may provide options
-which will affect the behavior of Treema. Treema also depends on this library
-to provide error messages.
+which will affect the behavior of Treema.
 
 See wrapTv4 and wrapAjv for examples.
 
@@ -156,4 +154,4 @@ A noop version - no validation, no error messages
 
 #### Defined in
 
-[src/Treema/types.ts:36](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L36)
+[src/Treema/types.ts:36](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L36)

@@ -53,11 +53,12 @@
 
 JsonPointers. See [RFC 6901](https://datatracker.ietf.org/doc/html/rfc6901).
 These are used by Treema, and also typically by validator libraries such
-as Ajv and Tv4.
+as Ajv and Tv4. These are also used regularly by Treema APIs for referencing parts of a
+a JSON document.
 
 #### Defined in
 
-[src/Treema/types.ts:89](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L89)
+[src/Treema/types.ts:94](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L94)
 
 ___
 
@@ -65,11 +66,11 @@ ___
 
 Ƭ **SchemaBaseType**: ``"null"`` \| ``"boolean"`` \| ``"object"`` \| ``"array"`` \| ``"number"`` \| ``"string"`` \| ``"integer"``
 
-The list of valid JSON Schema types.
+The list of valid JSON Schema types. See [Schema Validation doc](https://json-schema.org/draft/2020-12/json-schema-validation.html#section-6.1.1).
 
 #### Defined in
 
-[src/Treema/types.ts:191](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L191)
+[src/Treema/types.ts:199](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L199)
 
 ___
 
@@ -81,7 +82,7 @@ Comprehensive list of events emitted by Treema.
 
 #### Defined in
 
-[src/Treema/types.ts:108](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L108)
+[src/Treema/types.ts:113](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L113)
 
 ___
 
@@ -107,7 +108,7 @@ Callback handler for Treema events.
 
 #### Defined in
 
-[src/Treema/types.ts:103](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L103)
+[src/Treema/types.ts:108](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L108)
 
 ___
 
@@ -115,9 +116,12 @@ ___
 
 Ƭ **TreemaFilter**: `string` \| `RegExp` \| [`TreemaFilterFunction`](modules.md#treemafilterfunction)
 
+All supported filters. See [filter prop](interfaces/TreemaRootProps.md#filter)
+for more information.
+
 #### Defined in
 
-[src/Treema/types.ts:82](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L82)
+[src/Treema/types.ts:86](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L86)
 
 ___
 
@@ -129,7 +133,9 @@ ___
 
 ▸ (`context`): `boolean`
 
-Determine for each node, given its path, data, and schema, whether it should be visible.
+Determine for each node whether it should be visible. If an object or array should be
+visible, all its descendents will also be visible. If a child is visible, all its
+ancestors will be visible.
 
 ##### Parameters
 
@@ -143,7 +149,7 @@ Determine for each node, given its path, data, and schema, whether it should be 
 
 #### Defined in
 
-[src/Treema/types.ts:80](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L80)
+[src/Treema/types.ts:80](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L80)
 
 ___
 
@@ -154,6 +160,8 @@ ___
 #### Type declaration
 
 ▸ (`event`): `boolean`
+
+See [useTreemaKeyboardEvent](modules.md#usetreemakeyboardevent) for more information.
 
 ##### Parameters
 
@@ -167,7 +175,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:390](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L390)
+[src/Treema/types.ts:401](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L401)
 
 ___
 
@@ -178,6 +186,8 @@ ___
 #### Type declaration
 
 ▸ (`data`, `schema`): [`TreemaValidatorResponse`](interfaces/TreemaValidatorResponse.md)
+
+A function which validates data against a schema.
 
 ##### Parameters
 
@@ -192,7 +202,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:156](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L156)
+[src/Treema/types.ts:164](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L164)
 
 ___
 
@@ -221,7 +231,7 @@ are considering a child value, you will get the working schema for it as needed 
 
 #### Defined in
 
-[src/Treema/types.ts:313](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L313)
+[src/Treema/types.ts:321](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L321)
 
 ## Functions
 
@@ -271,7 +281,7 @@ array of working schemas
 
 #### Defined in
 
-[src/Treema/utils.ts:195](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/utils.ts#L195)
+[src/Treema/utils.ts:195](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/utils.ts#L195)
 
 ___
 
@@ -298,7 +308,7 @@ best guess which working schema the data is intended for
 
 #### Defined in
 
-[src/Treema/utils.ts:272](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/utils.ts#L272)
+[src/Treema/utils.ts:272](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/utils.ts#L272)
 
 ___
 
@@ -321,7 +331,7 @@ Creates a deep clone of data, unless shallow is true, in which case it only clon
 
 #### Defined in
 
-[src/Treema/utils.ts:410](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/utils.ts#L410)
+[src/Treema/utils.ts:410](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/utils.ts#L410)
 
 ___
 
@@ -348,13 +358,16 @@ the logic can be extended here.
 
 #### Defined in
 
-[src/Treema/utils.ts:373](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/utils.ts#L373)
+[src/Treema/utils.ts:373](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/utils.ts#L373)
 
 ___
 
 ### defaultForType
 
 ▸ **defaultForType**(`type`): `any`
+
+Given a base type, returns the default value for that type. For objects and arrays, each call
+will get a new instance.
 
 #### Parameters
 
@@ -368,7 +381,7 @@ ___
 
 #### Defined in
 
-[src/Treema/utils.ts:433](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/utils.ts#L433)
+[src/Treema/utils.ts:437](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/utils.ts#L437)
 
 ___
 
@@ -394,7 +407,7 @@ the raw schema
 
 #### Defined in
 
-[src/Treema/utils.ts:301](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/utils.ts#L301)
+[src/Treema/utils.ts:301](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/utils.ts#L301)
 
 ___
 
@@ -422,7 +435,7 @@ a new version of givenData with required values included
 
 #### Defined in
 
-[src/Treema/utils.ts:461](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/utils.ts#L461)
+[src/Treema/utils.ts:465](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/utils.ts#L465)
 
 ___
 
@@ -441,7 +454,7 @@ Currently Treema only supports one input per "node".
 
 #### Defined in
 
-[src/Treema/definitions/hooks.tsx:35](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/definitions/hooks.tsx#L35)
+[src/Treema/definitions/hooks.tsx:35](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/definitions/hooks.tsx#L35)
 
 ___
 
@@ -467,7 +480,7 @@ custom errors where navigation is prevented until an error is fixed.
 
 #### Defined in
 
-[src/Treema/definitions/hooks.tsx:13](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/definitions/hooks.tsx#L13)
+[src/Treema/definitions/hooks.tsx:13](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/definitions/hooks.tsx#L13)
 
 ___
 
@@ -503,4 +516,4 @@ schema and possibleSchemas values.
 
 #### Defined in
 
-[src/Treema/utils.ts:114](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/utils.ts#L114)
+[src/Treema/utils.ts:114](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/utils.ts#L114)

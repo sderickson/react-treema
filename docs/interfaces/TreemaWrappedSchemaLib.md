@@ -41,7 +41,7 @@ Populates the schema library with a schema.
 
 #### Defined in
 
-[src/Treema/types.ts:153](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L153)
+[src/Treema/types.ts:158](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L158)
 
 ___
 
@@ -67,7 +67,7 @@ Looks up a reference string and returns the schema it refers to.
 
 #### Defined in
 
-[src/Treema/types.ts:149](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L149)
+[src/Treema/types.ts:154](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L154)
 
 ___
 
@@ -80,4 +80,4 @@ reference schema.
 
 #### Defined in
 
-[src/Treema/types.ts:145](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L145)
+[src/Treema/types.ts:150](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L150)

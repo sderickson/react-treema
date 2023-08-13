@@ -21,13 +21,13 @@ export interface TreemaRootProps {
   schema: TreemaSupportedJsonSchema;
 
   /**
-   * A schema library instance to use to validate the data.
+   * A schema library instance to use. Treema depends on this library
+   * to validate data, provide error messages, and dereference schemas.
    * There are [many JavaScript libraries](https://json-schema.org/implementations.html#validators)
    * that support various drafts of the JSON Schema spec.
-   * Wrap your chosen library to match the TypeScript interface "SchemaLib".
+   * Wrap your chosen library to match [TreemaWrappedSchemaLib](interfaces/TreemaWrappedSchemaLib.md).
    * Generally you should initialize the library, which may provide options
-   * which will affect the behavior of Treema. Treema also depends on this library
-   * to provide error messages.
+   * which will affect the behavior of Treema.
    *
    * See wrapTv4 and wrapAjv for examples.
    *
@@ -36,10 +36,8 @@ export interface TreemaRootProps {
   schemaLib?: TreemaWrappedSchemaLib;
 
   /**
-   * A callback for when the user interacts with the treema.
-   *
-   * Supported events:
-   * - `change_select_event`: when the user selects a node. Includes `path` in the event.
+   * A callback for when the user interacts with the treema. See [TreemaEvent](modules.md#treemaevent)
+   * for more information on each event.
    */
   onEvent?: TreemaEventHandler;
 
@@ -75,16 +73,23 @@ export interface TreemaRootProps {
 }
 
 /**
- * Determine for each node, given its path, data, and schema, whether it should be visible.
+ * Determine for each node whether it should be visible. If an object or array should be
+ * visible, all its descendents will also be visible. If a child is visible, all its
+ * ancestors will be visible.
  */
 export type TreemaFilterFunction = (context: TreemaNodeContext) => boolean;
 
+/**
+ * All supported filters. See [filter prop](interfaces/TreemaRootProps.md#filter)
+ * for more information.
+ */
 export type TreemaFilter = string | RegExp | TreemaFilterFunction;
 
 /**
  * JsonPointers. See [RFC 6901](https://datatracker.ietf.org/doc/html/rfc6901).
  * These are used by Treema, and also typically by validator libraries such
- * as Ajv and Tv4.
+ * as Ajv and Tv4. These are also used regularly by Treema APIs for referencing parts of a
+ * a JSON document.
  */
 export type JsonPointer = string;
 
@@ -153,6 +158,9 @@ export interface TreemaWrappedSchemaLib {
   addSchema: (schema: object, id: string) => void;
 }
 
+/**
+ * A function which validates data against a schema.
+ */
 export type TreemaValidator = (data: any, schema: TreemaSupportedJsonSchema) => TreemaValidatorResponse;
 
 export interface TreemaValidatorResponse {
@@ -186,7 +194,7 @@ export interface TreemaValidatorError {
 }
 
 /**
- * The list of valid JSON Schema types.
+ * The list of valid JSON Schema types. See [Schema Validation doc](https://json-schema.org/draft/2020-12/json-schema-validation.html#section-6.1.1).
  */
 export type SchemaBaseType = 'null' | 'boolean' | 'object' | 'array' | 'number' | 'string' | 'integer';
 
@@ -387,4 +395,7 @@ export interface TreemaCloneOptions {
   shallow?: boolean;
 }
 
+/**
+ * See [useTreemaKeyboardEvent](modules.md#usetreemakeyboardevent) for more information.
+ */
 export type TreemaNodeEventCallbackHandler = (event: KeyboardEvent) => boolean;

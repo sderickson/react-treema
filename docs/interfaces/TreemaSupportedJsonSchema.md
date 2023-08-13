@@ -46,7 +46,7 @@ The given validator library will be used to dereference `$ref` strings.
 
 #### Defined in
 
-[src/Treema/types.ts:228](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L228)
+[src/Treema/types.ts:236](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L236)
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:208](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L208)
+[src/Treema/types.ts:216](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L216)
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:211](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L211)
+[src/Treema/types.ts:219](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L219)
 
 ___
 
@@ -78,7 +78,7 @@ Treema will combine `allOf` schemas into the "root" schema to form a single work
 
 #### Defined in
 
-[src/Treema/types.ts:233](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L233)
+[src/Treema/types.ts:241](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L241)
 
 ___
 
@@ -88,7 +88,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:240](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L240)
+[src/Treema/types.ts:248](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L248)
 
 ___
 
@@ -102,7 +102,7 @@ default value if one is provided (by the schema for the data or an ancestor sche
 
 #### Defined in
 
-[src/Treema/types.ts:247](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L247)
+[src/Treema/types.ts:255](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L255)
 
 ___
 
@@ -116,7 +116,7 @@ may need to have this keyword added to it as part of the wrapper (see wrapAjv ex
 
 #### Defined in
 
-[src/Treema/types.ts:218](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L218)
+[src/Treema/types.ts:226](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L226)
 
 ___
 
@@ -128,7 +128,7 @@ Enum values will be chosen with a select box.
 
 #### Defined in
 
-[src/Treema/types.ts:285](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L285)
+[src/Treema/types.ts:293](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L293)
 
 ___
 
@@ -144,7 +144,7 @@ the format as the HTML input `type` attribute. These are:
 
 #### Defined in
 
-[src/Treema/types.ts:270](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L270)
+[src/Treema/types.ts:278](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L278)
 
 ___
 
@@ -156,7 +156,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:207](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L207)
+[src/Treema/types.ts:215](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L215)
 
 ___
 
@@ -168,7 +168,7 @@ Once an array reaches the maximum number of items, it will not allow adding more
 
 #### Defined in
 
-[src/Treema/types.ts:280](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L280)
+[src/Treema/types.ts:288](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L288)
 
 ___
 
@@ -178,7 +178,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:259](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L259)
+[src/Treema/types.ts:267](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L267)
 
 ___
 
@@ -188,7 +188,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:261](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L261)
+[src/Treema/types.ts:269](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L269)
 
 ___
 
@@ -200,7 +200,7 @@ The following values are provided as input attributes, but beyond that are unuse
 
 #### Defined in
 
-[src/Treema/types.ts:258](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L258)
+[src/Treema/types.ts:266](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L266)
 
 ___
 
@@ -210,7 +210,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:260](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L260)
+[src/Treema/types.ts:268](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L268)
 
 ___
 
@@ -223,7 +223,7 @@ the resulting title (or type) as the label.
 
 #### Defined in
 
-[src/Treema/types.ts:239](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L239)
+[src/Treema/types.ts:247](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L247)
 
 ___
 
@@ -237,7 +237,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:210](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L210)
+[src/Treema/types.ts:218](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L218)
 
 ___
 
@@ -251,7 +251,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:209](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L209)
+[src/Treema/types.ts:217](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L217)
 
 ___
 
@@ -263,7 +263,7 @@ Treema disables editing for values which are readOnly.
 
 #### Defined in
 
-[src/Treema/types.ts:275](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L275)
+[src/Treema/types.ts:283](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L283)
 
 ___
 
@@ -276,7 +276,7 @@ otherwise a default "empty" value depending on the type ('', 0, etc).
 
 #### Defined in
 
-[src/Treema/types.ts:253](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L253)
+[src/Treema/types.ts:261](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L261)
 
 ___
 
@@ -288,7 +288,7 @@ The data's "title" will be shown as its label.
 
 #### Defined in
 
-[src/Treema/types.ts:223](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L223)
+[src/Treema/types.ts:231](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L231)
 
 ___
 
@@ -301,4 +301,4 @@ a selector for the user to choose from.
 
 #### Defined in
 
-[src/Treema/types.ts:202](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L202)
+[src/Treema/types.ts:210](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L210)

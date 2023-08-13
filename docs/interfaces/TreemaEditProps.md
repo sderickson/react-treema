@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[src/Treema/types.ts:374](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L374)
+[src/Treema/types.ts:382](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L382)
 
 ___
 
@@ -45,7 +45,7 @@ them into the appropriate data type, then calling onChange with the new value.
 
 #### Defined in
 
-[src/Treema/types.ts:383](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L383)
+[src/Treema/types.ts:391](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L391)
 
 ___
 
@@ -57,4 +57,4 @@ See WorkingSchema type for more information about these.
 
 #### Defined in
 
-[src/Treema/types.ts:378](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L378)
+[src/Treema/types.ts:386](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L386)

@@ -41,7 +41,8 @@
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "predeploy": "yarn storybook:build",
-    "deploy": "gh-pages -d storybook-static"
+    "deploy": "gh-pages -d storybook-static",
+    "gendocs": "typedoc --plugin typedoc-plugin-markdown src/index.ts"
   },
   "peerDependencies": {
     "react": "18.x",

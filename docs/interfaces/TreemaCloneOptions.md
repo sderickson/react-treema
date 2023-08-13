@@ -16,4 +16,4 @@
 
 #### Defined in
 
-[src/Treema/types.ts:387](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L387)
+[src/Treema/types.ts:395](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L395)

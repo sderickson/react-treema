@@ -21,7 +21,7 @@ So this is both for listening for "focus" or "blur".
 
 #### Defined in
 
-[src/Treema/types.ts:117](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L117)
+[src/Treema/types.ts:122](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L122)
 
 ___
 
@@ -31,4 +31,4 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:116](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L116)
+[src/Treema/types.ts:121](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L121)

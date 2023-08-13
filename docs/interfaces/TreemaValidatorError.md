@@ -23,7 +23,7 @@ additional property may be pointed to.
 
 #### Defined in
 
-[src/Treema/types.ts:185](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L185)
+[src/Treema/types.ts:193](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L193)
 
 ___
 
@@ -37,7 +37,7 @@ with utility functions).
 
 #### Defined in
 
-[src/Treema/types.ts:173](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L173)
+[src/Treema/types.ts:181](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L181)
 
 ___
 
@@ -50,4 +50,4 @@ any localization.
 
 #### Defined in
 
-[src/Treema/types.ts:178](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L178)
+[src/Treema/types.ts:186](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L186)

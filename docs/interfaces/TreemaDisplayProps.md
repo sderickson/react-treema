@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[src/Treema/types.ts:365](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L365)
+[src/Treema/types.ts:373](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L373)
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:370](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L370)
+[src/Treema/types.ts:378](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L378)
 
 ___
 
@@ -40,4 +40,4 @@ See WorkingSchema type for more information about these.
 
 #### Defined in
 
-[src/Treema/types.ts:369](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L369)
+[src/Treema/types.ts:377](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L377)

@@ -19,7 +19,7 @@
 
 #### Defined in
 
-[src/Treema/types.ts:316](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L316)
+[src/Treema/types.ts:324](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L324)
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:318](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L318)
+[src/Treema/types.ts:326](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L326)
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:319](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L319)
+[src/Treema/types.ts:327](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L327)
 
 ___
 
@@ -49,4 +49,4 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:317](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L317)
+[src/Treema/types.ts:325](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L325)

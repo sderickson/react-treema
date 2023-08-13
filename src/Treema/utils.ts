@@ -430,6 +430,10 @@ export const clone = (data: any, options?: TreemaCloneOptions): any => {
   return result;
 };
 
+/**
+ * Given a base type, returns the default value for that type. For objects and arrays, each call
+ * will get a new instance.
+ */
 export const getValueForRequiredType: (type: SchemaBaseType) => any = (type: SchemaBaseType) => {
   switch (type) {
     case 'boolean':

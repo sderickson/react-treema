@@ -18,7 +18,7 @@
 
 #### Defined in
 
-[src/Treema/types.ts:164](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L164)
+[src/Treema/types.ts:172](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L172)
 
 ___
 
@@ -30,7 +30,7 @@ Should be a list of schema ref strings that are missing from the schema library.
 
 #### Defined in
 
-[src/Treema/types.ts:163](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L163)
+[src/Treema/types.ts:171](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L171)
 
 ___
 
@@ -40,4 +40,4 @@ ___
 
 #### Defined in
 
-[src/Treema/types.ts:159](https://github.com/sderickson/react-treema/blob/cecfce1/src/Treema/types.ts#L159)
+[src/Treema/types.ts:167](https://github.com/sderickson/react-treema/blob/3868d5e/src/Treema/types.ts#L167)
