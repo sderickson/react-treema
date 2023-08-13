@@ -17,7 +17,6 @@ import {
 } from './state/selectors';
 import './base.scss';
 import { clone, getJsonPointerLastChild, getParentJsonPointer, getValueForRequiredType } from './utils';
-import { is } from 'bluebird';
 
 interface TreemaNodeProps {
   path: JsonPointer;
