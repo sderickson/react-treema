@@ -57,13 +57,13 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Filter
 - [X] undo/redo
 - [X] Shift/Meta click
+- [X] readOnly, skipValidation
 
 #### In Progress
 
 #### TODO
 - [ ] export getters/setters
 - [ ] Put more documentation in storybook mdx
-- [ ] readOnly, skipValidation
 - [ ] A11y
   - [ ] Add roles, test with screen reader
   - [ ] Form mode

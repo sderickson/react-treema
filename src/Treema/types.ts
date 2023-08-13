@@ -70,6 +70,11 @@ export interface TreemaRootProps {
    * function with each change otherwise Treema will not update.
    */
   filter?: TreemaFilter;
+
+  /**
+   * General configuration options for how Treema behaves.
+   */
+  settings?: TreemaSettings;
 }
 
 /**
@@ -97,9 +102,15 @@ export type JsonPointer = string;
  * Configuration passed into TreemaRoot
  */
 export interface TreemaSettings {
+  /**
+   * Make Treema entirely un-editable.
+   */
   readOnly?: boolean;
-  noSortable?: boolean; // TODO
-  skipValidation?: boolean; // TODO
+
+  /**
+   * Don't show validation errors.
+   */
+  skipValidation?: boolean;
 }
 
 /**

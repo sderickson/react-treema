@@ -135,6 +135,10 @@ export const walk: (
       value = data[key];
       const childPath = joinJsonPointers(path || '', key.toString());
       let childSchema = getChildSchema(key, workingSchema);
+      if (schema.readOnly) {
+        // little hack to propagate readOnly down the tree
+        childSchema = { ...childSchema, readOnly: true };
+      }
       walk(value, childSchema, lib, callback, childPath);
     };
 

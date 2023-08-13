@@ -42,7 +42,7 @@ import { handleAddChild } from './common';
  * will render that data, and enable edits, according to that schema. You can and probably should also
  * provide a JSON Schema validator library which will thoroughly enforce the schema and provide error messages.
  */
-export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent, definitions, filter }) => {
+export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initOpen, onEvent, definitions, filter, settings }) => {
   /**
    * TreemaRoot handles initializing the state, and updating it when props change. This includes
    * what paths are open or closed, populating required fields, and initializing a noop schema
@@ -83,7 +83,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     rootSchema: schema,
     closed,
     definitions: Object.assign({}, wrapDefinitions(coreDefinitions), wrapDefinitions(definitions || [])),
-    settings: {},
+    settings: settings || {},
     workingSchemaChoices: {},
     clipboardMode: 'standby',
     filter: filter,
@@ -210,6 +210,9 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       if (event.key === 'Backspace' && !state.editing && !state.addingProperty) {
         event.preventDefault();
         if (isInsertPropertyPlaceholder(state.focused || '')) {
+          return;
+        }
+        if (state.focused && !canEditPathDirectly(state, state.focused)) {
           return;
         }
         // delete all selected paths in reverse order so that deletions don't

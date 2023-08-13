@@ -202,11 +202,15 @@ export const hasChildrenAtPath: (state: TreemaState, path: JsonPointer) => boole
 );
 
 export const canAddChildAtPath: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
-  [(state) => getAllDatasAndSchemas(state), (_, path) => path],
-  (datasAndSchemas, path) => {
+  [
+    (state) => getAllDatasAndSchemas(state),
+    (_, path) => path,
+    getSettings,
+  ],
+  (datasAndSchemas, path, settings) => {
     const { data, schema } = datasAndSchemas[path];
 
-    return _canAddChild(data, schema);
+    return !settings.readOnly && _canAddChild(data, schema);
   },
 );
 
@@ -242,8 +246,11 @@ interface SchemaErrorsByPath {
 }
 
 export const getSchemaErrors = createSelector(
-  [getData, getRootSchema, getSchemaLib],
-  (data, rootSchema, schemaLib): TreemaValidatorError[] => {
+  [getData, getRootSchema, getSchemaLib, getSettings],
+  (data, rootSchema, schemaLib, settings): TreemaValidatorError[] => {
+    if (settings.skipValidation) {
+      return [];
+    }
     return schemaLib.validateMultiple(data, rootSchema).errors;
   },
 );
@@ -317,9 +324,14 @@ export const getDefinitionAtPath: (state: TreemaState, path: JsonPointer) => Tre
 );
 
 export const canEditPathDirectly: (state: TreemaState, path: JsonPointer) => boolean = createSelector(
-  [(state, path) => getDefinitionAtPath(state, path)],
-  (definition) => {
-    return !!definition.Edit;
+  [
+    (_, path) => path,
+    (state, path) => getDefinitionAtPath(state, path),
+    getAllDatasAndSchemas,
+    getSettings,
+  ],
+  (path, definition, allDatasAndSchemas, settings) => {
+    return !settings.readOnly && !allDatasAndSchemas[path].schema.readOnly && !!definition.Edit;
   },
 );
 
