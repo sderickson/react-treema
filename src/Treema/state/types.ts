@@ -20,16 +20,16 @@ export type ClipboardMode = 'active' | 'standby';
 
 export interface UndoSnapshot {
   data: any;
-  lastSelected?: JsonPointer;
-  allSelected: { [path: JsonPointer]: boolean };
+  focused?: JsonPointer;
+  selected: { [path: JsonPointer]: boolean };
 }
 
 export interface TreemaState {
   data: any;
   schemaLib: TreemaWrappedSchemaLib;
   rootSchema: TreemaSupportedJsonSchema;
-  lastSelected?: JsonPointer; // TODO: rename to "focused"
-  allSelected: { [path: JsonPointer]: boolean }; // TODO: rename this to "selected"
+  focused?: JsonPointer;
+  selected: { [path: JsonPointer]: boolean }; // TODO: rename this to "selected"
   closed: { [path: JsonPointer]: boolean };
   editing?: JsonPointer;
   editingData?: any;

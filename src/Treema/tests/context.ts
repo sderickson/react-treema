@@ -20,7 +20,7 @@ let lastData: any;
 export const onEvent = (event: TreemaEvent) => {
   if (event.type === 'change_select_event') {
     lastPath = event.path;
-    lastAllSelected = event.allSelected;
+    lastAllSelected = event.selected;
   }
   if (event.type === 'change_data_event') {
     lastData = event.data;

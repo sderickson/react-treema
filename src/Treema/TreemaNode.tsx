@@ -52,13 +52,13 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const canOpen = hasChildrenAtPath(state, path);
   const description = workingSchema.description;
   const childrenKeys = getChildOrderForPath(state, path) || [];
-  const isSelected = !!state.allSelected[path];
-  const isLastSelected = state.lastSelected === path;
+  const isSelected = !!state.selected[path];
+  const isFocused = state.focused === path;
   const errors = getSchemaErrorsByPath(state)[path] || [];
   const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
   const isDefaultRoot = getIsDefaultRoot(state, path);
-  const isAddingProperty = 'addTo:' + path === state.lastSelected && state.addingProperty;
-  const isFocusedOnAddProperty = 'addTo:' + path === state.lastSelected && !state.addingProperty;
+  const isAddingProperty = 'addTo:' + path === state.focused && state.addingProperty;
+  const isFocusedOnAddProperty = 'addTo:' + path === state.focused && !state.addingProperty;
   const clipboardMode = state.clipboardMode;
 
   // Determine string for key
@@ -112,10 +112,10 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       focusable = editRefs[0]?.current;
     } else if (isAddingProperty) {
       focusable = addPropertyRef.current;
-    } else if (clipboardMode !== 'standby' && isLastSelected) {
+    } else if (clipboardMode !== 'standby' && isFocused) {
       focusable = clipboardRef.current;
       andSelectAll = true;
-    } else if (isLastSelected) {
+    } else if (isFocused) {
       focusable = displayRef.current;
     } else if (isFocusedOnAddProperty) {
       focusable = addPropRef.current;
@@ -150,7 +150,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
 
   const rowNames = [
     'treema-row',
-    isLastSelected ? 'treema-focused' : '',
+    isFocused ? 'treema-focused' : '',
   ]
 
   const valueClassNames = ['treema-value', 'treema-' + definition.id, isEditing ? 'treema-edit' : 'treema-display'];
@@ -161,7 +161,7 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       {canOpen && path !== '' && <span className="treema-toggle" role="button" placeholder={togglePlaceholder}></span>}
 
       <div ref={displayRef} tabIndex={-1} className={rowNames.join(' ')}>
-        {clipboardMode === 'active' && isLastSelected && (
+        {clipboardMode === 'active' && isFocused && (
           <>
             <span className="treema-clipboard-mode">📋</span>
             <div className="treema-clipboard-container">

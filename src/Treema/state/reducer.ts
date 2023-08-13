@@ -39,30 +39,30 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       delete newState.addingPropertyKey;
 
       if (action.path === undefined) {
-        delete newState.lastSelected;
+        delete newState.focused;
 
         return newState;
       }
-      newState.lastSelected = action.path;
-      newState.allSelected = { ...state.allSelected };
+      newState.focused = action.path;
+      newState.selected = { ...state.selected };
 
       if (action.append) {
-        if (action.path && state.allSelected[action.path]) {
+        if (action.path && state.selected[action.path]) {
           // if the user is holding down the ctrl/cmd key and clicking the same row,
           // then we should deselect it
-          newState.allSelected = { ...state.allSelected, [action.path]: false };
+          newState.selected = { ...state.selected, [action.path]: false };
         } else {
-          newState.allSelected = { ...state.allSelected, [action.path]: true };
+          newState.selected = { ...state.selected, [action.path]: true };
         }
-      } else if (action.multi && state.lastSelected) {
+      } else if (action.multi && state.focused) {
         const paths = getListOfPaths(state);
-        const indexes = [paths.indexOf(action.path), paths.indexOf(state.lastSelected || '')];
+        const indexes = [paths.indexOf(action.path), paths.indexOf(state.focused || '')];
         indexes.sort((a, b) => a - b);
         for (var i = indexes[0]; i <= indexes[1]; i++) {
-          newState.allSelected[paths[i]] = true;
+          newState.selected[paths[i]] = true;
         }
       } else {
-        newState.allSelected = { [action.path]: true };
+        newState.selected = { [action.path]: true };
       }
 
       return newState;
@@ -71,8 +71,8 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       const nextPath = normalizeToPath(getPreviousRow(state, action.skipAddProperties));
       return {
         ...state,
-        lastSelected: nextPath,
-        allSelected: { [nextPath]: true },
+        focused: nextPath,
+        selected: { [nextPath]: true },
       };
     }
 
@@ -80,21 +80,21 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       const nextPath = normalizeToPath(getNextRow(state, action.skipAddProperties));
       return {
         ...state,
-        lastSelected: nextPath,
-        allSelected: { [nextPath]: true }
+        focused: nextPath,
+        selected: { [nextPath]: true }
       };
     }
 
     case 'navigate_in_action': {
       paths = getListOfPaths(state);
-      index = paths.indexOf(state.lastSelected || '');
+      index = paths.indexOf(state.focused || '');
       const nextPath = normalizeToPath(paths[index + 1]);
       if (nextPath.indexOf(normalizeToPath(paths[index])) === 0) {
         // only navigate in if it's a child of the current path
         return {
           ...state,
-          lastSelected: nextPath,
-          allSelected: { [nextPath]: true },
+          focused: nextPath,
+          selected: { [nextPath]: true },
         };
       }
 
@@ -102,12 +102,12 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
     }
 
     case 'navigate_out_action': {
-      let parentPath = getParentJsonPointer(state.lastSelected || '');
+      let parentPath = getParentJsonPointer(state.focused || '');
       if (parentPath) {
         return {
           ...state,
-          lastSelected: parentPath,
-          allSelected: { [parentPath]: true },
+          focused: parentPath,
+          selected: { [parentPath]: true },
         };
       }
 
@@ -131,14 +131,14 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         workingSchemaChoices: getEffectiveWorkingSchemaChoices(state),
         undoDataStack: extendUndoStack(state.undoDataStack, {
           data: state.data,
-          lastSelected: state.lastSelected,
-          allSelected: state.allSelected,
+          focused: state.focused,
+          selected: state.selected,
         }),
         redoDataStack: [],
       };
 
     case 'begin_edit_action':
-      const path = action.path || normalizeToPath(state.lastSelected || '');
+      const path = action.path || normalizeToPath(state.focused || '');
       if (!path) {
         return state;
       }
@@ -147,7 +147,7 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       }
       const initialData = getAllDatasAndSchemas(state)[path].data;
 
-      return { ...state, editing: path, editingData: initialData, lastSelected: path, allSelected: { [path]: true } };
+      return { ...state, editing: path, editingData: initialData, focused: path, selected: { [path]: true } };
 
     case 'edit_value_action':
       return { ...state, editingData: action.newValue };
@@ -161,16 +161,16 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         p = 'addTo:' + action.path;
       }
 
-      return { ...state, addingProperty: true, lastSelected: p, allSelected: { [p]: true }, addingPropertyKey: '' };
+      return { ...state, addingProperty: true, focused: p, selected: { [p]: true }, addingPropertyKey: '' };
 
     case 'edit_add_property_action':
       return { ...state, addingPropertyKey: action.keyToAdd };
 
     case 'end_add_property_action':
-      if (state.addingPropertyKey === undefined || state.addingProperty === undefined || action.cancel || !state.lastSelected) {
+      if (state.addingPropertyKey === undefined || state.addingProperty === undefined || action.cancel || !state.focused) {
         return { ...state, addingProperty: undefined, addingPropertyKey: undefined };
       }
-      const parentSchema = getAllDatasAndSchemas(state)[normalizeToPath(state.lastSelected)].schema;
+      const parentSchema = getAllDatasAndSchemas(state)[normalizeToPath(state.focused)].schema;
       const childSchema = getChildSchema(state.addingPropertyKey, parentSchema);
       const workingSchema = chooseWorkingSchema(undefined, buildWorkingSchemas(childSchema, state.schemaLib), state.schemaLib);
       return {
@@ -178,13 +178,13 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         addingProperty: false,
         data: setDataAtPath(
           state,
-          joinJsonPointers(normalizeToPath(state.lastSelected), state.addingPropertyKey),
+          joinJsonPointers(normalizeToPath(state.focused), state.addingPropertyKey),
           getValueForRequiredType(workingSchema.type),
         ),
         undoDataStack: extendUndoStack(state.undoDataStack, {
           data: state.data,
-          lastSelected: state.lastSelected,
-          allSelected: state.allSelected,
+          focused: state.focused,
+          selected: state.selected,
         }),
         redoDataStack: [],
       };
@@ -211,17 +211,17 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       const s = {
         ...state,
         data: setDataAtPath(state, parent, newData),
-        lastSelected: previousRow,
+        focused: previousRow,
         undoDataStack: action.skipSnapshot ? state.undoDataStack : extendUndoStack(state.undoDataStack, {
           data: state.data,
-          lastSelected: state.lastSelected,
-          allSelected: state.allSelected,
+          focused: state.focused,
+          selected: state.selected,
         }),
         redoDataStack: action.skipSnapshot ? state.redoDataStack : [],
       };
       const getNextRowResult = getNextRow(s, true);
-      s.lastSelected = getNextRowResult;
-      s.allSelected = { [getNextRowResult]: true };
+      s.focused = getNextRowResult;
+      s.selected = { [getNextRowResult]: true };
 
       return s;
 
@@ -251,14 +251,14 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       const undoSnapshot = newUndoStack.pop();
       const newRedoStack = extendUndoStack(state.redoDataStack, {
         data: state.data,
-        lastSelected: state.lastSelected,
-        allSelected: state.allSelected,
+        focused: state.focused,
+        selected: state.selected,
       });
       return {
         ...state,
         data: undoSnapshot?.data,
-        lastSelected: undoSnapshot?.lastSelected,
-        allSelected: undoSnapshot?.allSelected || {},
+        focused: undoSnapshot?.focused,
+        selected: undoSnapshot?.selected || {},
         undoDataStack: newUndoStack,
         redoDataStack: newRedoStack,
       };
@@ -271,14 +271,14 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
       const redoSnapshot = newRedoStack.pop();
       const newUndoStack = extendUndoStack(state.undoDataStack, {
         data: state.data,
-        lastSelected: state.lastSelected,
-        allSelected: state.allSelected,
+        focused: state.focused,
+        selected: state.selected,
       });
       return {
         ...state,
         data: redoSnapshot?.data,
-        lastSelected: redoSnapshot?.lastSelected,
-        allSelected: redoSnapshot?.allSelected || {},
+        focused: redoSnapshot?.focused,
+        selected: redoSnapshot?.selected || {},
         undoDataStack: newUndoStack,
         redoDataStack: newRedoStack,
       };
@@ -288,8 +288,8 @@ export function reducer(state: TreemaState, action: TreemaAction): TreemaState {
         ...state,
         undoDataStack: extendUndoStack(action.state.undoDataStack, {
           data: action.state.data,
-          lastSelected: action.state.lastSelected,
-          allSelected: action.state.allSelected,
+          focused: action.state.focused,
+          selected: action.state.selected,
         }),
         redoDataStack: [],
       };

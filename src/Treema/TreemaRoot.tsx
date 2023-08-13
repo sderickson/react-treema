@@ -89,7 +89,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     filter: filter,
     undoDataStack: [],
     redoDataStack: [],
-    allSelected: {},
+    selected: {},
   });
 
   /**
@@ -150,10 +150,10 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         const tryToEdit = event.key === 'Enter';
         
         // Are currently adding a property. Commit changes, and unless we're shift-entering, begin editing the new property.
-        if (state.addingProperty && state.lastSelected && state.addingPropertyKey) {
+        if (state.addingProperty && state.focused && state.addingPropertyKey) {
           dispatch(endAddProperty());
           if (tryToEdit && !event.shiftKey) {
-            dispatch(beginEdit(joinJsonPointers(normalizeToPath(state.lastSelected), state.addingPropertyKey)));
+            dispatch(beginEdit(joinJsonPointers(normalizeToPath(state.focused), state.addingPropertyKey)));
 
             return;
           }
@@ -163,12 +163,12 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         if (
           !event.shiftKey &&
           !state.editing &&
-          state.lastSelected &&
-          !isInsertPropertyPlaceholder(state.lastSelected) &&
-          canEditPathDirectly(state, state.lastSelected) &&
+          state.focused &&
+          !isInsertPropertyPlaceholder(state.focused) &&
+          canEditPathDirectly(state, state.focused) &&
           tryToEdit
         ) {
-          dispatch(beginEdit(state.lastSelected));
+          dispatch(beginEdit(state.focused));
 
           return;
         }
@@ -177,18 +177,18 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         if (
           !event.shiftKey &&
           !state.addingProperty &&
-          state.lastSelected &&
-          isInsertPropertyPlaceholder(state.lastSelected) &&
+          state.focused &&
+          isInsertPropertyPlaceholder(state.focused) &&
           tryToEdit
         ) {
-          handleAddChild(state.lastSelected.slice(6), state, dispatch);
+          handleAddChild(state.focused.slice(6), state, dispatch);
 
           return;
         }
 
         // Are currently editing a node. Commit changes before navigating.
-        if (state.editing && state.lastSelected) {
-          dispatch(setData(state.lastSelected, state.editingData));
+        if (state.editing && state.focused) {
+          dispatch(setData(state.focused, state.editingData));
           dispatch(endEdit());
         }
 
@@ -200,7 +200,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
           // If can edit, or add a property, do so.
           if (isInsertPropertyPlaceholder(nextSelection)) {
             handleAddChild(nextSelection.slice(6), state, dispatch);
-          } else if (nextSelection !== state.lastSelected && canEditPathDirectly(state, normalizeToPath(nextSelection))) {
+          } else if (nextSelection !== state.focused && canEditPathDirectly(state, normalizeToPath(nextSelection))) {
             dispatch(beginEdit());
           }
         } else {
@@ -209,14 +209,14 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       }
       if (event.key === 'Backspace' && !state.editing && !state.addingProperty) {
         event.preventDefault();
-        if (isInsertPropertyPlaceholder(state.lastSelected || '')) {
+        if (isInsertPropertyPlaceholder(state.focused || '')) {
           return;
         }
         // delete all selected paths in reverse order so that deletions don't
         // break due to earlier content being deleted
         let deletedSomething = false;
         getListOfPaths(state).slice().reverse().forEach((path) => {
-          if (state.allSelected[path]) {
+          if (state.selected[path]) {
             dispatch(deleteAction(path, true));
             deletedSomething = true;
           }
@@ -274,14 +274,14 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       }
 
       // finish edits if clicking off the editing row
-      if (state.editing && state.lastSelected && state.lastSelected !== path) {
+      if (state.editing && state.focused && state.focused !== path) {
         // clicked off a row being edited; save changes and end edit
-        dispatch(setData(state.lastSelected, state.editingData));
+        dispatch(setData(state.focused, state.editingData));
         dispatch(endEdit());
       }
 
       // don't mess with currently-editing row
-      if (state.editing && state.lastSelected === path) {
+      if (state.editing && state.focused === path) {
         return;
       }
 
@@ -338,15 +338,15 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
    * In addition to handling the inputs for the base Treema interface, TreemaRoot also handles
    * callbacks, mainly via the onEvent prop.
    */
-  const prevLastSelected = useRef(state.lastSelected);
+  const prevLastSelected = useRef(state.focused);
   const prevData = useRef(state.data);
   useEffect(() => {
     if (!onEvent) return;
-    if (prevLastSelected.current !== state.lastSelected) {
+    if (prevLastSelected.current !== state.focused) {
       onEvent({
         type: 'change_select_event',
-        path: state.lastSelected,
-        allSelected: state.allSelected || {},
+        path: state.focused,
+        selected: state.selected || {},
       });
     }
     if (prevData.current !== state.data) {
@@ -356,7 +356,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         data: state.data,
       });
     }
-  }, [state.lastSelected, state.data, onEvent]);
+  }, [state.focused, state.data, onEvent]);
 
   /**
    * Render, providing the context for the various nodes.

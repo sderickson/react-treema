@@ -120,7 +120,7 @@ export type TreemaEvent = TreemaChangeSelectEvent | TreemaChangeDataEvent;
 export interface TreemaChangeSelectEvent {
   type: 'change_select_event';
   path: JsonPointer | undefined;
-  allSelected: { [path: JsonPointer]: boolean };
+  selected: { [path: JsonPointer]: boolean };
 }
 
 /**

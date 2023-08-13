@@ -8,7 +8,7 @@ import { createSelector } from 'reselect';
 export const getData = (state: TreemaState) => state.data;
 export const getRootSchema = (state: TreemaState) => state.rootSchema;
 export const getSchemaLib = (state: TreemaState) => state.schemaLib;
-export const getLastSelectedPath = (state: TreemaState) => state.lastSelected || '';
+export const getLastSelectedPath = (state: TreemaState) => state.focused || '';
 export const getDefinitions = (state: TreemaState) => state.definitions;
 export const getSettings = (state: TreemaState) => state.settings;
 export const getWorkingSchemaChoices = (state: TreemaState) => state.workingSchemaChoices;
@@ -520,10 +520,10 @@ export const getNextRow: (state: TreemaState, skipAddProperties?: boolean) => Or
   if (paths.length === 0) {
     return '';
   }
-  if (state.lastSelected === undefined) {
+  if (state.focused === undefined) {
     index = 0;
   } else {
-    const currentIndex = paths.indexOf(state.lastSelected || '');
+    const currentIndex = paths.indexOf(state.focused || '');
     index = Math.min(currentIndex + 1, paths.length - 1);
     while (
       index < paths.length &&
@@ -545,10 +545,10 @@ export const getPreviousRow: (state: TreemaState, skipAddProperties?: boolean) =
   let nextPath: OrderEntry;
   let nextPathParent: OrderEntry;
   const paths = getListOfPaths(state);
-  if (state.lastSelected === undefined || paths.indexOf(state.lastSelected) === 0) {
+  if (state.focused === undefined || paths.indexOf(state.focused) === 0) {
     index = paths.length - 1;
   } else {
-    index = paths.indexOf(state.lastSelected) - 1;
+    index = paths.indexOf(state.focused) - 1;
   }
   while (index > 0 && (getAnyAncestorsClosed(state, paths[index]) || (skipAddProperties && isInsertPropertyPlaceholder(paths[index])))) {
     index--;

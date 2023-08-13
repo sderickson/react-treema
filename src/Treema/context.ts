@@ -16,7 +16,7 @@ const defaultContextData: ContextInterface = {
     clipboardMode: 'standby',
     undoDataStack: [],
     redoDataStack: [],
-    allSelected: {},
+    selected: {},
   },
   dispatch: () => {},
   editRefs: [],
