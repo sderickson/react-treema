@@ -15,10 +15,12 @@ export function sleep(ms: number) {
 }
 
 let lastPath: JsonPointer | undefined;
+let lastAllSelected: { [path: JsonPointer]: boolean } = {};
 let lastData: any;
 export const onEvent = (event: TreemaEvent) => {
   if (event.type === 'change_select_event') {
     lastPath = event.path;
+    lastAllSelected = event.allSelected;
   }
   if (event.type === 'change_data_event') {
     lastData = event.data;
@@ -103,6 +105,11 @@ export class TreemaStorybookTestContext {
     await sleep(this.speed);
   }
 
+  async click(element: Element): Promise<void> {
+    await user.click(element);
+    await sleep(this.speed);
+  }
+
   async clear(): Promise<void> {
     await user.clear(this.testingLibrary.within(this.treema).getByRole('textbox'));
   }
@@ -128,5 +135,9 @@ export class TreemaStorybookTestContext {
 
   getData(): any {
     return lastData;
+  }
+
+  getAllSelected(): { [path: JsonPointer]: boolean } {
+    return lastAllSelected;
   }
 }

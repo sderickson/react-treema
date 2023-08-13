@@ -1,18 +1,27 @@
 import { JsonPointer, TreemaFilter } from '../types';
 import { OrderEntry } from './types';
 import { ClipboardMode } from './types';
+import { TreemaState } from './types';
 
 // Select Action
 
 type SelectPathAction = {
   type: 'select_path_action';
   path: JsonPointer | undefined;
+  append?: boolean; // ctrl or cmd key - select
+  multi?: boolean; // shift select
 };
 
-export const selectPath = (path: JsonPointer | undefined): SelectPathAction => {
+interface SelectPathActionOptions {
+  append?: boolean;
+  multi?: boolean;
+}
+export const selectPath = (path: JsonPointer | undefined, options?: SelectPathActionOptions): SelectPathAction => {
   return {
     type: 'select_path_action',
     path,
+    append: options?.append,
+    multi: options?.multi,
   };
 };
 
@@ -155,12 +164,14 @@ export const endAddProperty = (cancel?: boolean): EndAddPropertyAction => {
 type DeleteAction = {
   type: 'delete_action';
   path: JsonPointer;
+  skipSnapshot: boolean;
 };
 
-export const deleteAction = (path: JsonPointer): DeleteAction => {
+export const deleteAction = (path: JsonPointer, skipSnapshot?: boolean): DeleteAction => {
   return {
     type: 'delete_action',
     path,
+    skipSnapshot: skipSnapshot || false,
   };
 };
 
@@ -230,6 +241,18 @@ export const redo = (): RedoAction => {
   };
 };
 
+type TakeSnapshotAction = {
+  type: 'take_snapshot_action';
+  state: TreemaState,
+}
+
+export const takeSnapshot = (state: TreemaState): TakeSnapshotAction => {
+  return {
+    type: 'take_snapshot_action',
+    state,
+  };
+};
+
 export type TreemaAction =
   | SelectPathAction
   | NavigateUpAction
@@ -249,4 +272,5 @@ export type TreemaAction =
   | SetClipboardModeAction
   | SetFilterAction
   | UndoAction
-  | RedoAction;
+  | RedoAction
+  | TakeSnapshotAction;

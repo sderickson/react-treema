@@ -17,6 +17,7 @@ export const getDefaultState = (): TreemaState => {
     clipboardMode: 'standby',
     undoDataStack: [],
     redoDataStack: [],
+    allSelected: {},
   };
 };
 

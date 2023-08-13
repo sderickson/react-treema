@@ -56,13 +56,13 @@ And http://codecombat.github.io/treema/demo.html
 - [X] Copy/Paste
 - [X] Filter
 - [X] undo/redo
+- [X] Shift/Meta click
 
 #### In Progress
 
 #### TODO
 - [ ] export getters/setters
 - [ ] Put more documentation in storybook mdx
-- [ ] Shift/Meta click
 - [ ] readOnly, skipValidation
 - [ ] A11y
   - [ ] Add roles, test with screen reader

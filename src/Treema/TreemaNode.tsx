@@ -17,6 +17,7 @@ import {
 } from './state/selectors';
 import './base.scss';
 import { clone, getJsonPointerLastChild, getParentJsonPointer, getValueForRequiredType } from './utils';
+import { is } from 'bluebird';
 
 interface TreemaNodeProps {
   path: JsonPointer;
@@ -51,7 +52,8 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
   const canOpen = hasChildrenAtPath(state, path);
   const description = workingSchema.description;
   const childrenKeys = getChildOrderForPath(state, path) || [];
-  const isSelected = state.lastSelected === path;
+  const isSelected = !!state.allSelected[path];
+  const isLastSelected = state.lastSelected === path;
   const errors = getSchemaErrorsByPath(state)[path] || [];
   const togglePlaceholder = `${isOpen ? 'Close' : 'Open'} ${path}`;
   const isDefaultRoot = getIsDefaultRoot(state, path);
@@ -110,10 +112,10 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
       focusable = editRefs[0]?.current;
     } else if (isAddingProperty) {
       focusable = addPropertyRef.current;
-    } else if (clipboardMode !== 'standby' && isSelected) {
+    } else if (clipboardMode !== 'standby' && isLastSelected) {
       focusable = clipboardRef.current;
       andSelectAll = true;
-    } else if (isSelected) {
+    } else if (isLastSelected) {
       focusable = displayRef.current;
     } else if (isFocusedOnAddProperty) {
       focusable = addPropRef.current;
@@ -146,15 +148,20 @@ export const TreemaNode: FC<TreemaNodeProps> = ({ path }) => {
     definition.shortened ? 'treema-shortened' : '',
   ];
 
+  const rowNames = [
+    'treema-row',
+    isLastSelected ? 'treema-focused' : '',
+  ]
+
   const valueClassNames = ['treema-value', 'treema-' + definition.id, isEditing ? 'treema-edit' : 'treema-display'];
 
   // Render
   return (
-    <div className={classNames.join(' ')} data-path={path}>
+    <div className={classNames.join(' ')} data-path={path} data-testid={path}>
       {canOpen && path !== '' && <span className="treema-toggle" role="button" placeholder={togglePlaceholder}></span>}
 
-      <div ref={displayRef} tabIndex={-1} className="treema-row">
-        {clipboardMode === 'active' && isSelected && (
+      <div ref={displayRef} tabIndex={-1} className={rowNames.join(' ')}>
+        {clipboardMode === 'active' && isLastSelected && (
           <>
             <span className="treema-clipboard-mode">📋</span>
             <div className="treema-clipboard-container">

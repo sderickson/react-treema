@@ -25,7 +25,33 @@ export const deleteAllData: GenericTest = {
   },
 };
 
-export const deleteKeyTests: GenericTest[] = [deleteAllData];
+export const deleteMetaSelect: GenericTest = {
+  name: 'deletes all entries in an array selected with meta/ctrl + click',
+  test: async (ctx) => {
+    await ctx.fireFocus();
+    await ctx.keyboard("{Meta>}");
+    await ctx.click(ctx.query().getByTestId('/0'));
+    await ctx.click(ctx.query().getByTestId('/2'));
+    await ctx.keyboard("{/Meta}");
+    await ctx.fireBackspace();
+    ctx.expect(ctx.getData()).toEqual([2]);
+  }
+}
+
+export const deleteShiftSelect: GenericTest = {
+  name: 'deletes all entries in an array selected with shift + click',
+  test: async (ctx) => {
+    await ctx.fireFocus();
+    await ctx.keyboard("{Shift>}");
+    await ctx.click(ctx.query().getByTestId('/0'));
+    await ctx.click(ctx.query().getByTestId('/2'));
+    await ctx.keyboard("{/Shift}");
+    await ctx.fireBackspace();
+    ctx.expect(ctx.getData()).toEqual([]);
+  }
+}
+
+export const deleteKeyTests: GenericTest[] = [deleteAllData, deleteMetaSelect, deleteShiftSelect];
 
 export const args: TreemaRootProps = {
   schemaLib: getNoopLib(),

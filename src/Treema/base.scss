@@ -91,11 +91,14 @@
 .treema-row {
   padding: $rowInternalVerticalPadding 3px $rowInternalVerticalPadding 3px;
   display: flex;
+  &.treema-focused {
+    box-shadow: 0px 0px 2px blue;
+    outline: none;
+  }
 }
 .treema-value {
   cursor: text;
   display: block;
-  flex-grow: 1;
   max-width: 100%;
   min-width: 50px;
 }

@@ -17,6 +17,7 @@ import {
   setFilter,
   undo,
   redo,
+  takeSnapshot,
 } from './state/actions';
 import {
   getCanClose,
@@ -28,6 +29,7 @@ import {
   normalizeToPath,
   isInsertPropertyPlaceholder,
   getClosed,
+  getListOfPaths,
 } from './state/selectors';
 import { reducer } from './state/reducer';
 import { TreemaNode } from './TreemaNode';
@@ -87,6 +89,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
     filter: filter,
     undoDataStack: [],
     redoDataStack: [],
+    allSelected: {},
   });
 
   /**
@@ -209,12 +212,17 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
         if (isInsertPropertyPlaceholder(state.lastSelected || '')) {
           return;
         }
-        if (state.lastSelected) {
-          let nextSelection = getNextRow(state, true);
-          if (nextSelection === state.lastSelected) {
-            nextSelection = getPreviousRow(state, true);
+        // delete all selected paths in reverse order so that deletions don't
+        // break due to earlier content being deleted
+        let deletedSomething = false;
+        getListOfPaths(state).slice().reverse().forEach((path) => {
+          if (state.allSelected[path]) {
+            dispatch(deleteAction(path, true));
+            deletedSomething = true;
           }
-          dispatch(deleteAction(state.lastSelected));
+        });
+        if (deletedSomething) {
+          dispatch(takeSnapshot(state));
         }
       }
 
@@ -286,7 +294,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       }
 
       // handle select
-      dispatch(selectPath(path || ''));
+      dispatch(selectPath(path || '', { multi: event.shiftKey, append: event.ctrlKey || event.metaKey }));
     },
     [dispatch, state],
   );
@@ -338,6 +346,7 @@ export const TreemaRoot: FC<TreemaRootProps> = ({ data, schema, schemaLib, initO
       onEvent({
         type: 'change_select_event',
         path: state.lastSelected,
+        allSelected: state.allSelected || {},
       });
     }
     if (prevData.current !== state.data) {
